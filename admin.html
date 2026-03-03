@@ -3,197 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LifeSure OS | Advanced Admin & Franchise Hub</title>
+    <title>LifeSure OS | Advanced Master Command</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; }
         [x-cloak] { display: none !important; }
-        .sidebar-gradient { background: linear-gradient(180deg, #0E2A47 0%, #051626 100%); }
-        .stat-card:hover { transform: translateY(-5px); transition: 0.3s; }
-        .aura-border { border: 1px solid rgba(31, 164, 99, 0.2); }
+        .aura-sidebar { background: linear-gradient(195deg, #0E2A47 0%, #051626 100%); }
+        .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.4); }
+        .nav-active { background: rgba(31, 164, 99, 0.1); color: #1FA463; border-right: 4px solid #1FA463; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-aura { animation: slideIn 0.5s ease-out forwards; }
     </style>
 </head>
 <body x-data="auraOS()">
 
     <template x-if="!isLoggedIn">
-        <div class="fixed inset-0 z-[100] sidebar-gradient flex items-center justify-center p-6">
-            <div class="bg-white p-10 rounded-[40px] shadow-2xl w-full max-w-md text-center">
-                <div class="mb-6 inline-block bg-blue-50 p-4 rounded-full text-[#0E2A47]">
-                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+        <div class="fixed inset-0 z-[200] aura-sidebar flex items-center justify-center p-6">
+            <div class="bg-white p-12 rounded-[50px] shadow-2xl w-full max-w-md text-center animate-aura">
+                <div class="mb-8 inline-flex bg-green-50 p-6 rounded-full text-[#1FA463]">
+                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                 </div>
-                <h2 class="text-3xl font-extrabold mb-2">LifeSure Security</h2>
-                <p class="text-gray-400 mb-8 text-sm uppercase tracking-widest">Authorized Access Only</p>
-                
-                <input type="password" x-model="tempKey" placeholder="Enter System Key" class="w-full p-5 bg-gray-100 border-none rounded-2xl mb-4 text-center text-xl font-bold tracking-widest outline-none focus:ring-4 focus:ring-[#1FA463]/20 transition">
-                <button @click="authenticate()" class="w-full bg-[#1FA463] text-white py-5 rounded-2xl font-800 text-lg shadow-xl shadow-green-500/20 hover:scale-[1.02] transition active:scale-95">Unlock System</button>
+                <h2 class="text-3xl font-800 mb-2 text-[#0E2A47]">Aura Security</h2>
+                <p class="text-slate-400 mb-8 font-bold text-xs uppercase tracking-[0.3em]">Master Login Protocol</p>
+                <input type="password" x-model="tempKey" placeholder="Access Code" class="w-full p-5 bg-slate-50 rounded-3xl mb-4 text-center text-2xl font-bold tracking-[0.5em] focus:ring-4 focus:ring-[#1FA463]/20 transition outline-none">
+                <button @click="authenticate()" class="w-full bg-[#1FA463] text-white py-5 rounded-3xl font-800 text-lg shadow-xl shadow-green-500/20 hover:scale-105 transition">Unlock OS</button>
             </div>
         </div>
     </template>
 
     <div x-show="isLoggedIn" x-cloak class="min-h-screen flex flex-col md:flex-row">
         
-        <aside class="w-full md:w-72 sidebar-gradient text-white p-8 flex flex-col justify-between">
+        <aside class="w-full md:w-80 aura-sidebar text-white p-8 flex flex-col justify-between">
             <div>
-                <div class="flex items-center gap-3 mb-12">
-                    <div class="bg-[#1FA463] p-2 rounded-xl">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                    </div>
+                <div class="flex items-center gap-4 mb-16 px-4">
+                    <div class="bg-[#1FA463] p-3 rounded-2xl shadow-lg shadow-green-500/20">⚡</div>
                     <span class="text-2xl font-800 tracking-tighter">LifeSure OS</span>
                 </div>
 
-                <nav class="space-y-6">
-                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.3em] mb-4">Operations</div>
-                    <button @click="view = 'dashboard'" :class="view === 'dashboard' ? 'text-[#1FA463] bg-white/5' : 'text-gray-400'" class="w-full flex items-center gap-4 p-3 rounded-xl font-bold transition">📊 Overview</button>
-                    <button @click="view = 'orders'" :class="view === 'orders' ? 'text-[#1FA463] bg-white/5' : 'text-gray-400'" class="w-full flex items-center gap-4 p-3 rounded-xl font-bold transition">📦 Patient Records</button>
-                    <button @click="view = 'reports'" :class="view === 'reports' ? 'text-[#1FA463] bg-white/5' : 'text-gray-400'" class="w-full flex items-center gap-4 p-3 rounded-xl font-bold transition">📜 Report Engine</button>
+                <nav class="space-y-2">
+                    <div class="px-4 text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] mb-4">Core Systems</div>
+                    <button @click="view = 'dashboard'" :class="view === 'dashboard' ? 'nav-active' : 'text-slate-400'" class="w-full flex items-center gap-4 p-4 rounded-2xl font-bold transition">📊 Overview</button>
+                    <button @click="view = 'orders'" :class="view === 'orders' ? 'nav-active' : 'text-slate-400'" class="w-full flex items-center gap-4 p-4 rounded-2xl font-bold transition">📋 Records</button>
+                    <button @click="view = 'reports'" :class="view === 'reports' ? 'nav-active' : 'text-slate-400'" class="w-full flex items-center gap-4 p-4 rounded-2xl font-bold transition">📜 Reports</button>
                     
                     <template x-if="role === 'master'">
-                        <div class="pt-6">
-                            <div class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.3em] mb-4">Master Control</div>
-                            <button @click="view = 'franchise'" :class="view === 'franchise' ? 'text-[#1FA463] bg-white/5' : 'text-gray-400'" class="w-full flex items-center gap-4 p-3 rounded-xl font-bold transition">🏢 Franchise Hub</button>
-                            <button @click="view = 'marketing'" :class="view === 'marketing' ? 'text-[#1FA463] bg-white/5' : 'text-gray-400'" class="w-full flex items-center gap-4 p-3 rounded-xl font-bold transition">🎭 Marketing & Social</button>
+                        <div class="pt-10">
+                            <div class="px-4 text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] mb-4">Master Hub</div>
+                            <button @click="view = 'franchise'" :class="view === 'franchise' ? 'nav-active' : 'text-slate-400'" class="w-full flex items-center gap-4 p-4 rounded-2xl font-bold transition">🏢 Partners</button>
+                            <button @click="view = 'marketing'" :class="view === 'marketing' ? 'nav-active' : 'text-slate-400'" class="w-full flex items-center gap-4 p-4 rounded-2xl font-bold transition">🚀 Growth</button>
+                            <button @click="view = 'settings'" :class="view === 'settings' ? 'nav-active' : 'text-slate-400'" class="w-full flex items-center gap-4 p-4 rounded-2xl font-bold transition">⚙️ Security</button>
                         </div>
                     </template>
                 </nav>
             </div>
 
-            <button @click="logout()" class="text-red-400 text-sm font-bold flex items-center gap-2 hover:bg-red-500/10 p-3 rounded-xl transition">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg> Log Out
-            </button>
+            <button @click="logout()" class="mx-4 text-red-400 font-bold flex items-center gap-3 p-4 rounded-2xl hover:bg-red-500/10 transition">Log Out</button>
         </aside>
 
-        <main class="flex-1 p-6 md:p-12 overflow-y-auto max-h-screen">
+        <main class="flex-1 p-8 md:p-16 overflow-y-auto max-h-screen">
             
-            <div class="flex justify-between items-center mb-10">
+            <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-16 gap-6 animate-aura">
                 <div>
-                    <h1 class="text-4xl font-800 tracking-tight" x-text="viewNames[view]"></h1>
-                    <p class="text-gray-400 text-sm mt-1">LifeSure Diagnostics | <span class="text-[#1FA463] font-bold">Encrypted Connection</span></p>
+                    <h1 class="text-5xl font-900 tracking-tighter text-[#0E2A47]" x-text="viewNames[view]"></h1>
+                    <p class="text-slate-400 font-bold text-xs uppercase tracking-widest mt-2">LifeSure OS | <span class="text-[#1FA463]">Active Connection</span></p>
                 </div>
-                <div class="flex items-center gap-4 bg-white p-2 pr-6 rounded-full shadow-sm border aura-border">
-                    <div class="w-10 h-10 bg-[#0E2A47] rounded-full flex items-center justify-center text-white font-bold" x-text="role === 'master' ? 'M' : 'F'"></div>
+                <div class="flex items-center gap-4 glass-card p-3 pr-8 rounded-full shadow-sm border border-white">
+                    <div class="w-12 h-12 bg-[#0E2A47] rounded-full flex items-center justify-center text-white font-black" x-text="role === 'master' ? 'AK' : 'F'"></div>
                     <div>
-                        <p class="text-xs font-bold leading-none" x-text="role === 'master' ? 'System Master' : 'Franchise Node'"></p>
-                        <p class="text-[10px] text-gray-400 tracking-widest uppercase">Verified Access</p>
+                        <p class="text-xs font-black text-[#0E2A47] uppercase" x-text="role === 'master' ? 'Ayush Dubey' : 'Partner Node'"></p>
+                        <p class="text-[10px] font-bold text-[#1FA463] uppercase tracking-widest">Master Admin</p>
+                    </div>
+                </div>
+            </header>
+
+            <div x-show="view === 'dashboard'" class="space-y-10 animate-aura">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="glass-card p-10 rounded-[50px] shadow-sm relative overflow-hidden group">
+                        <p class="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-4">Total LifeSure Patients</p>
+                        <h2 class="text-6xl font-900 text-[#0E2A47]" x-text="orders.length"></h2>
+                        <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-blue-50 rounded-full group-hover:scale-150 transition-transform"></div>
+                    </div>
+                    <div class="bg-[#1FA463] p-10 rounded-[50px] shadow-xl text-white relative overflow-hidden group">
+                        <p class="text-green-100 text-[10px] font-black uppercase tracking-widest mb-4">Today's Net Profit</p>
+                        <h2 class="text-6xl font-900">₹<span x-text="calculateNetProfit()"></span></h2>
+                        <p class="text-[10px] mt-4 opacity-70 italic font-bold">After Deducting Actual Costs</p>
                     </div>
                 </div>
             </div>
 
-            <div x-show="view === 'reports'" class="space-y-8">
-                <div class="bg-white p-10 rounded-[40px] shadow-sm border">
-                    <h3 class="text-2xl font-800 mb-6">Cloud Report Upload</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                        <div>
-                            <label class="text-[10px] font-bold uppercase text-gray-400 mb-2 block">Patient Selection</label>
-                            <select class="w-full p-4 bg-slate-50 rounded-2xl outline-none border">
-                                <option>Select Patient Name/ID...</option>
-                                <template x-for="order in orders">
-                                    <option x-text="order.name + ' (' + order.id + ')'"></option>
-                                </template>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="text-[10px] font-bold uppercase text-gray-400 mb-2 block">Upload PDF Report</label>
-                            <input type="file" class="w-full p-3 bg-slate-50 rounded-2xl border border-dashed border-slate-300">
+            <div x-show="view === 'marketing'" class="space-y-10 animate-aura">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                    <div class="glass-card p-10 rounded-[50px] border border-white shadow-sm">
+                        <h3 class="text-2xl font-800 mb-8 text-[#0E2A47]">Banner Management</h3>
+                        <div class="aspect-video bg-slate-50 border-4 border-dashed border-slate-200 rounded-[40px] flex flex-col items-center justify-center group hover:bg-slate-100 cursor-pointer transition">
+                            <span class="text-4xl mb-4 group-hover:scale-125 transition">🖼️</span>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Upload Home Banner (1920x600)</p>
                         </div>
                     </div>
-                    <div class="flex flex-col md:flex-row gap-6 items-center justify-between p-6 bg-blue-50/50 rounded-3xl border border-blue-100">
-                        <div class="space-y-2">
-                            <label class="flex items-center gap-3 font-bold text-[#0E2A47] cursor-pointer">
-                                <input type="checkbox" checked class="w-6 h-6 accent-[#1FA463]"> Apply LifeSure Master Letterhead
-                            </label>
-                            <p class="text-xs text-gray-500 pl-9">Includes branding, NABL logos, and digital signatures.</p>
-                        </div>
-                        <button class="w-full md:w-auto bg-[#1FA463] text-white px-10 py-4 rounded-2xl font-bold shadow-xl shadow-green-500/20 hover:scale-105 transition">Publish to Patient Vault</button>
-                    </div>
-                </div>
-            </div>
-
-            <div x-show="view === 'franchise'">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 text-white font-800 uppercase tracking-tighter">
-                    <div class="bg-blue-600 p-8 rounded-[32px] stat-card shadow-xl">
-                        <p class="text-blue-100 font-bold text-xs mb-2">Active Partners</p>
-                        <h2 class="text-4xl" x-text="franchisees.length"></h2>
-                    </div>
-                    <div class="bg-[#1FA463] p-8 rounded-[32px] stat-card shadow-xl">
-                        <p class="text-green-100 font-bold text-xs mb-2">Network Revenue</p>
-                        <h2 class="text-4xl">₹7,84,200</h2>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-[40px] p-8 shadow-sm border">
-                    <div class="flex justify-between items-center mb-8">
-                        <h3 class="text-xl font-bold">Partner Management</h3>
-                        <button class="bg-[#0E2A47] text-white px-6 py-3 rounded-2xl text-sm font-bold">+ New Franchise</button>
-                    </div>
-                    <div class="space-y-4">
-                        <template x-for="f in franchisees">
-                            <div class="flex items-center justify-between p-6 bg-slate-50 rounded-3xl border hover:border-[#1FA463] transition group">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center font-bold text-[#0E2A47]" x-text="f.location[0]"></div>
-                                    <div>
-                                        <p class="font-extrabold text-lg" x-text="f.name"></p>
-                                        <p class="text-[10px] text-gray-400 uppercase font-bold tracking-widest" x-text="f.location"></p>
-                                    </div>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-lg font-extrabold text-[#1FA463]">₹<span x-text="f.earning"></span></p>
-                                    <button class="text-[10px] text-blue-500 font-bold uppercase underline">Download Partner Report</button>
-                                </div>
-                            </div>
-                        </template>
-                    </div>
-                </div>
-            </div>
-
-            <div x-show="view === 'marketing'" class="space-y-8">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div class="bg-white p-10 rounded-[40px] shadow-sm border">
-                        <h3 class="text-xl font-bold mb-6">Slider Banner Management</h3>
-                        <div class="aspect-video bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center group cursor-pointer hover:bg-slate-100 transition">
-                            <div class="bg-white p-4 rounded-full shadow-sm mb-4 group-hover:scale-110 transition text-2xl">📸</div>
-                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Add Horizontal Banner (1920x600)</p>
-                        </div>
-                    </div>
-                    <div class="bg-white p-10 rounded-[40px] shadow-sm border flex flex-col justify-between">
-                        <h3 class="text-xl font-bold mb-6">Social & Support Sync</h3>
+                    <div class="glass-card p-10 rounded-[50px] border border-white shadow-sm">
+                        <h3 class="text-2xl font-800 mb-8 text-[#0E2A47]">Growth Coupons</h3>
                         <div class="space-y-4">
-                            <input type="text" placeholder="Instagram Profile Link" class="w-full p-4 bg-slate-50 rounded-2xl outline-none border">
-                            <input type="text" placeholder="WhatsApp Support API" class="w-full p-4 bg-slate-50 rounded-2xl outline-none border">
-                            <input type="text" placeholder="Google Business Review URL" class="w-full p-4 bg-slate-50 rounded-2xl outline-none border">
+                            <input type="text" placeholder="Coupon Name (e.g. LIFESURE20)" class="w-full p-5 bg-slate-50 rounded-3xl outline-none border border-transparent focus:border-[#1FA463] font-bold">
+                            <div class="flex gap-4">
+                                <input type="number" placeholder="Discount %" class="w-full p-5 bg-slate-50 rounded-3xl outline-none border border-transparent focus:border-[#1FA463] font-bold">
+                                <button class="bg-[#0E2A47] text-white px-10 rounded-3xl font-bold">Generate</button>
+                            </div>
                         </div>
-                        <button class="mt-6 w-full bg-[#0E2A47] text-white py-4 rounded-2xl font-bold">Update All Links</button>
                     </div>
                 </div>
             </div>
 
-            <div x-show="view === 'orders'">
-                <div class="bg-white rounded-[40px] overflow-hidden shadow-sm border">
+            <div x-show="view === 'settings'" class="max-w-2xl animate-aura">
+                <div class="glass-card p-10 rounded-[50px] border border-white shadow-sm space-y-8">
+                    <h3 class="text-2xl font-800 text-[#0E2A47]">Access Security</h3>
+                    <div>
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Change Admin Pin</label>
+                        <div class="flex gap-4">
+                            <input type="password" x-model="newMasterCode" placeholder="Enter New Code" class="flex-1 p-5 bg-slate-50 rounded-3xl outline-none border border-transparent focus:border-[#1FA463] font-bold tracking-widest text-2xl">
+                            <button @click="updateMasterCode()" class="bg-[#1FA463] text-white px-10 rounded-3xl font-bold">Update</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div x-show="view === 'orders'" class="animate-aura">
+                <div class="glass-card rounded-[50px] overflow-hidden border border-white shadow-sm">
                     <table class="w-full text-left">
-                        <thead class="bg-slate-50 border-b">
-                            <tr class="text-[10px] font-bold uppercase text-gray-400 tracking-widest">
-                                <th class="p-6">Patient (Loyalty Record)</th>
-                                <th class="p-6">Test Detail</th>
-                                <th class="p-6">Revenue</th>
-                                <th class="p-6">Status</th>
-                                <th class="p-6">Action</th>
+                        <thead class="bg-slate-50/50">
+                            <tr class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
+                                <th class="p-8">Patient Details</th>
+                                <th class="p-8">Test Matrix</th>
+                                <th class="p-8">Revenue</th>
+                                <th class="p-8">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <template x-for="order in orders">
-                                <tr class="border-b hover:bg-slate-50 transition">
-                                    <td class="p-6">
-                                        <p class="font-extrabold text-[#0E2A47]" x-text="order.name"></p>
-                                        <p class="text-[10px] text-gray-400 uppercase tracking-tighter" x-text="order.id"></p>
+                            <template x-for="p in orders">
+                                <tr class="border-t border-slate-100 hover:bg-slate-50/50 transition group">
+                                    <td class="p-8">
+                                        <p class="font-900 text-[#0E2A47] text-lg" x-text="p.name"></p>
+                                        <p class="text-[10px] font-bold text-slate-400 mt-1 uppercase" x-text="p.id + ' | +91 ' + p.mobile"></p>
                                     </td>
-                                    <td class="p-6 text-sm font-semibold text-gray-600" x-text="order.test"></td>
-                                    <td class="p-6 font-extrabold text-[#1FA463]">₹<span x-text="order.amount"></span></td>
-                                    <td class="p-6">
-                                        <span :class="order.status === 'Ready' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'" class="px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest" x-text="order.status"></span>
+                                    <td class="p-8">
+                                        <span class="text-sm font-bold text-slate-600 px-4 py-2 bg-slate-100 rounded-full" x-text="p.test"></span>
                                     </td>
-                                    <td class="p-6">
-                                        <button @click="view = 'reports'" class="bg-white border p-2 rounded-xl shadow-sm hover:bg-slate-100">📜 Upload</button>
+                                    <td class="p-8">
+                                        <p class="font-900 text-[#1FA463] text-xl">₹<span x-text="p.amount"></span></p>
+                                        <p class="text-[9px] text-slate-400 font-bold uppercase mt-1">Paid via QR</p>
+                                    </td>
+                                    <td class="p-8">
+                                        <button @click="selectedPatient = p" class="bg-white border-2 border-slate-100 text-[#0E2A47] px-6 py-2.5 rounded-2xl font-black text-xs hover:bg-[#0E2A47] hover:text-white transition">VIEW 360</button>
                                     </td>
                                 </tr>
                             </template>
@@ -205,32 +166,60 @@
         </main>
     </div>
 
+    <div x-show="selectedPatient" x-cloak class="fixed inset-0 z-[300] flex items-center justify-center p-6 bg-[#0E2A47]/80 backdrop-blur-xl animate-aura">
+        <div class="bg-white p-12 rounded-[60px] shadow-2xl w-full max-w-2xl relative overflow-hidden">
+            <button @click="selectedPatient = null" class="absolute top-8 right-8 text-slate-300 hover:text-red-500 transition">✕</button>
+            <div class="flex items-center gap-6 mb-12">
+                <div class="w-24 h-24 bg-green-50 rounded-[40px] flex items-center justify-center text-4xl">👤</div>
+                <div>
+                    <h2 class="text-4xl font-900 text-[#0E2A47]" x-text="selectedPatient?.name"></h2>
+                    <p class="text-[#1FA463] font-black text-sm uppercase tracking-widest" x-text="'ID: ' + selectedPatient?.id"></p>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-6 mb-12">
+                <div class="bg-slate-50 p-6 rounded-[35px]">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Age / Gender</p>
+                    <p class="text-xl font-900 text-[#0E2A47]" x-text="selectedPatient?.age + ' / ' + selectedPatient?.gender"></p>
+                </div>
+                <div class="bg-slate-50 p-6 rounded-[35px]">
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Primary Contact</p>
+                    <p class="text-xl font-900 text-[#0E2A47]" x-text="selectedPatient?.mobile"></p>
+                </div>
+            </div>
+            <div class="flex gap-4">
+                <button @click="view = 'reports'; selectedPatient = null" class="flex-1 bg-[#0E2A47] text-white py-5 rounded-[30px] font-900 text-sm uppercase tracking-widest">Generate Report</button>
+                <button class="flex-1 bg-[#1FA463]/10 text-[#1FA463] py-5 rounded-[30px] font-900 text-sm uppercase tracking-widest">Medical History</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         function auraOS() {
             return {
                 isLoggedIn: false,
                 tempKey: '',
+                masterCode: '17102009',
+                newMasterCode: '',
                 role: '', 
                 view: 'dashboard',
+                selectedPatient: null,
                 viewNames: {
-                    'dashboard': 'Quick Overview',
-                    'orders': 'Patient Health Vault',
-                    'reports': 'Medical Report Engine',
-                    'franchise': 'Partner Network Hub',
-                    'marketing': 'Marketing & Social Core'
+                    'dashboard': 'Aura Analytics',
+                    'orders': 'Patient Vault',
+                    'reports': 'Medical Engine',
+                    'franchise': 'Franchise Network',
+                    'marketing': 'Growth Center',
+                    'settings': 'OS Security'
                 },
-                franchisees: [
-                    { name: 'Dr. Rahul - Borivali', location: 'Borivali West, Mumbai', earning: '1,45,000', patients: 240 },
-                    { name: 'Pathology Center - Thane', location: 'Hiranandani, Thane', earning: '92,300', patients: 112 },
-                    { name: 'Health Hub - Bandra', location: 'Linking Road, Bandra', earning: '2,05,400', patients: 310 }
-                ],
                 orders: [
-                    { id: 'LS-2026-001', name: 'Rahul Sharma', test: 'Full Body Checkup', amount: 2999, status: 'Processing' },
-                    { id: 'LS-2026-002', name: 'Anjali V.', test: 'Thyroid Total Profile', amount: 650, status: 'Ready' },
-                    { id: 'LS-2026-003', name: 'Vikram Mehta', test: 'Diabetes HbA1c', amount: 550, status: 'Processing' }
+                    { id: 'LS-2026-001', name: 'Rahul Sharma', age: 24, gender: 'Male', mobile: '9820011223', test: 'Full Body Checkup', amount: 2999, cost: 1200 },
+                    { id: 'LS-2026-002', name: 'Anjali V.', age: 31, gender: 'Female', mobile: '9167004455', test: 'Thyroid Profile', amount: 650, cost: 250 }
+                ],
+                franchisees: [
+                    { name: 'Dr. Rahul - Borivali', location: 'Borivali West, Mumbai', earning: '1,45,000' }
                 ],
                 authenticate() {
-                    if(this.tempKey === 'MASTER_AURA_99') {
+                    if(this.tempKey === this.masterCode) {
                         this.isLoggedIn = true;
                         this.role = 'master';
                         this.tempKey = '';
@@ -239,15 +228,19 @@
                         this.role = 'franchise';
                         this.view = 'dashboard';
                         this.tempKey = '';
-                    } else {
-                        alert('System Alert: Security Key Unauthorized');
+                    } else { alert('Access Denied'); }
+                },
+                calculateNetProfit() {
+                    return this.orders.reduce((total, p) => total + (p.amount - p.cost), 0);
+                },
+                updateMasterCode() {
+                    if(this.newMasterCode.length > 3) {
+                        this.masterCode = this.newMasterCode;
+                        alert('Master Code Updated');
+                        this.newMasterCode = '';
                     }
                 },
-                logout() {
-                    this.isLoggedIn = false;
-                    this.role = '';
-                    this.tempKey = '';
-                }
+                logout() { this.isLoggedIn = false; this.role = ''; this.tempKey = ''; }
             }
         }
     </script>
