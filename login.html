@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeSure Gateway | Secure OTP Access</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; }
+        .aura-bg { 
+            background: radial-gradient(circle at top right, #1FA463 0%, #0E2A47 100%); 
+            height: 100vh;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        [x-cloak] { display: none !important; }
+        .pulse-aura { animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="aura-bg" x-data="auraAuth()">
+
+    <div class="h-full flex items-center justify-center p-6">
+        <div class="glass-card p-10 rounded-[45px] shadow-2xl w-full max-w-md transform transition-all">
+            
+            <div class="text-center mb-10">
+                <div class="inline-block bg-green-50 p-4 rounded-3xl mb-4 pulse-aura">
+                    <svg class="w-10 h-10 text-[#1FA463]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"></path>
+                    </svg>
+                </div>
+                <h2 class="text-3xl font-[800] tracking-tight text-[#0E2A47]" x-text="step === 1 ? 'LifeSure Login' : 'Verify OTP'"></h2>
+                <p class="text-gray-400 text-sm mt-2 uppercase tracking-widest font-bold" x-text="step === 1 ? 'Patient & Partner Gateway' : 'Identity Verification'"></p>
+            </div>
+
+            <div x-show="step === 1" class="space-y-6">
+                <div class="relative">
+                    <span class="absolute left-4 top-4 text-gray-400 font-bold border-r pr-3">+91</span>
+                    <input type="tel" x-model="mobile" placeholder="Mobile Number" class="w-full pl-16 p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-[#1FA463]/10 transition font-bold text-lg">
+                </div>
+                <div id="recaptcha-container" class="flex justify-center"></div>
+                
+                <button @click="sendOTP()" class="w-full bg-[#1FA463] text-white py-5 rounded-2xl font-800 text-lg shadow-xl shadow-green-500/20 hover:bg-[#1a8e56] transition active:scale-95">
+                    Request Secure OTP
+                </button>
+            </div>
+
+            <div x-show="step === 2" x-cloak class="space-y-6">
+                <div class="flex flex-col items-center">
+                    <input type="text" x-model="otp" placeholder="· · · · · ·" class="w-full p-5 bg-slate-50 border rounded-2xl text-center text-3xl font-bold tracking-[0.5em] outline-none focus:ring-4 focus:ring-[#1FA463]/10">
+                    <p class="mt-4 text-xs text-gray-400">OTP sent to +91 <span x-text="mobile"></span></p>
+                </div>
+                <button @click="verifyOTP()" class="w-full bg-[#0E2A47] text-white py-5 rounded-2xl font-800 text-lg shadow-xl transition active:scale-95">
+                    Unlock Health Vault
+                </button>
+                <button @click="step = 1" class="w-full text-xs font-bold text-gray-400 uppercase tracking-widest hover:text-[#0E2A47]">Wrong Number?</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // YOUR REAL FIREBASE CONFIG
+        const firebaseConfig = {
+            apiKey: "AIzaSyDIYDSALI3klBQoHRubhGy39LED_iiG_Fw",
+            authDomain: "lifesure-diagnostics.firebaseapp.com",
+            projectId: "lifesure-diagnostics",
+            storageBucket: "lifesure-diagnostics.firebasestorage.app",
+            messagingSenderId: "835180501906",
+            appId: "1:135180501906:web:1cf9199a46fc0a2bcb7f4b"
+        };
+        firebase.initializeApp(firebaseConfig);
+
+        function auraAuth() {
+            return {
+                step: 1,
+                mobile: '',
+                otp: '',
+                confirmationResult: null,
+
+                init() {
+                    // Initialize reCAPTCHA
+                    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+                        'size': 'invisible'
+                    });
+                },
+
+                sendOTP() {
+                    if (this.mobile.length !== 10) return alert('Please enter a valid 10-digit Mumbai mobile number.');
+                    
+                    // ADMIN BYPASS LOGIC
+                    if(this.mobile === '9999999999') { // Replace with your real number
+                        window.location.href = 'admin.html';
+                        return;
+                    }
+
+                    const phoneNumber = "+91" + this.mobile;
+                    firebase.auth().signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier)
+                        .then((result) => {
+                            this.confirmationResult = result;
+                            this.step = 2;
+                        }).catch((err) => {
+                            alert("System Error: " + err.message);
+                        });
+                },
+
+                verifyOTP() {
+                    this.confirmationResult.confirm(this.otp).then((result) => {
+                        // Success Logic
+                        localStorage.setItem('aura_logged_in', 'true');
+                        localStorage.setItem('patient_id', this.mobile);
+                        alert('Identity Verified. Welcome to LifeSure.');
+                        window.location.href = 'index.html'; // Or redirect to a patient vault page
+                    }).catch(() => {
+                        alert('Security Alert: Invalid OTP Code');
+                    });
+                }
+            }
+        }
+    </script>
+</body>
+</html>
