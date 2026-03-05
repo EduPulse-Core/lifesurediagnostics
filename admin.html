@@ -11,153 +11,180 @@
         :root { --aura-primary: #1FA463; --aura-dark: #0E2A47; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; overflow-x: hidden; }
         [x-cloak] { display: none !important; }
-        .aura-sidebar { background: linear-gradient(195deg, #0E2A47 0%, #051626 100%); }
-        .glass-panel { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.4); }
-        .nav-active { background: rgba(31, 164, 99, 0.15); color: #1FA463; border-right: 4px solid #1FA463; box-shadow: inset -10px 0 20px rgba(31, 164, 99, 0.05); }
+        
+        /* Holographic Component Styling */
+        .aura-sidebar { background: linear-gradient(195deg, #0E2A47 0%, #051626 100%); position: relative; overflow: hidden; }
+        .aura-sidebar::before { content: ''; position: absolute; top: -50%; right: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(31,164,99,0.05) 0%, transparent 70%); animation: aura-spin 30s infinite linear; }
+        @keyframes aura-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .glass-panel { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(30px); border: 1px solid rgba(255, 255, 255, 0.4); }
+        .nav-active { background: rgba(31, 164, 99, 0.15); color: #1FA463; border-right: 4px solid #1FA463; box-shadow: inset -15px 0 30px rgba(31, 164, 99, 0.05); }
+        
+        /* Premium Notifications */
         @keyframes toastIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         .toast-aura { animation: toastIn 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards; }
+        
+        /* Smart Status Badges */
+        .badge-pending { background: rgba(249, 115, 22, 0.1); color: #f97316; border: 1px solid rgba(249, 115, 22, 0.2); }
+        .badge-verified { background: rgba(31, 164, 99, 0.1); color: #1FA463; border: 1px solid rgba(31, 164, 99, 0.2); }
+        .pulse-pending { animation: status-pulse 2s infinite; }
+        @keyframes status-pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        /* Custom Switch */
         .switch { position: relative; display: inline-block; width: 44px; height: 22px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #e2e8f0; transition: .4s; border-radius: 34px; }
         .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: #1FA463; }
         input:checked + .slider:before { transform: translateX(22px); }
-        .pulse-pending { animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
     </style>
 </head>
 <body x-data="auraOS()">
 
-    <div class="fixed top-8 right-8 z-[2000] space-y-4">
+    <div class="fixed top-8 right-8 z-[3000] space-y-4">
         <template x-for="note in notifications" :key="note.id">
-            <div class="glass-panel p-6 rounded-[30px] shadow-2xl border-l-8 border-[#1FA463] toast-aura flex items-center gap-4 min-w-[320px]">
-                <div class="bg-green-100 p-2 rounded-full text-[#1FA463]">⚡</div>
+            <div class="glass-panel p-6 rounded-[35px] shadow-2xl border-l-8 border-[#1FA463] toast-aura flex items-center gap-5 min-w-[340px]">
+                <div class="w-12 h-12 bg-green-100 rounded-2xl flex items-center justify-center text-[#1FA463] font-black">OS</div>
                 <div>
-                    <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 leading-none mb-1">OS Sync Active</p>
-                    <p class="font-bold text-[#0E2A47] text-sm" x-text="note.msg"></p>
+                    <p class="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400 mb-1 leading-none">System Alert</p>
+                    <p class="font-bold text-[#0E2A47] text-sm leading-tight" x-text="note.msg"></p>
                 </div>
             </div>
         </template>
     </div>
 
     <template x-if="!isLoggedIn">
-        <div class="fixed inset-0 z-[1000] aura-sidebar flex items-center justify-center p-6">
-            <div class="glass-panel p-12 rounded-[60px] shadow-2xl w-full max-w-md text-center">
-                <div class="mb-8 inline-flex bg-[#1FA463]/10 p-6 rounded-[30px] text-[#1FA463] shadow-inner animate-pulse">
-                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+        <div class="fixed inset-0 z-[2000] aura-sidebar flex items-center justify-center p-6">
+            <div class="glass-panel p-16 rounded-[70px] shadow-2xl w-full max-w-md text-center border border-white">
+                <div class="mb-10 inline-flex bg-[#1FA463]/10 p-8 rounded-[40px] text-[#1FA463] shadow-inner">
+                    <svg class="w-14 h-14 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                 </div>
-                <h2 class="text-4xl font-900 mb-2 text-[#0E2A47] tracking-tighter">Aura Security</h2>
-                <input type="password" x-model="tempKey" placeholder="Access Code" class="w-full p-6 bg-white/50 rounded-[30px] mb-6 text-center text-2xl font-black tracking-[0.6em] focus:ring-4 focus:ring-[#1FA463]/20 transition outline-none border border-white">
-                <button @click="authenticate()" class="w-full bg-[#1FA463] text-white py-6 rounded-[30px] font-800 text-lg shadow-2xl hover:scale-105 transition-all">Verify Protocol</button>
+                <h2 class="text-4xl font-900 mb-2 text-[#0E2A47] tracking-tighter">LifeSure Security</h2>
+                <p class="text-slate-400 mb-12 font-bold text-[10px] uppercase tracking-[0.5em]">Identity Verification Required</p>
+                <input type="password" x-model="tempKey" placeholder="Master Access Code" class="w-full p-6 bg-white/50 rounded-[35px] mb-8 text-center text-3xl font-black tracking-[0.8em] focus:ring-8 focus:ring-[#1FA463]/10 transition outline-none border border-white shadow-sm">
+                <button @click="authenticate()" class="w-full bg-[#1FA463] text-white py-6 rounded-[35px] font-900 text-xs uppercase tracking-[0.4em] shadow-2xl hover:scale-105 active:scale-95 transition-all">Verify Node</button>
             </div>
         </div>
     </template>
 
     <div x-show="isLoggedIn" x-cloak class="min-h-screen flex flex-col md:flex-row">
         
-        <aside class="w-full md:w-80 aura-sidebar text-white p-10 flex flex-col justify-between sticky top-0 h-screen overflow-hidden">
+        <aside class="w-full md:w-80 aura-sidebar text-white p-12 flex flex-col justify-between sticky top-0 h-screen">
             <div class="relative z-10">
-                <div class="flex items-center gap-4 mb-20 px-4">
-                    <div class="bg-[#1FA463] p-3 rounded-2xl shadow-xl shadow-green-500/20 rotate-3">⚡</div>
+                <div class="flex items-center gap-4 mb-24 px-4">
+                    <div class="bg-[#1FA463] p-3 rounded-2xl shadow-2xl shadow-green-500/20 rotate-3">⚡</div>
                     <span class="text-2xl font-900 tracking-tighter uppercase">LifeSure</span>
                 </div>
-                <nav class="space-y-3">
-                    <button @click="view = 'dashboard'" :class="view === 'dashboard' ? 'nav-active' : 'text-slate-400'" class="w-full flex items-center gap-4 p-5 rounded-2xl font-800 transition-all text-left">📊 Analytics</button>
-                    <button @click="view = 'reports'" :class="view === 'reports' ? 'nav-active' : 'text-slate-400'" class="w-full flex items-center gap-4 p-5 rounded-2xl font-800 transition-all text-left relative">
+                <nav class="space-y-4">
+                    <div class="px-4 text-[10px] font-black text-slate-500 uppercase tracking-[0.5em] mb-8">Operations Hub</div>
+                    <button @click="view = 'dashboard'" :class="view === 'dashboard' ? 'nav-active' : 'text-slate-400 hover:text-white'" class="w-full flex items-center gap-5 p-5 rounded-3xl font-900 transition-all text-left">📊 Analytics</button>
+                    <button @click="view = 'reports'" :class="view === 'reports' ? 'nav-active' : 'text-slate-400 hover:text-white'" class="w-full flex items-center gap-5 p-5 rounded-3xl font-900 transition-all text-left relative">
                         📜 Report Hub
-                        <span x-show="pendingCount > 0" class="absolute right-4 bg-orange-500 text-white text-[10px] px-2 py-0.5 rounded-full" x-text="pendingCount"></span>
+                        <span x-show="pendingCount > 0" class="absolute right-5 bg-orange-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full" x-text="pendingCount"></span>
                     </button>
-                    <button @click="view = 'tests'" :class="view === 'tests' ? 'nav-active' : 'text-slate-400'" class="w-full flex items-center gap-4 p-5 rounded-2xl font-800 transition-all text-left">🧪 Test Matrix</button>
-                    <button @click="view = 'marketing'" :class="view === 'marketing' ? 'nav-active' : 'text-slate-400'" class="w-full flex items-center gap-4 p-5 rounded-2xl font-800 transition-all text-left">🚀 Growth Hub</button>
+                    <button @click="view = 'tests'" :class="view === 'tests' ? 'nav-active' : 'text-slate-400 hover:text-white'" class="w-full flex items-center gap-5 p-5 rounded-3xl font-900 transition-all text-left">🧪 Test Matrix</button>
+                    <button @click="view = 'marketing'" :class="view === 'marketing' ? 'nav-active' : 'text-slate-400 hover:text-white'" class="w-full flex items-center gap-5 p-5 rounded-3xl font-900 transition-all text-left">🚀 Growth Hub</button>
                 </nav>
             </div>
-            <button @click="logout()" class="mx-4 text-red-400 font-900 text-[10px] uppercase tracking-widest flex items-center gap-3 p-5 rounded-2xl hover:bg-red-500/10 transition">Log Out Protocol</button>
+            <button @click="logout()" class="relative z-10 mx-4 text-red-400 font-900 text-[10px] uppercase tracking-[0.5em] flex items-center gap-4 p-6 rounded-3xl hover:bg-red-500/10 transition-all">Log Out Protocol</button>
         </aside>
 
-        <main class="flex-1 p-8 md:p-16 overflow-y-auto">
+        <main class="flex-1 p-8 md:p-20 overflow-y-auto">
             
-            <header class="flex justify-between items-center mb-16 animate-in fade-in slide-in-from-top-4 duration-700">
+            <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-20 gap-8 animate-in fade-in slide-in-from-top-4 duration-1000">
                 <div>
-                    <h1 class="text-5xl font-900 tracking-tighter text-[#0E2A47]" x-text="viewNames[view]"></h1>
-                    <p class="text-slate-400 font-black text-[10px] uppercase tracking-[0.4em] mt-3">Node: <span class="text-[#1FA463]">Mumbai Central</span></p>
+                    <h1 class="text-6xl font-900 tracking-tighter text-[#0E2A47]" x-text="viewNames[view]"></h1>
+                    <p class="text-slate-400 font-black text-[10px] uppercase tracking-[0.6em] mt-4 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-[#1FA463] animate-ping"></span> Node: Mumbai Central
+                    </p>
                 </div>
-                <div class="glass-panel p-3 pr-8 rounded-full shadow-sm flex items-center gap-4 border border-white">
-                    <div class="w-12 h-12 bg-[#0E2A47] rounded-full flex items-center justify-center text-white font-black text-xs shadow-lg">AK</div>
+                <div class="glass-panel p-4 pr-12 rounded-full shadow-2xl flex items-center gap-6 border-2 border-white">
+                    <div class="w-16 h-16 bg-[#0E2A47] rounded-full flex items-center justify-center text-white font-black text-xl shadow-xl">AK</div>
                     <div>
-                        <p class="text-[11px] font-black text-[#0E2A47] uppercase leading-none">Ayush Dubey</p>
-                        <p class="text-[9px] font-bold text-[#1FA463] uppercase tracking-widest mt-1">Managed by Master</p>
+                        <p class="text-sm font-black text-[#0E2A47] uppercase leading-none tracking-tighter">Ayush Dubey</p>
+                        <p class="text-[9px] font-bold text-[#1FA463] uppercase tracking-[0.3em] mt-2">System Architect</p>
                     </div>
                 </div>
             </header>
 
-            <div x-show="view === 'dashboard'" class="space-y-12 animate-in fade-in slide-in-from-bottom-6">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="glass-panel p-10 rounded-[50px] shadow-sm relative overflow-hidden group">
-                        <p class="text-slate-400 text-[10px] font-black uppercase tracking-[0.4em] mb-4">Total Patients</p>
-                        <h2 class="text-6xl font-900 text-[#0E2A47]" x-text="patients.length"></h2>
+            <div x-show="view === 'dashboard'" class="space-y-12 animate-in fade-in slide-in-from-bottom-6 duration-700">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                    <div class="glass-panel p-12 rounded-[60px] shadow-sm relative overflow-hidden group border border-white">
+                        <p class="text-slate-400 text-[10px] font-black uppercase tracking-[0.5em] mb-6">Total Patients</p>
+                        <h2 class="text-8xl font-900 text-[#0E2A47] tracking-tighter" x-text="patients.length"></h2>
+                        <div class="absolute -right-20 -bottom-20 w-60 h-60 bg-[#0E2A47]/5 rounded-full group-hover:scale-150 transition-all duration-1000"></div>
                     </div>
-                    <div class="glass-panel p-10 rounded-[50px] shadow-sm relative overflow-hidden border-orange-100 border-2">
-                        <p class="text-orange-400 text-[10px] font-black uppercase tracking-[0.4em] mb-4">Pending Reports</p>
-                        <h2 class="text-6xl font-900 text-[#0E2A47] pulse-pending" x-text="pendingCount"></h2>
+                    <div class="glass-panel p-12 rounded-[60px] shadow-sm border-2 border-orange-100 relative overflow-hidden">
+                        <p class="text-orange-400 text-[10px] font-black uppercase tracking-[0.5em] mb-6">Pending Uploads</p>
+                        <h2 class="text-8xl font-900 text-[#0E2A47] tracking-tighter pulse-pending" x-text="pendingCount"></h2>
                     </div>
-                    <div class="bg-[#1FA463] p-10 rounded-[50px] shadow-2xl text-white relative overflow-hidden group">
-                        <p class="text-green-100 text-[10px] font-black uppercase tracking-[0.4em] mb-4">Issued Reports</p>
-                        <h2 class="text-6xl font-900" x-text="issuedCount"></h2>
+                    <div class="bg-[#1FA463] p-12 rounded-[60px] shadow-[0_40px_80px_-20px_rgba(31,164,99,0.3)] text-white relative overflow-hidden group">
+                        <p class="text-green-100 text-[10px] font-black uppercase tracking-[0.5em] mb-6">Verified Issued</p>
+                        <h2 class="text-8xl font-900 tracking-tighter" x-text="issuedCount"></h2>
                     </div>
                 </div>
                 
-                <div class="bg-[#0E2A47] p-12 rounded-[60px] text-white relative overflow-hidden">
-                    <p class="text-[10px] font-black uppercase tracking-[0.5em] mb-4 opacity-50">Consolidated Profit Matrix</p>
-                    <h2 class="text-8xl font-900 tracking-tighter italic text-[#1FA463]">₹<span x-text="totalProfit()"></span></h2>
-                    <p class="mt-6 text-xs font-bold text-slate-400 uppercase tracking-widest">Calculated after manual cost deductions</p>
+                <div class="bg-[#0E2A47] p-16 rounded-[80px] text-white relative overflow-hidden shadow-2xl">
+                    <div class="relative z-10">
+                        <p class="text-[11px] font-black uppercase tracking-[0.6em] mb-8 opacity-50">Consolidated Profit Engine</p>
+                        <h2 class="text-[10rem] font-900 tracking-tighter leading-none italic text-[#1FA463] mb-6">₹<span x-text="totalProfit()"></span></h2>
+                        <div class="flex items-center gap-4 text-slate-400 font-bold uppercase text-[10px] tracking-widest">
+                            <span class="w-12 h-[2px] bg-[#1FA463]"></span> Actual Revenue - Lab Node Costs
+                        </div>
+                    </div>
+                    <div class="absolute top-[-100px] right-[-100px] w-96 h-96 bg-[#1FA463]/5 rounded-full blur-[100px]"></div>
                 </div>
             </div>
 
-            <div x-show="view === 'reports'" class="space-y-12 animate-in fade-in slide-in-from-bottom-6">
-                <div class="glass-panel rounded-[50px] overflow-hidden shadow-sm border border-white">
-                    <div class="p-10 border-b flex justify-between items-center">
-                        <h3 class="text-2xl font-900 text-[#0E2A47] tracking-tighter">Medical Vault Dispatch</h3>
+            <div x-show="view === 'reports'" class="space-y-12 animate-in fade-in slide-in-from-bottom-6 duration-700">
+                <div class="glass-panel rounded-[70px] overflow-hidden shadow-2xl border-4 border-white">
+                    <div class="p-12 border-b border-slate-100 flex justify-between items-center bg-white/50">
+                        <div>
+                            <h3 class="text-3xl font-900 text-[#0E2A47] tracking-tighter">Medical Vault Dispatch</h3>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2 italic">Manual PDF Push Logic Active</p>
+                        </div>
                         <div class="flex gap-4">
-                            <span class="bg-orange-50 text-orange-500 text-[10px] font-black px-4 py-2 rounded-full uppercase" x-text="pendingCount + ' Waiting'"></span>
-                            <span class="bg-green-50 text-green-500 text-[10px] font-black px-4 py-2 rounded-full uppercase" x-text="issuedCount + ' Verified'"></span>
+                            <span class="badge-pending text-[10px] font-black px-6 py-3 rounded-full uppercase tracking-widest" x-text="pendingCount + ' Waiting'"></span>
+                            <span class="badge-verified text-[10px] font-black px-6 py-3 rounded-full uppercase tracking-widest" x-text="issuedCount + ' Released'"></span>
                         </div>
                     </div>
                     <table class="w-full text-left">
-                        <thead class="bg-slate-50/50">
-                            <tr class="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">
-                                <th class="p-10">Patient ID / Name</th>
-                                <th class="p-10">Diagnostic Matrix</th>
-                                <th class="p-10">Status</th>
-                                <th class="p-10 text-right">Vault Action</th>
+                        <thead class="bg-slate-50/80">
+                            <tr class="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em]">
+                                <th class="p-12">Patient Registry</th>
+                                <th class="p-12">Diagnostic Protocol</th>
+                                <th class="p-12">Encryption Status</th>
+                                <th class="p-12 text-right">Vault Command</th>
                             </tr>
                         </thead>
                         <tbody>
                             <template x-for="(p, index) in patients" :key="p.id">
                                 <tr class="border-t border-slate-100 hover:bg-white transition-all group">
-                                    <td class="p-10">
-                                        <p class="font-900 text-[#0E2A47] text-xl tracking-tighter" x-text="p.name"></p>
-                                        <p class="text-[10px] font-black text-slate-400 mt-2 uppercase" x-text="p.id"></p>
+                                    <td class="p-12">
+                                        <p class="font-900 text-[#0E2A47] text-2xl tracking-tighter" x-text="p.name"></p>
+                                        <p class="text-[10px] font-black text-slate-400 mt-2 uppercase tracking-widest" x-text="p.id"></p>
                                     </td>
-                                    <td class="p-10">
-                                        <span class="text-xs font-black text-slate-500 px-5 py-2 bg-slate-50 rounded-full" x-text="p.test"></span>
+                                    <td class="p-12">
+                                        <span class="text-xs font-black text-slate-500 px-6 py-3 bg-slate-100/50 rounded-full inline-block border border-slate-200" x-text="p.test"></span>
                                     </td>
-                                    <td class="p-10">
+                                    <td class="p-12">
                                         <template x-if="p.reportIssued">
-                                            <span class="text-green-500 font-black text-[10px] uppercase tracking-widest flex items-center gap-2">
-                                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293l-4 4a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L9 10.586l3.293-3.293a1 1 0 011.414 1.414z"></path></svg>
-                                                Verified & Issued
+                                            <span class="badge-verified text-[10px] font-black px-5 py-2 rounded-full uppercase tracking-widest flex items-center gap-3 w-fit">
+                                                <span class="w-2 h-2 rounded-full bg-[#1FA463]"></span> Released
                                             </span>
                                         </template>
                                         <template x-if="!p.reportIssued">
-                                            <span class="text-orange-400 font-black text-[10px] uppercase tracking-widest pulse-pending">Awaiting PDF</span>
+                                            <span class="badge-pending text-[10px] font-black px-5 py-2 rounded-full uppercase tracking-widest flex items-center gap-3 w-fit pulse-pending">
+                                                <span class="w-2 h-2 rounded-full bg-orange-400"></span> In Queue
+                                            </span>
                                         </template>
                                     </td>
-                                    <td class="p-10 text-right">
+                                    <td class="p-12 text-right">
                                         <template x-if="!p.reportIssued">
-                                            <button @click="triggerUpload(p)" class="bg-[#0E2A47] text-white px-8 py-4 rounded-[25px] font-black text-xs uppercase tracking-widest hover:scale-110 hover:bg-[#1FA463] transition-all shadow-xl">Upload PDF</button>
+                                            <button @click="triggerUpload(p)" class="bg-[#0E2A47] text-white px-10 py-5 rounded-[30px] font-900 text-[10px] uppercase tracking-[0.3em] hover:scale-110 hover:bg-[#1FA463] transition-all shadow-2xl">Upload PDF</button>
                                         </template>
                                         <template x-if="p.reportIssued">
-                                            <button class="bg-slate-100 text-slate-400 px-8 py-4 rounded-[25px] font-black text-xs uppercase tracking-widest cursor-not-allowed">Published</button>
+                                            <button class="bg-slate-100 text-slate-300 px-10 py-5 rounded-[30px] font-900 text-[10px] uppercase tracking-[0.3em] cursor-not-allowed">Synchronized</button>
                                         </template>
                                     </td>
                                 </tr>
@@ -167,7 +194,41 @@
                 </div>
             </div>
 
-            </main>
+            <div x-show="view === 'tests'" class="space-y-12 animate-in fade-in slide-in-from-bottom-6 duration-700">
+                <div class="glass-panel p-12 rounded-[70px] shadow-sm border border-white">
+                    <h3 class="text-3xl font-900 text-[#0E2A47] mb-12 tracking-tighter">Diagnostic Node Deployment</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <input type="text" x-model="newTest.name" placeholder="Test Nomenclature" class="p-6 bg-slate-50 rounded-[35px] outline-none border-2 border-transparent focus:border-[#1FA463] font-bold text-sm">
+                        <input type="number" x-model="newTest.price" placeholder="Global Fee (₹)" class="p-6 bg-slate-50 rounded-[35px] outline-none border-2 border-transparent focus:border-[#1FA463] font-bold text-sm">
+                        <input type="number" x-model="newTest.cost" placeholder="Lab Node Cost (₹)" class="p-6 bg-slate-50 rounded-[35px] outline-none border-2 border-transparent focus:border-[#1FA463] font-bold text-sm">
+                        <button @click="addTest()" class="md:col-span-3 bg-[#0E2A47] text-white py-6 rounded-[35px] font-900 uppercase text-xs tracking-[0.4em] shadow-2xl hover:bg-[#1FA463] transition-all">Initialize Diagnostic Parameter</button>
+                    </div>
+                </div>
+            </div>
+
+            <div x-show="view === 'marketing'" class="space-y-12 animate-in fade-in slide-in-from-bottom-6 duration-700">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <div class="glass-panel p-16 rounded-[80px] shadow-sm text-center">
+                        <h3 class="text-3xl font-900 mb-12 text-[#0E2A47] tracking-tighter">Agency Asset Deck</h3>
+                        <div class="aspect-video bg-slate-50 border-4 border-dashed border-slate-200 rounded-[60px] flex flex-col items-center justify-center group hover:bg-white hover:border-[#1FA463] cursor-pointer transition-all duration-500">
+                            <div class="w-24 h-24 bg-white rounded-[40px] flex items-center justify-center shadow-2xl mb-8 group-hover:scale-110 transition-all">🖼️</div>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Push Horizontal Banner Asset</p>
+                        </div>
+                    </div>
+                    <div class="glass-panel p-16 rounded-[80px] shadow-sm flex flex-col justify-between">
+                        <h3 class="text-3xl font-900 mb-12 text-[#0E2A47] tracking-tighter">Voucher Minting</h3>
+                        <div class="space-y-8">
+                            <input type="text" x-model="newCoupon.name" placeholder="Protocol Code" class="w-full p-7 bg-slate-50 rounded-[40px] border-2 border-transparent focus:border-[#1FA463] outline-none font-black text-2xl uppercase tracking-widest text-center">
+                            <div class="flex gap-6">
+                                <input type="number" x-model="newCoupon.val" placeholder="Value %" class="w-full p-7 bg-slate-50 rounded-[40px] border-2 border-transparent focus:border-[#1FA463] outline-none font-black text-2xl text-center">
+                                <button @click="addCoupon()" class="bg-[#0E2A47] text-white px-16 rounded-[40px] font-900 uppercase text-[10px] tracking-[0.4em] shadow-2xl hover:bg-[#1FA463] transition-all">Mint</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
     </div>
 
     <script>
@@ -179,11 +240,19 @@
                 role: '', 
                 view: 'dashboard',
                 notifications: [],
-                viewNames: { 'dashboard': 'Operational Analytics', 'reports': 'Medical Dispatch Engine', 'tests': 'Test Management', 'marketing': 'Growth Hub' },
+                newTest: { name: '', price: '', cost: '' },
+                newCoupon: { name: '', val: '' },
+                viewNames: { 
+                    'dashboard': 'Operational Metrics', 
+                    'reports': 'Medical Dispatch Hub', 
+                    'tests': 'Matrix Deployment', 
+                    'marketing': 'Growth Protocols',
+                    'settings': 'Security Shield' 
+                },
                 patients: [
-                    { id: 'LS-2026-001', name: 'Rahul Sharma', test: 'Full Body Matrix', amount: 2999, cost: 1200, reportIssued: false },
-                    { id: 'LS-2026-002', name: 'Anjali V.', test: 'Thyroid Profile', amount: 650, cost: 250, reportIssued: true },
-                    { id: 'LS-2026-003', name: 'Vikram Mehta', test: 'Diabetes HbA1c', amount: 550, cost: 200, reportIssued: false }
+                    { id: 'LS-NODE-001', name: 'Rahul Sharma', test: 'Full Body Matrix', amount: 2999, cost: 1200, reportIssued: false },
+                    { id: 'LS-NODE-002', name: 'Anjali V.', test: 'Thyroid Profile', amount: 650, cost: 250, reportIssued: true },
+                    { id: 'LS-NODE-003', name: 'Vikram Mehta', test: 'Diabetes HbA1c', amount: 550, cost: 200, reportIssued: false }
                 ],
                 get pendingCount() { return this.patients.filter(p => !p.reportIssued).length; },
                 get issuedCount() { return this.patients.filter(p => p.reportIssued).length; },
@@ -191,26 +260,35 @@
                 authenticate() {
                     if(this.tempKey === this.masterCode) {
                         this.isLoggedIn = true;
-                        this.role = 'MASTER';
+                        this.role = 'MASTER_SYSTEM_LEVEL';
                         this.tempKey = '';
-                        this.pushNotify("Identity Verified. Master Command Online.");
-                    } else { alert('OS Security: Access Protocol Denied'); }
+                        this.pushNotify("Identity Verified. Master Command OS is Live.");
+                    } else { alert('OS Security: Protocol Denied. Unauthorized Access Attempt Logged.'); }
                 },
                 totalProfit() {
                     return this.patients.reduce((total, p) => total + (p.amount - p.cost), 0);
                 },
+                addTest() {
+                    if(!this.newTest.name || !this.newTest.price) return;
+                    this.pushNotify(`Diagnostic Node ${this.newTest.name} Synced Successfully.`);
+                    this.newTest = { name: '', price: '', cost: '' };
+                },
+                addCoupon() {
+                    if(!this.newCoupon.name) return;
+                    this.pushNotify(`Voucher Protocol ${this.newCoupon.name} Minted to Blockchain.`);
+                    this.newCoupon = { name: '', val: '' };
+                },
                 triggerUpload(p) {
-                    // This simulates the file selection and upload process
-                    this.pushNotify(`Syncing Medical Record for ${p.name}...`);
+                    this.pushNotify(`Decrypting & Syncing Record for ${p.name}...`);
                     setTimeout(() => {
                         p.reportIssued = true;
-                        this.pushNotify(`Report published to ${p.name}'s secure vault.`);
+                        this.pushNotify(`Verified Medical Record Published to ${p.name}'s Vault.`);
                     }, 2000);
                 },
                 pushNotify(msg) {
                     const id = Date.now();
                     this.notifications.push({ id, msg });
-                    setTimeout(() => this.notifications = this.notifications.filter(n => n.id !== id), 4000);
+                    setTimeout(() => this.notifications = this.notifications.filter(n => n.id !== id), 5000);
                 },
                 logout() { window.location.reload(); }
             }
