@@ -24,20 +24,19 @@
 </head>
 <body x-data="diagnosticsApp()">
 
-    <div class="bg-[#0E2A47] text-white py-2 px-8 flex flex-col md:flex-row justify-between items-center text-[10px] font-black uppercase tracking-[0.2em]">
+    <div class="bg-[#0E2A47] text-white py-2 px-8 flex flex-col md:flex-row justify-between items-center text-[10px] font-black uppercase tracking-[0.2em] relative z-[200]">
         <div class="flex flex-wrap justify-center gap-6">
             <span class="flex items-center gap-2">📞 7266925657 / 8928935538</span>
-            <span class="flex items-center gap-2">✉️ lifesurediagnostics@gmail.com</span>
-            <span class="hidden md:inline">👨‍🔬 Mohd Tauheed, M.Sc. (Pathology)</span>
+            <span class="flex items-center gap-2 underline decoration-[#1FA463]">✉️ lifesurediagnostics@gmail.com</span>
         </div>
         <div class="flex gap-4 mt-2 md:mt-0">
-            <a href="https://www.instagram.com/lifesurediagnostic?igsh=MTBhbHI4OHVzcjcxdQ==" target="_blank" class="text-[#1FA463] hover:text-white transition">📸 @lifesurediagnostic</a>
+            <a href="https://www.instagram.com/lifesurediagnostic?igsh=MTBhbHI4OHVzcjcxdQ==" target="_blank" class="text-[#1FA463] hover:text-white transition flex items-center gap-1">📸 Instagram</a>
             <span class="text-slate-500">|</span>
-            <span>Managed by Ayush Dubey</span>
+            <span class="text-slate-300">Guided by Mohd Tauheed, M.Sc.</span>
         </div>
     </div>
 
-    <nav class="glass-nav sticky top-0 z-[100] px-8 py-4 flex justify-between items-center">
+    <nav class="glass-nav sticky top-0 z-[150] px-8 py-4 flex justify-between items-center">
         <div class="flex items-center gap-3">
             <div class="bg-[#1FA463] p-2 rounded-xl shadow-lg">
                 <svg width="24" height="24" viewBox="0 0 100 100" fill="none">
@@ -52,7 +51,7 @@
 
         <div class="hidden lg:flex flex-1 max-w-xl mx-12">
             <div class="relative w-full">
-                <input type="text" x-model="search" placeholder="Search 1,200+ tests (CBC, Vitamin D)..." 
+                <input type="text" x-model="search" placeholder="Search 1,200+ Lab Tests (CBC, Vitamin D)..." 
                        class="w-full pl-12 pr-4 py-3 bg-slate-100 rounded-2xl outline-none border-2 border-transparent focus:border-[#1FA463] focus:bg-white transition-all font-bold text-sm">
                 <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
             </div>
@@ -61,33 +60,36 @@
         <div class="flex items-center gap-4">
             <button @click="showCart = true" class="relative p-3 hover:bg-slate-50 rounded-2xl transition">
                 <svg class="w-6 h-6 text-[#0E2A47]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-                <span x-show="cart.length > 0" x-text="cart.length" class="absolute top-1 right-1 bg-[#1FA463] text-white text-[10px] font-black px-1.5 py-0.5 rounded-full border-2 border-white"></span>
+                <span x-show="cart.length > 0" x-text="cart.length" class="absolute top-1 right-1 bg-[#1FA463] text-white text-[10px] font-black px-1.5 py-0.5 rounded-full border-2 border-white animate-bounce"></span>
             </button>
-            <a href="login.html" class="bg-[#0E2A47] text-white px-6 py-3 rounded-xl font-900 text-xs uppercase tracking-widest shadow-xl hover:bg-[#1FA463] transition-all">Portal Login</a>
+            <a href="login.html" class="bg-[#0E2A47] text-white px-6 py-3 rounded-xl font-900 text-xs uppercase tracking-widest shadow-xl hover:bg-[#1FA463] transition-all">Register/Login</a>
         </div>
     </nav>
 
     <section x-data="{ 
             active: 1, 
             slides: [
-                { id: 1, title: 'BOOK FREE HOME VISIT', sub: 'Limited Time Only', desc: 'Expert collection team at your doorstep.', btn: 'Book Now', img: 'https://images.unsplash.com/photo-1559839734-2b71f1536783?auto=format&fit=crop&q=80&w=1920' },
-                { id: 2, title: '30% OFF ALL SCANS', sub: 'Limited Time Deal', desc: 'Accurate pathology reports by Mohd Tauheed, M.Sc.', btn: 'Claim Deal', img: 'https://images.unsplash.com/photo-1579154273821-628670853f0e?auto=format&fit=crop&q=80&w=1920' },
-                { id: 3, title: 'UPTO 50% SAVINGS', sub: 'Special Packages Deal', desc: 'Comprehensive health checks for your family.', btn: 'View Packages', img: 'https://images.unsplash.com/photo-1516733725897-1aa73b87c8e8?auto=format&fit=crop&q=80&w=1920' }
+                { id: 1, title: 'BOOK FREE HOME VISIT', sub: 'LIMITED TIME ONLY', desc: 'Compassionate care by expert collection teams.', btn: 'Book Now', img: 'https://images.unsplash.com/photo-1559839734-2b71f1536783?q=80&w=1920' },
+                { id: 2, title: '30% OFF LIMITED TIME DEAL', sub: 'VALUE HEALTH CARE', desc: 'Hospital-grade accuracy at Mumbai prices.', btn: 'Claim Deal', img: 'https://images.unsplash.com/photo-1579154273821-628670853f0e?q=80&w=1920' },
+                { id: 3, title: 'UPTO 50% DISCOUNT', sub: 'SPECIAL PACKAGES', desc: 'Full-body wellness checks for your family.', btn: 'View Packages', img: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=1920' }
             ] 
         }" 
-        x-init="setInterval(() => active = active === 3 ? 1 : active + 1, 5000)" class="relative h-[550px] overflow-hidden bg-slate-900">
+        x-init="setInterval(() => active = active === 3 ? 1 : active + 1, 5000)" class="relative h-[600px] overflow-hidden bg-slate-900">
         
         <template x-for="slide in slides" :key="slide.id">
             <div x-show="active === slide.id" x-transition:enter="transition ease-out duration-1000" x-transition:enter-start="opacity-0 scale-105" x-transition:enter-end="opacity-100 scale-100" class="absolute inset-0">
-                <img :src="slide.img" class="absolute inset-0 w-full h-full object-cover opacity-50 banner-zoom">
-                <div class="absolute inset-0 bg-gradient-to-r from-[#0E2A47] via-[#0E2A47]/60 to-transparent z-10"></div>
+                <img :src="slide.img" class="absolute inset-0 w-full h-full object-cover opacity-40 banner-zoom">
+                <div class="absolute inset-0 bg-gradient-to-r from-[#0E2A47] via-[#0E2A47]/70 to-transparent z-10"></div>
                 <div class="relative z-20 h-full flex flex-col justify-center px-12 md:px-24 space-y-6">
-                    <span class="bg-[#1FA463] text-white text-[10px] font-black px-5 py-2 rounded-full uppercase tracking-[0.3em] w-fit shadow-lg" x-text="slide.sub"></span>
+                    <span class="bg-[#1FA463] text-white text-[10px] font-black px-5 py-2 rounded-xl uppercase tracking-[0.3em] w-fit shadow-lg" x-text="slide.sub"></span>
                     <h2 class="text-6xl md:text-8xl font-900 text-white tracking-tighter leading-none" x-text="slide.title"></h2>
                     <p class="text-slate-100 text-xl font-medium max-w-lg leading-relaxed" x-text="slide.desc"></p>
                     <div class="flex items-center gap-6 pt-4">
                         <button class="bg-white text-[#0E2A47] px-12 py-5 rounded-2xl font-900 uppercase text-xs tracking-widest shadow-2xl hover:bg-[#1FA463] hover:text-white transition-all transform active:scale-95" x-text="slide.btn"></button>
-                        <p class="text-white/60 text-[10px] font-black uppercase tracking-widest">NABL Accredited Reports</p>
+                        <div class="hidden md:flex flex-col border-l-2 border-[#1FA463] pl-6">
+                            <p class="text-white text-xs font-black uppercase tracking-widest">Guided by Pathologists</p>
+                            <p class="text-white/60 text-[10px]">Verified Mumbai Node</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -103,54 +105,58 @@
     <section class="max-w-5xl mx-auto -mt-12 relative z-40 px-6">
         <div class="bg-white p-8 rounded-[40px] shadow-2xl flex flex-col md:flex-row items-center gap-6 border border-white">
             <div class="flex items-center gap-4 text-[#0E2A47]">
-                <div class="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center text-[#1FA463]">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+                <div class="w-14 h-14 bg-green-50 rounded-[20px] flex items-center justify-center text-[#1FA463]">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
                 </div>
                 <div>
-                    <p class="font-900 uppercase text-[10px] tracking-widest text-slate-400">Availability Check</p>
-                    <p class="font-800 text-[#0E2A47]">Mumbai Service Area</p>
+                    <p class="font-900 uppercase text-[10px] tracking-widest text-slate-400">Home Visit Check</p>
+                    <p class="font-800 text-[#0E2A47]">Mumbai Serviceability</p>
                 </div>
             </div>
             <div class="flex-1 flex gap-3 w-full">
-                <input type="number" placeholder="Enter Pincode" class="flex-1 p-4 bg-slate-50 rounded-2xl outline-none border-2 border-transparent focus:border-[#1FA463] font-bold text-lg">
-                <button class="bg-[#1FA463] text-white px-10 rounded-2xl font-900 text-xs uppercase tracking-widest shadow-lg">Verify</button>
+                <input type="number" placeholder="Enter Pincode (e.g. 400001)" class="flex-1 p-5 bg-slate-50 rounded-2xl outline-none border-2 border-transparent focus:border-[#1FA463] font-bold text-lg">
+                <button class="bg-[#1FA463] text-white px-10 rounded-2xl font-900 text-xs uppercase tracking-widest shadow-lg hover:scale-105 transition">Verify</button>
             </div>
         </div>
     </section>
 
     <section id="tests" class="max-w-7xl mx-auto px-8 py-24">
-        <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
             <div>
-                <h2 class="text-5xl font-900 tracking-tighter text-[#0E2A47]">Diagnostic Scans</h2>
+                <h2 class="text-5xl font-900 tracking-tighter text-[#0E2A47]">Diagnostic Matrix</h2>
                 <div class="flex items-center gap-4 mt-4">
-                    <span class="h-1 w-12 bg-[#1FA463] rounded-full"></span>
-                    <p class="text-slate-400 font-black text-[10px] uppercase tracking-[0.4em]">Guided by Mohd Tauheed, M.Sc.</p>
+                    <span class="h-1.5 w-16 bg-[#1FA463] rounded-full"></span>
+                    <p class="text-slate-400 font-black text-[10px] uppercase tracking-[0.4em]">99.8% Result Accuracy</p>
                 </div>
             </div>
-            <select x-model="activeDept" class="bg-white border-2 border-slate-100 p-4 rounded-2xl font-bold text-xs uppercase text-slate-500 outline-none focus:border-[#1FA463] transition-all">
-                <template x-for="dept in departments">
-                    <option x-text="dept" :value="dept"></option>
-                </template>
-            </select>
+            <div class="flex items-center gap-4">
+                <span class="text-[10px] font-black text-slate-300 uppercase tracking-widest">Filter Matrix:</span>
+                <select x-model="activeDept" class="bg-white border-2 border-slate-100 p-4 rounded-2xl font-black text-[10px] uppercase tracking-widest text-slate-500 outline-none focus:border-[#1FA463] transition">
+                    <template x-for="dept in departments">
+                        <option x-text="dept" :value="dept"></option>
+                    </template>
+                </select>
+            </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
             <template x-for="test in filteredTests" :key="test.id">
-                <div class="test-card-elite bg-white p-8 rounded-[45px] shadow-sm border border-slate-100 flex flex-col justify-between group h-full relative overflow-hidden">
-                    <div x-show="test.originalPrice" class="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-black px-4 py-2 rounded-bl-3xl uppercase tracking-tighter">
+                <div class="test-card-elite bg-white p-10 rounded-[50px] shadow-sm flex flex-col justify-between group h-full relative overflow-hidden">
+                    <div x-show="test.originalPrice" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-black px-5 py-2 rounded-bl-3xl uppercase">
                         <span x-text="Math.round(((test.originalPrice - test.price)/test.originalPrice)*100)"></span>% OFF
                     </div>
                     <div>
-                        <span class="text-[9px] font-900 text-[#1FA463] bg-green-50 px-4 py-1.5 rounded-xl uppercase tracking-widest mb-6 inline-block" x-text="test.dept"></span>
-                        <h3 class="font-900 text-xl leading-tight text-[#0E2A47] group-hover:text-[#1FA463] transition-colors" x-text="test.name"></h3>
+                        <span class="text-[9px] font-900 text-[#1FA463] bg-green-50 px-4 py-2 rounded-xl uppercase tracking-widest mb-8 inline-block" x-text="test.dept"></span>
+                        <h3 class="font-900 text-2xl mb-4 leading-tight text-[#0E2A47] group-hover:text-[#1FA463] transition-colors" x-text="test.name"></h3>
                     </div>
-                    <div class="flex justify-between items-center pt-8 mt-8 border-t border-slate-50">
+                    <div class="flex justify-between items-center pt-10 border-t border-slate-50">
                         <div>
-                            <span class="text-3xl font-900 tracking-tighter text-[#0E2A47]">₹<span x-text="test.price"></span></span>
-                            <span x-show="test.originalPrice" class="text-[10px] text-slate-300 line-through ml-2 font-bold italic">₹<span x-text="test.originalPrice"></span></span>
+                            <p class="text-[9px] text-slate-300 font-black uppercase mb-1 tracking-widest leading-none">Net Fee</p>
+                            <span class="text-4xl font-900 tracking-tighter text-[#0E2A47]">₹<span x-text="test.price"></span></span>
+                            <span x-show="test.originalPrice" class="text-xs text-slate-300 line-through ml-2 font-bold italic">₹<span x-text="test.originalPrice"></span></span>
                         </div>
-                        <button @click="addToCart(test)" class="bg-[#0E2A47] hover:bg-[#1FA463] text-white p-4 rounded-2xl shadow-xl transition-all active:scale-90">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path></svg>
+                        <button @click="addToCart(test)" class="bg-[#0E2A47] group-hover:bg-[#1FA463] text-white p-5 rounded-2xl transition-all shadow-xl active:scale-90">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path></svg>
                         </button>
                     </div>
                 </div>
@@ -160,33 +166,33 @@
 
     <div class="bg-slate-50 py-6 border-y overflow-hidden flex whitespace-nowrap mb-24">
         <div class="animate-marquee flex gap-12 text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">
-            <span>⭐ NABL ACCREDITED</span> <span>✅ ISO 9001:2015</span> <span>📍 MUMBAI WIDE</span> <span>📞 24/7 SUPPORT</span> <span>🧪 CERTIFIED LABS</span>
-            <span>⭐ NABL ACCREDITED</span> <span>✅ ISO 9001:2015</span> <span>📍 MUMBAI WIDE</span> <span>📞 24/7 SUPPORT</span> <span>🧪 CERTIFIED LABS</span>
+            <span>⭐ NABL ACCREDITED</span> <span>✅ ISO 9001:2015</span> <span>📍 MUMBAI WIDE COVERAGE</span> <span>👨‍🔬 MOHD TAUHEED, M.SC.</span> <span>🧪 CERTIFIED LABS</span>
+            <span>⭐ NABL ACCREDITED</span> <span>✅ ISO 9001:2015</span> <span>📍 MUMBAI WIDE COVERAGE</span> <span>👨‍🔬 MOHD TAUHEED, M.SC.</span> <span>🧪 CERTIFIED LABS</span>
         </div>
     </div>
 
     <footer class="bg-white border-t border-slate-100 py-24 px-8 text-center relative overflow-hidden">
-        <div class="max-w-4xl mx-auto space-y-10 relative z-10">
+        <div class="max-w-4xl mx-auto space-y-12 relative z-10">
             <div class="flex flex-col items-center gap-2">
-                <span class="text-3xl font-900 tracking-tighter text-[#0E2A47]">LifeSure<span class="text-[#1FA463]">.</span></span>
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em]">Accuracy • Care • Trust</p>
+                <span class="text-4xl font-900 tracking-tighter text-[#0E2A47]">LifeSure<span class="text-[#1FA463]">.</span></span>
+                <p class="text-[10px] font-black text-[#1FA463] uppercase tracking-[0.5em]">Accuracy • Care • Trust</p>
             </div>
             
             <p class="text-slate-400 font-bold text-sm leading-loose max-w-2xl mx-auto">
-                Serving Mumbai's healthcare needs with professional collection nodes and hospital-grade diagnostic accuracy. Managed by <span class="text-[#0E2A47]">Ayush Dubey</span> under pathological guidance of <span class="text-[#0E2A47]">Mohd Tauheed, M.Sc.</span>
+                Providing hospital-grade diagnostic accuracy to your doorstep. Guided by pathology expert <span class="text-[#0E2A47]">Mohd Tauheed, M.Sc.</span> and managed by <span class="text-[#0E2A47]">Ayush Dubey</span>. All samples are processed in NABL accredited labs across Mumbai.
             </p>
 
             <div class="flex justify-center gap-8 py-6">
-                <a href="https://www.instagram.com/lifesurediagnostic?igsh=MTBhbHI4OHVzcjcxdQ==" class="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center hover:bg-[#1FA463] hover:text-white transition shadow-sm">IG</a>
-                <a href="mailto:lifesurediagnostics@gmail.com" class="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center hover:bg-[#1FA463] hover:text-white transition shadow-sm">✉️</a>
+                <a href="https://www.instagram.com/lifesurediagnostic?igsh=MTBhbHI4OHVzcjcxdQ==" class="w-16 h-16 bg-slate-50 rounded-3xl flex items-center justify-center hover:bg-[#1FA463] hover:text-white transition shadow-sm border border-slate-100">IG</a>
+                <a href="mailto:lifesurediagnostics@gmail.com" class="w-16 h-16 bg-slate-50 rounded-3xl flex items-center justify-center hover:bg-[#1FA463] hover:text-white transition shadow-sm border border-slate-100">✉️</a>
             </div>
 
-            <div class="pt-10 border-t border-slate-50 flex flex-col md:flex-row justify-between items-center gap-6">
-                <p class="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em]">Engineered by AK Master Systems</p>
+            <div class="pt-10 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-6">
+                <p class="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em]">Architecture: Powered by AK</p>
                 <p class="text-[10px] font-black text-[#1FA463] uppercase tracking-[0.4em]">© 2026 LifeSure Diagnostics Mumbai</p>
             </div>
         </div>
-        <div class="absolute -bottom-20 -left-20 w-60 h-60 bg-[#1FA463]/5 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-20 -left-20 w-80 h-80 bg-[#1FA463]/5 rounded-full blur-3xl"></div>
     </footer>
 
     <script>
@@ -200,14 +206,12 @@
                 tests: [
                     { id: 1, name: 'Adreno Corticotropic Hormone (ACTH)', price: 1600, originalPrice: 2150, dept: 'IMMUNOLOGY' },
                     { id: 2, name: 'Absolute Eosinophil Count', price: 200, originalPrice: 250, dept: 'HAEMATOLOGY' },
-                    { id: 3, name: 'ALANINE TRANSAMINASE (SGPT)', price: 200, originalPrice: 250, dept: 'BIOCHEMISTRY' },
-                    { id: 4, name: 'ANTI NUCLEAR ANTIBODY (ANA)', price: 1000, originalPrice: 1200, dept: 'IMMUNOLOGY' },
+                    { id: 3, name: 'DIABETES SCREEN (HbA1c)', price: 599, originalPrice: 1200, dept: 'BIOCHEMISTRY' },
+                    { id: 4, name: 'LIPID PROFILE', price: 799, originalPrice: 1350, dept: 'BIOCHEMISTRY' },
                     { id: 5, name: 'COMPLETE BLOOD COUNT (CBC)', price: 300, originalPrice: 400, dept: 'HAEMATOLOGY' },
-                    { id: 6, name: 'DIABETES SCREEN (HbA1c)', price: 599, originalPrice: 1200, dept: 'BIOCHEMISTRY' },
-                    { id: 7, name: 'LIPID PROFILE', price: 799, originalPrice: 1350, dept: 'BIOCHEMISTRY' },
-                    { id: 8, name: 'VITAMIN D (25-OH)', price: 1499, originalPrice: 2000, dept: 'IMMUNOLOGY' },
-                    { id: 9, name: 'VITAMIN B12', price: 999, originalPrice: 1450, dept: 'IMMUNOLOGY' },
-                    { id: 10, name: 'LIVER FUNCTION TEST (LFT)', price: 799, originalPrice: 1000, dept: 'BIOCHEMISTRY' }
+                    { id: 6, name: 'VITAMIN D (25-OH)', price: 1499, originalPrice: 2000, dept: 'IMMUNOLOGY' },
+                    { id: 7, name: 'VITAMIN B12', price: 999, originalPrice: 1450, dept: 'IMMUNOLOGY' },
+                    { id: 8, name: 'CA-125 (Cancer Antigen)', price: 1199, originalPrice: 1600, dept: 'IMMUNOLOGY' }
                 ],
                 get filteredTests() {
                     return this.tests.filter(t => 
