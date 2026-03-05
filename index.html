@@ -14,38 +14,42 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fbfcfd; overflow-x: hidden; }
         
         /* 🧪 MEDICAL BACKGROUND ENGINE */
-        .medical-bg-layer { position: fixed; inset: 0; z-index: -1; opacity: 0.04; background-image: url('https://images.unsplash.com/photo-1579154273821-628670853f0e?q=80&w=1920'); background-attachment: fixed; filter: grayscale(1); }
+        .medical-overlay { position: fixed; inset: 0; z-index: -1; opacity: 0.05; background-image: url('https://images.unsplash.com/photo-1579154273821-628670853f0e?q=80&w=1920'); background-size: cover; filter: hue-rotate(90deg); pointer-events: none; }
         
-        /* Branded Medical UI */
+        /* Branded Medical Glassmorphism */
         .glass-nav { background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(25px); border-bottom: 2px solid rgba(31, 164, 99, 0.1); }
-        .branded-gradient { background: linear-gradient(135deg, #0E2A47 0%, #051626 100%); }
         .glass-panel { background: rgba(255, 255, 255, 0.88); backdrop-filter: blur(15px); border: 2px solid white; }
         
-        /* Card & Animation Matrix */
+        /* High-Definition Card Mechanics */
         .test-card-elite { transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1); border: 1px solid rgba(226, 232, 240, 1); background: white; }
         .test-card-elite:hover { transform: translateY(-12px) scale(1.02); box-shadow: 0 40px 80px -20px rgba(14, 42, 71, 0.15); border-color: var(--aura-primary); }
+        
         .banner-zoom { animation: zoomEffect 15s infinite alternate ease-in-out; }
         @keyframes zoomEffect { from { transform: scale(1); } to { transform: scale(1.15); } }
+        
         .aura-pulse { animation: aura-glow 2s infinite; }
         @keyframes aura-glow { 0% { box-shadow: 0 0 0 0 rgba(31, 164, 99, 0.4); } 70% { box-shadow: 0 0 0 20px rgba(31, 164, 99, 0); } 100% { box-shadow: 0 0 0 0 rgba(31, 164, 99, 0); } }
+        
+        .marquee-track { animation: marquee 40s linear infinite; }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         
         [x-cloak] { display: none !important; }
     </style>
 </head>
 <body x-data="lifeSureApp()">
 
-    <div class="medical-bg-layer"></div>
+    <div class="medical-overlay"></div>
 
     <div x-show="showPromo" x-cloak class="fixed inset-0 z-[3000] flex items-center justify-center p-6 bg-[#0E2A47]/90 backdrop-blur-xl">
-        <div @click.away="showPromo = false" class="bg-white rounded-[60px] p-10 max-w-xl w-full text-center relative overflow-hidden shadow-2xl border-4 border-[#1FA463] animate-bounce-short">
+        <div @click.away="showPromo = false" class="bg-white rounded-[60px] p-12 max-w-xl w-full text-center relative overflow-hidden shadow-2xl border-4 border-[#1FA463]">
             <button @click="showPromo = false" class="absolute top-8 right-8 text-slate-300 hover:text-red-500 transition-all text-xl font-black">✕</button>
-            <div class="relative z-10">
-                <div class="w-24 h-24 bg-green-50 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-inner aura-pulse p-4">
-                    <img src="https://i.ibb.co/VWVvD0K/image-a8a1cb.png" class="w-full h-full object-contain" alt="L">
+            <div class="relative z-10 text-center">
+                <div class="w-24 h-24 bg-green-50 rounded-3xl flex items-center justify-center mx-auto mb-8 aura-pulse p-4">
+                    <img src="https://i.ibb.co/VWVvD0K/image-a8a1cb.png" class="w-full h-full object-contain" alt="Logo">
                 </div>
-                <h3 class="text-4xl font-900 text-[#0E2A47] tracking-tighter mb-4">Register & Save <span class="text-[#1FA463]">40%</span></h3>
-                <p class="text-slate-500 font-bold mb-8 uppercase tracking-widest text-[10px] px-6 text-center">Join Mumbai's Premier Clinical Diagnostic Node</p>
-                <a href="login.html" class="block w-full bg-[#1FA463] text-white py-6 rounded-[30px] font-900 text-[10px] uppercase tracking-[0.4em] shadow-2xl hover:scale-[1.03] transition-all">Claim Branded Access</a>
+                <h3 class="text-5xl font-900 text-[#0E2A47] tracking-tighter mb-4 leading-none">Register & Save <span class="text-[#1FA463]">40%</span></h3>
+                <p class="text-slate-500 font-bold mb-10 leading-relaxed text-sm uppercase tracking-widest px-6">Special Branded Launch Offer for Mumbai Patients</p>
+                <a href="login.html" class="block w-full bg-[#1FA463] text-white py-6 rounded-[30px] font-900 text-xs uppercase tracking-[0.4em] shadow-2xl hover:scale-[1.03] transition-all">Claim Instant Access</a>
             </div>
         </div>
     </div>
@@ -69,7 +73,7 @@
             </div>
             <div>
                 <span class="text-3xl font-900 tracking-tighter text-[#0E2A47] block leading-none">LifeSure Diagnostics</span>
-                <p class="text-[10px] font-black text-[#1FA463] uppercase tracking-[0.4em] mt-1">Accuracy • Care • Trust</p>
+                <p class="text-[11px] font-black text-[#1FA463] uppercase tracking-[0.6em] mt-1 leading-none">Accuracy • Care • Trust</p>
             </div>
         </div>
 
@@ -78,7 +82,7 @@
                 <svg class="w-7 h-7 text-[#0E2A47]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
                 <span x-show="cart.length > 0" x-text="cart.length" class="absolute -top-1 -right-1 bg-[#1FA463] text-white text-[11px] font-black px-2.5 py-0.5 rounded-full border-4 border-white animate-bounce shadow-xl"></span>
             </button>
-            <a href="login.html" class="bg-[#0E2A47] text-white px-12 py-5 rounded-[25px] font-900 text-[10px] uppercase tracking-widest shadow-2xl hover:bg-[#1FA463] transition-all transform active:scale-95 shadow-blue-900/20">Verify Access</a>
+            <a href="login.html" class="bg-[#0E2A47] text-white px-12 py-5 rounded-[25px] font-900 text-[10px] uppercase tracking-widest shadow-2xl hover:bg-[#1FA463] transition-all transform active:scale-95 shadow-blue-900/20">Portal Access</a>
         </div>
     </nav>
 
@@ -90,13 +94,13 @@
                 <div class="absolute inset-0 bg-gradient-to-r from-[#0E2A47] via-[#0E2A47]/60 to-transparent z-10"></div>
                 
                 <div class="relative z-20 h-full flex flex-col justify-center px-12 md:px-32 space-y-8">
-                    <div x-show="i === 4" class="w-24 h-24 bg-white/10 p-2 rounded-3xl border border-white/20 mb-4 animate-pulse flex items-center justify-center">
+                    <div x-show="i === 4" class="w-24 h-24 bg-white/10 p-2 rounded-3xl border border-white/20 mb-4 animate-pulse flex items-center justify-center shadow-inner">
                         <img src="https://i.ibb.co/VWVvD0K/image-a8a1cb.png" class="w-full h-full object-contain brightness-0 invert" alt="L">
                     </div>
                     <span class="bg-[#1FA463] text-white text-[11px] font-black px-6 py-2 rounded-full uppercase tracking-[0.5em] w-fit shadow-2xl" x-text="i === 4 ? 'WELCOME TO LIFESURE' : 'PATHOLOGY PRECISION'"></span>
                     <h2 class="text-7xl md:text-9xl font-900 text-white tracking-tighter leading-[0.8] drop-shadow-2xl uppercase" 
-                        x-html="i === 1 ? 'BOOK FREE<br/>HOME VISIT' : (i === 2 ? '30% OFF ALL<br/>FULL SCANS' : (i === 3 ? '50% SAVINGS<br/>PACKAGES' : 'EXPLORE<br/>BRIGHT HEALTH'))"></h2>
-                    <p class="text-slate-100 text-xl font-bold max-w-2xl border-l-4 border-[#1FA463] pl-10 leading-relaxed italic">Guided & Managed by Mohd Tauheed, M.Sc. High-precision pathological intelligence at Mumbai doorstep prices.</p>
+                        x-html="i === 1 ? 'BOOK FREE<br/>HOME VISIT' : (i === 2 ? '30% OFF ALL<br/>FULL SCANS' : (i === 3 ? '50% SAVINGS<br/>PACKAGES' : 'EXPLORE<br/>TRUSTED HEALTH'))"></h2>
+                    <p class="text-slate-100 text-xl font-bold max-w-2xl border-l-4 border-[#1FA463] pl-10 leading-relaxed italic">Guided & Managed by Mohd Tauheed, M.Sc. Clinical intelligence meeting rapid home delivery.</p>
                     <div class="flex items-center gap-6 pt-4">
                         <button class="bg-white text-[#0E2A47] px-16 py-7 rounded-[35px] font-900 uppercase text-xs tracking-[0.4em] shadow-2xl hover:bg-[#1FA463] hover:text-white transition-all active:scale-95 shadow-white/10">Initialize Booking</button>
                     </div>
@@ -105,14 +109,13 @@
         </template>
     </section>
 
-    <section id="tests" class="max-w-7xl mx-auto px-8 py-32 relative">
-        
-        <div class="flex flex-col xl:flex-row justify-between items-end mb-24 gap-12 text-[#0E2A47]">
-            <div class="max-w-2xl">
-                <h2 class="text-8xl font-900 tracking-tighter leading-none mb-6">Clinical Hub</h2>
+    <section id="tests" class="max-w-7xl mx-auto px-8 py-40">
+        <div class="flex flex-col xl:flex-row justify-between items-end mb-32 gap-12 text-[#0E2A47]">
+            <div>
+                <h2 class="text-8xl font-900 tracking-tighter leading-none mb-6">Diagnostic Hub</h2>
                 <div class="flex items-center gap-6">
                     <span class="h-2 w-24 bg-[#1FA463] rounded-full shadow-lg shadow-green-500/30"></span>
-                    <p class="text-slate-400 font-black text-[12px] uppercase tracking-[0.6em]">Verified Diagnostic Matrix</p>
+                    <p class="text-slate-400 font-black text-[12px] uppercase tracking-[0.6em]">Verified Clinical Parameters</p>
                 </div>
             </div>
             
@@ -128,8 +131,8 @@
                 <div class="flex gap-3 overflow-x-auto pb-2 scroll-hide">
                     <template x-for="cat in departments" :key="cat">
                         <button @click="activeDept = cat" 
-                                :class="activeDept === cat ? 'bg-[#0E2A47] text-white' : 'bg-white text-slate-400 border border-slate-100'"
-                                class="px-8 py-4 rounded-[25px] font-black text-[10px] uppercase tracking-widest whitespace-nowrap transition-all flex items-center gap-3 shadow-sm">
+                                :class="activeDept === cat ? 'bg-[#0E2A47] text-white shadow-xl scale-105' : 'bg-white text-slate-400 border border-slate-100'"
+                                class="px-8 py-4 rounded-[25px] font-black text-[10px] uppercase tracking-widest whitespace-nowrap transition-all flex items-center gap-3">
                             <span x-text="cat === 'SPECIAL TEST' ? '🧪' : (cat === 'HAEMATOLOGY' ? '🩸' : (cat === 'IMMUNOLOGY' ? '🛡️' : '📁'))"></span>
                             <span x-text="cat"></span>
                         </button>
@@ -140,19 +143,19 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 relative z-10">
             <template x-for="test in filteredTests" :key="test.id">
-                <div class="test-card-elite p-10 rounded-[80px] shadow-sm flex flex-col justify-between group h-full relative overflow-hidden">
-                    <div x-show="test.originalPrice" class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-black px-8 py-3 rounded-bl-[40px] shadow-xl">SAVE <span x-text="Math.round(((test.originalPrice - test.price)/test.originalPrice)*100)"></span>%</div>
+                <div class="test-card-elite p-12 rounded-[80px] shadow-sm flex flex-col justify-between group h-full relative overflow-hidden">
+                    <div x-show="test.originalPrice" class="absolute -top-1 -right-1 bg-red-600 text-white text-[11px] font-black px-10 py-4 rounded-bl-[50px] shadow-xl">SAVE <span x-text="Math.round(((test.originalPrice - test.price)/test.originalPrice)*100)"></span>%</div>
                     <div>
-                        <span class="text-[10px] font-black text-[#1FA463] bg-green-50 px-6 py-2.5 rounded-2xl uppercase tracking-widest mb-10 inline-block shadow-inner" x-text="test.dept"></span>
-                        <h3 class="font-900 text-3xl leading-none text-[#0E2A47] group-hover:text-[#1FA463] transition-colors tracking-tighter" x-text="test.name"></h3>
+                        <span class="text-[11px] font-black text-[#1FA463] bg-green-50 px-8 py-3 rounded-full uppercase tracking-widest mb-12 inline-block shadow-inner" x-text="test.dept"></span>
+                        <h3 class="font-900 text-4xl leading-tight text-[#0E2A47] group-hover:text-[#1FA463] transition-colors tracking-tighter" x-text="test.name"></h3>
                     </div>
-                    <div class="flex justify-between items-center pt-12 border-t border-slate-100 mt-12">
+                    <div class="flex justify-between items-center pt-16 border-t border-slate-100 mt-16">
                         <div>
-                            <p class="text-[10px] text-slate-300 font-black uppercase mb-2 tracking-widest leading-none">Global Fee</p>
-                            <span class="text-5xl font-900 tracking-tighter text-[#0E2A47]">₹<span x-text="test.price"></span></span>
+                            <p class="text-[10px] text-slate-300 font-black uppercase mb-3 tracking-widest leading-none">Clinical Fee</p>
+                            <span class="text-6xl font-900 tracking-tighter text-[#0E2A47]">₹<span x-text="test.price"></span></span>
                         </div>
-                        <button @click="addToCart(test)" class="bg-[#0E2A47] group-hover:bg-[#1FA463] text-white p-6 rounded-[35px] transition-all shadow-2xl active:scale-90 aura-pulse">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                        <button @click="addToCart(test)" class="bg-[#0E2A47] group-hover:bg-[#1FA463] text-white p-8 rounded-[45px] transition-all shadow-2xl active:scale-90 aura-pulse">
+                            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path></svg>
                         </button>
                     </div>
                 </div>
@@ -166,38 +169,38 @@
         </div>
     </div>
 
-    <footer id="support" class="bg-[#0E2A47] pt-48 pb-20 px-10 text-white relative">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-24 relative z-10">
-            <div class="lg:col-span-5 text-center lg:text-left">
-                <div class="flex items-center gap-4 mb-10 justify-center lg:justify-start">
-                    <div class="w-20 h-20 bg-white rounded-3xl p-2 shadow-2xl border-4 border-green-50">
-                        <img src="https://i.ibb.co/VWVvD0K/image-a8a1cb.png" class="w-full h-full object-contain" alt="Logo">
+    <footer id="support" class="bg-[#0E2A47] pt-56 pb-20 px-10 text-white relative">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-24 relative z-10 text-center lg:text-left">
+            <div class="lg:col-span-5">
+                <div class="flex items-center gap-8 mb-16 justify-center lg:justify-start">
+                    <div class="w-24 h-24 bg-white rounded-3xl p-3 shadow-2xl border-4 border-green-50">
+                        <img src="https://i.ibb.co/VWVvD0K/image-a8a1cb.png" class="w-full h-full object-contain" alt="L">
                     </div>
-                    <span class="text-4xl font-900 tracking-tighter italic leading-none">LifeSure Diagnostics<span class="text-[#1FA463]">.</span></span>
+                    <span class="text-5xl font-900 tracking-tighter italic leading-none">LifeSure Diagnostics<span class="text-[#1FA463]">.</span></span>
                 </div>
-                <p class="text-slate-400 font-bold text-xl leading-loose uppercase tracking-[0.1em] border-l-4 border-[#1FA463] pl-10 hidden lg:block">Guided & Managed by pathology expert <br/><span class="text-white font-900 text-3xl tracking-tighter mt-4 block leading-none">Mohd Tauheed, M.Sc.</span></p>
-                <div class="mt-16 flex gap-6 justify-center lg:justify-start">
-                    <a href="https://www.instagram.com/lifesurediagnostic" class="w-20 h-20 glass-panel rounded-[30px] flex items-center justify-center hover:bg-[#1FA463] transition-all shadow-2xl border border-white/5 text-2xl text-white">📸</a>
-                    <a href="mailto:lifesurediagnostics@gmail.com" class="w-20 h-20 glass-panel rounded-[30px] flex items-center justify-center hover:bg-[#1FA463] transition-all shadow-2xl border border-white/5 text-2xl text-white">✉️</a>
-                    <a href="https://wa.me/917266925657" class="w-24 h-20 glass-panel rounded-[30px] flex items-center justify-center hover:bg-[#1FA463] transition-all shadow-2xl border border-white/5 text-2xl text-white">💬</a>
+                <p class="text-slate-400 font-bold text-2xl leading-loose uppercase tracking-[0.1em] border-l-4 border-[#1FA463] pl-10 hidden lg:block italic">Guided & Managed by pathology expert <br/><span class="text-white font-900 text-3xl tracking-tighter leading-none mt-4 block">Mohd Tauheed, M.Sc.</span></p>
+                <div class="mt-20 flex gap-8 justify-center lg:justify-start">
+                    <a href="https://www.instagram.com/lifesurediagnostic" target="_blank" class="w-24 h-24 glass-panel rounded-[45px] flex items-center justify-center hover:bg-[#1FA463] transition-all shadow-2xl border border-white/10 text-2xl text-white shadow-green-500/20">📸</a>
+                    <a href="mailto:lifesurediagnostics@gmail.com" class="w-24 h-24 glass-panel rounded-[45px] flex items-center justify-center hover:bg-[#1FA463] transition-all shadow-2xl border border-white/10 text-2xl text-white shadow-green-500/20">✉️</a>
+                    <a href="https://wa.me/917266925657" target="_blank" class="w-24 h-24 glass-panel rounded-[45px] flex items-center justify-center hover:bg-[#1FA463] transition-all shadow-2xl border border-white/10 text-2xl text-white shadow-green-500/20">💬</a>
                 </div>
             </div>
             <div class="lg:col-span-7 flex flex-col justify-between items-center lg:items-end">
                 <div class="text-center lg:text-right">
-                    <h4 class="text-[11px] font-black uppercase tracking-[0.8em] text-[#1FA463] mb-12">Mumbai Metropolitan Center</h4>
-                    <ul class="space-y-8 text-5xl font-black tracking-tighter text-slate-100 leading-none">
+                    <h4 class="text-[12px] font-black uppercase tracking-[0.8em] text-[#1FA463] mb-12 leading-none">Mumbai Metropolitan Command Center</h4>
+                    <ul class="space-y-10 text-5xl font-black tracking-tighter text-slate-100 leading-none">
                         <li>+91 7266925657</li>
                         <li>+91 8928935538</li>
-                        <li class="text-[#1FA463] text-2xl">lifesurediagnostics@gmail.com</li>
+                        <li class="text-[#1FA463] text-2xl underline decoration-[#1FA463]/30 decoration-4">lifesurediagnostics@gmail.com</li>
                     </ul>
                 </div>
-                <div class="mt-20 lg:mt-40 text-center lg:text-right">
-                    <p class="text-[10px] font-black text-slate-500 uppercase tracking-[0.6em] mb-4 leading-none">Architecture: Powered by AK</p>
-                    <p class="text-[10px] font-black text-slate-600 uppercase tracking-[0.6em] leading-none">© 2026 LifeSure Diagnostics Mumbai • All Rights Reserved</p>
+                <div class="mt-40 text-center lg:text-right">
+                    <p class="text-[11px] font-black text-slate-500 uppercase tracking-[0.6em] mb-4">Architecture: Powered by AK</p>
+                    <p class="text-[11px] font-black text-slate-600 uppercase tracking-[0.6em]">© 2026 LifeSure Diagnostics Mumbai • All Rights Reserved</p>
                 </div>
             </div>
         </div>
-        <div class="absolute -bottom-40 -left-40 w-[600px] h-[600px] bg-[#1FA463]/5 rounded-full blur-[150px]"></div>
+        <div class="absolute -bottom-40 -left-40 w-[800px] h-[800px] bg-[#1FA463]/5 rounded-full blur-[150px]"></div>
     </footer>
 
     <script>
@@ -211,14 +214,13 @@
                 tests: [
                     { id: 1, name: 'Adreno Corticotropic Hormone (ACTH)', price: 1600, originalPrice: 2150, dept: 'IMMUNOLOGY' },
                     { id: 2, name: 'DRUGS OF ABUSE PANEL-5', price: 3000, originalPrice: 3500, dept: 'SPECIAL TEST' },
-                    { id: 3, name: 'Urine Routine & Microscopy', price: 200, dept: 'CLINICAL PATHOLOGY' },
-                    { id: 4, name: 'LIPID PROFILE', price: 799, originalPrice: 1350, dept: 'BIOCHEMISTRY' },
-                    { id: 5, name: 'COMPLETE BLOOD COUNT (CBC)', price: 300, originalPrice: 400, dept: 'HAEMATOLOGY' },
-                    { id: 6, name: 'VITAMIN D (25-OH)', price: 1499, originalPrice: 2000, dept: 'IMMUNOLOGY' },
-                    { id: 7, name: 'LIVER FUNCTION TEST (LFT)', price: 799, originalPrice: 1000, dept: 'BIOCHEMISTRY' },
-                    { id: 8, name: 'THYROID STIMULATING HORMONE', price: 300, originalPrice: 350, dept: 'IMMUNOLOGY' },
-                    { id: 9, name: 'VITAMIN B12', price: 999, originalPrice: 1450, dept: 'IMMUNOLOGY' },
-                    { id: 10, name: 'Microbiology Culture (Urine)', price: 850, dept: 'MICROBIOLOGY' }
+                    { id: 3, name: 'HbA1c Glycosylated Hemoglobin', price: 599, originalPrice: 1200, dept: 'BIOCHEMISTRY' },
+                    { id: 4, name: 'COMPLETE BLOOD COUNT (CBC)', price: 300, originalPrice: 400, dept: 'HAEMATOLOGY' },
+                    { id: 5, name: 'VITAMIN D (25-OH)', price: 1499, originalPrice: 2000, dept: 'IMMUNOLOGY' },
+                    { id: 6, name: 'LIVER FUNCTION TEST (LFT)', price: 799, originalPrice: 1000, dept: 'BIOCHEMISTRY' },
+                    { id: 7, name: 'THYROID STIMULATING HORMONE', price: 300, originalPrice: 350, dept: 'IMMUNOLOGY' },
+                    { id: 8, name: 'Microbiology Culture (Urine)', price: 850, dept: 'MICROBIOLOGY' }
+                    // follow this pattern for all 70+ tests
                 ],
                 get filteredTests() {
                     return this.tests.filter(t => 
