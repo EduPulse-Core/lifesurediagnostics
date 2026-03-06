@@ -13,8 +13,8 @@
         :root { --aura-blue: #0A5A8C; --aura-green: #1FA463; --aura-dark: #073551; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fbfcfd; overflow-x: hidden; }
         
-        /* 🧪 CLINICAL PARALLAX ENGINE */
-        .clinical-bg-layer { position: fixed; inset: 0; z-index: -1; opacity: 0.06; background-image: url('https://images.unsplash.com/photo-1579154273821-628670853f0e?q=80&w=1920'); background-attachment: fixed; background-size: cover; filter: grayscale(1); }
+        /* 🧪 CLINICAL BACKGROUND DEPTH ENGINE */
+        .clinical-bg-layer { position: fixed; inset: 0; z-index: -1; opacity: 0.06; background-image: url('https://images.unsplash.com/photo-1579154273821-628670853f0e?q=80&w=1920'); background-attachment: fixed; background-size: cover; filter: hue-rotate(90deg); }
         
         /* Branded UI Components */
         .glass-nav { background: #ffffff; border-bottom: 2px solid rgba(10, 90, 140, 0.05); }
@@ -57,7 +57,7 @@
 
     <div class="bg-[#073551] text-white py-3 px-10 flex flex-col md:flex-row justify-between items-center text-[10px] font-black uppercase tracking-[0.4em] relative z-[1000]">
         <div class="flex flex-wrap justify-center gap-10">
-            <span class="flex items-center gap-2">📞 7266925657 / 8928935538</span>
+            <span class="flex items-center gap-2 font-bold">📞 7266925657 / 8928935538</span>
             <span class="flex items-center gap-2 border-b border-[#1FA463]">✉️ lifesurediagnostics@gmail.com</span>
         </div>
         <div class="hidden md:flex gap-8 items-center font-bold">
@@ -73,7 +73,7 @@
                 <img src="https://i.ibb.co/VWVvD0K/image-a8a1cb.png" class="w-full h-full object-contain" alt="Logo">
             </div>
             <div>
-                <span class="text-4xl font-900 tracking-tighter text-[#0A5A8C] block leading-none uppercase">LifeSure Diagnostics</span>
+                <span class="text-3xl font-900 tracking-tighter text-[#0A5A8C] block leading-none uppercase">LifeSure Diagnostics</span>
                 <p class="text-[11px] font-black text-[#1FA463] uppercase tracking-[0.6em] mt-1 leading-none italic">Accuracy • Care • Trust</p>
             </div>
         </div>
@@ -96,13 +96,13 @@
                 
                 <div class="relative z-20 h-full flex flex-col justify-center px-12 md:px-32 space-y-10 text-left">
                     <div x-show="i === 4" class="w-24 h-24 bg-white/10 p-2 rounded-3xl border border-white/20 mb-4 animate-pulse flex items-center justify-center shadow-inner">
-                        <img src="https://i.ibb.co/VWVvD0K/image-a8a1cb.png" class="w-full h-full object-contain brightness-0 invert" alt="Logo">
+                        <img src="https://i.ibb.co/VWVvD0K/image-a8a1cb.png" class="w-full h-full object-contain brightness-0 invert" alt="L">
                     </div>
-                    <span class="bg-[#1FA463] text-white text-[11px] font-black px-6 py-2 rounded-full uppercase tracking-[0.5em] w-fit shadow-2xl" x-text="i === 4 ? 'SPIN AND WIN' : 'BIG SAVING DAYS'"></span>
-                    <h2 class="text-7xl md:text-[10rem] font-900 text-white tracking-tighter leading-[0.8] drop-shadow-2xl uppercase italic" 
-                        x-html="i === 1 ? '50% SAVINGS<br/>PACKAGES' : (i === 2 ? 'FREE HOME<br/>COLLECTION' : (i === 3 ? 'PATHOLOGY<br/>PRECISION' : 'WELCOME TO<br/>LIFESURE'))"></h2>
-                    <p class="text-slate-100 text-2xl font-bold max-w-2xl border-l-8 border-[#1FA463] pl-12 leading-relaxed italic">Guided & Managed by pathology expert Mohd Tauheed, M.Sc. Reliable Clinical accuracy meeting rapid home delivery.</p>
-                    <button class="bg-white text-[#0A5A8C] px-16 py-7 rounded-[40px] font-900 uppercase text-xs tracking-[0.5em] shadow-2xl hover:bg-[#1FA463] hover:text-white transition-all transform active:scale-95 shadow-white/10">Initialize Booking</button>
+                    <span class="bg-[#1FA463] text-white text-[11px] font-black px-6 py-2 rounded-full uppercase tracking-[0.5em] w-fit shadow-2xl" x-text="i === 4 ? 'WELCOME' : 'BIG SAVING DAYS'"></span>
+                    <h2 class="text-7xl md:text-[10rem] font-900 text-white tracking-tighter leading-[0.85] drop-shadow-2xl uppercase italic" 
+                        x-html="i === 1 ? '50% SAVINGS<br/>PACKAGES' : (i === 2 ? 'FREE HOME<br/>COLLECTION' : (i === 3 ? 'PATHOLOGY<br/>PRECISION' : 'EXPLORE<br/>BRIGHT HEALTH'))"></h2>
+                    <p class="text-slate-100 text-2xl font-bold max-w-2xl border-l-8 border-[#1FA463] pl-12 leading-relaxed italic">Guided & Managed by Mohd Tauheed, M.Sc. Clinical intelligence meeting rapid home delivery.</p>
+                    <button class="bg-white text-[#0A5A8C] px-16 py-7 rounded-[40px] font-900 uppercase text-xs tracking-[0.5em] shadow-2xl hover:bg-[#1FA463] hover:text-white transition-all active:scale-95 shadow-white/10">Initialize Booking</button>
                 </div>
             </div>
         </template>
@@ -111,7 +111,7 @@
     <section class="max-w-7xl mx-auto px-10 py-48 grid grid-cols-1 lg:grid-cols-2 gap-32 items-center">
         <div>
             <h3 class="text-8xl font-900 tracking-tighter text-[#0A5A8C] leading-none mb-10 uppercase italic">Why join LifeSure Diagnostics?</h3>
-            <p class="text-slate-500 font-bold text-2xl leading-relaxed mb-16 italic border-l-4 border-[#1FA463] pl-12">We merge hospital-grade precision with patient comfort, ensuring 100% reliable clinical intelligence for Mumbai metropolitan residents.</p>
+            <p class="text-slate-500 font-bold text-2xl leading-relaxed mb-16 italic border-l-4 border-[#1FA463] pl-12">Accuracy meeting empathy. Verified Mumbai Metropolitan Node ensuring 100% reliable reports.</p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                 <template x-for="feat in features" :key="feat.title">
                     <div class="bg-white p-12 rounded-[60px] shadow-2xl border border-slate-50 hover:scale-105 transition-all duration-500 group">
@@ -122,11 +122,11 @@
                 </template>
             </div>
         </div>
-        <div class="rounded-[100px] overflow-hidden shadow-[0_60px_100px_-20px_rgba(10,90,140,0.3)] border-[16px] border-white h-[750px] relative">
+        <div class="rounded-[100px] overflow-hidden shadow-[0_60px_120px_-20px_rgba(10,90,140,0.3)] border-[16px] border-white h-[750px] relative">
             <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=1920" class="w-full h-full object-cover">
             <div class="absolute inset-0 bg-[#073551]/20"></div>
             <div class="absolute bottom-12 left-12 right-12 glass-panel p-10 rounded-[50px] border-2 border-white/50">
-                <p class="text-slate-600 font-black text-xs uppercase tracking-widest mb-2">Verified Laboratory Hub</p>
+                <p class="text-slate-600 font-black text-xs uppercase tracking-widest mb-2 uppercase">Verified Laboratory Hub</p>
                 <p class="text-[#0A5A8C] font-900 text-2xl tracking-tighter uppercase italic leading-none">Global Quality Protocols</p>
             </div>
         </div>
@@ -174,7 +174,7 @@
                     </div>
                     <div class="flex justify-between items-center pt-24 border-t border-slate-100 mt-24">
                         <div>
-                            <p class="text-[14px] text-slate-300 font-black uppercase mb-4 tracking-widest leading-none">Clinical Fee</p>
+                            <p class="text-[14px] text-slate-300 font-black uppercase mb-4 tracking-widest leading-none">Verified Fee</p>
                             <span class="text-7xl font-900 tracking-tighter text-[#0A5A8C]">₹<span x-text="test.price"></span></span>
                         </div>
                         <button @click="addToCart(test)" class="bg-[#0A5A8C] group-hover:bg-[#1FA463] text-white p-12 rounded-[70px] transition-all shadow-2xl active:scale-90 aura-pulse">
@@ -188,7 +188,7 @@
 
     <div class="bg-white py-16 border-y-2 border-slate-100 overflow-hidden flex whitespace-nowrap mb-64 shadow-inner relative z-10">
         <div class="marquee-track flex gap-40 text-[18px] font-black text-[#0A5A8C] uppercase tracking-[1.5em]">
-            <span>⭐ NABL ACCREDITED</span> <span>✅ ISO 9001:2015</span> <span>📍 MUMBAI NODES</span> <span>👨‍🔬 MOHD TAUHEED, M.SC.</span> <span>🧪 1,200+ PARAMETERS</span>
+            <span>⭐ NABL ACCREDITED</span> <span>✅ ISO 9001:2015</span> <span>📍 MUMBAI METROPOLITAN NODES</span> <span>👨‍🔬 MOHD TAUHEED, M.SC.</span> <span class="text-[#1FA463]">RELIABLE ACCURATE REPORTS</span>
         </div>
     </div>
 
@@ -199,20 +199,20 @@
                     <div class="w-40 h-40 bg-white rounded-[50px] p-4 shadow-2xl border-[12px] border-green-50 flex items-center justify-center">
                         <img src="https://i.ibb.co/VWVvD0K/image-a8a1cb.png" class="w-full h-full object-contain" alt="L">
                     </div>
-                    <span class="text-8xl font-900 tracking-tighter italic leading-none uppercase">LifeSure<span class="text-[#1FA463]">.</span></span>
+                    <span class="text-8xl font-900 tracking-tighter italic leading-none uppercase">LifeSure Diagnostics<span class="text-[#1FA463]">.</span></span>
                 </div>
                 <p class="text-slate-400 font-bold text-4xl leading-loose uppercase tracking-[0.1em] border-l-8 border-[#1FA463] pl-20 italic">Guided & Managed by pathology leader <br/><span class="text-white font-900 text-6xl tracking-tighter leading-none mt-10 block uppercase">Mohd Tauheed, M.Sc.</span></p>
                 
                 <div class="mt-32 flex gap-12">
                     <a href="https://www.instagram.com/lifesurediagnostic" target="_blank" class="w-28 h-28 glass-panel rounded-[50px] flex items-center justify-center hover:bg-[#1FA463] transition-all shadow-2xl border border-white/10 text-5xl text-white">📸</a>
                     <a href="mailto:lifesurediagnostics@gmail.com" class="w-28 h-28 glass-panel rounded-[50px] flex items-center justify-center hover:bg-[#1FA463] transition-all shadow-2xl border border-white/10 text-5xl text-white">✉️</a>
-                    <a href="https://wa.me/917266925657" target="_blank" class="w-28 h-28 glass-panel rounded-[50px] flex items-center justify-center hover:bg-[#1FA463] transition-all shadow-2xl border border-white/10 text-5xl text-white">💬</a>
+                    <a href="https://wa.me/917266925657" target="_blank" class="w-28 h-28 glass-panel rounded-[50px] flex items-center justify-center hover:bg-[#1FA463] transition-all shadow-2xl border border-white/10 text-5xl text-white shadow-green-500/20">💬</a>
                 </div>
             </div>
 
             <div class="lg:col-span-6 flex flex-col justify-between items-end">
                 <div class="text-right">
-                    <h4 class="text-[18px] font-black uppercase tracking-[1.2em] text-[#1FA463] mb-20 leading-none">Mumbai Metropolitan Hub</h4>
+                    <h4 class="text-[18px] font-black uppercase tracking-[1.2em] text-[#1FA463] mb-20 leading-none">Mumbai Metropolitan Command</h4>
                     <ul class="space-y-16 text-7xl font-black tracking-tighter text-slate-100 leading-none">
                         <li>+91 7266925657</li>
                         <li>+91 8928935538</li>
