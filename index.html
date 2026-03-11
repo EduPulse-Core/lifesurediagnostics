@@ -32,6 +32,18 @@
         .premium-card:hover { box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         [x-cloak] { display: none !important; }
         .scroll-hide::-webkit-scrollbar { display: none; }
+        @media (max-width:768px){
+
+nav{
+overflow-x:auto;
+white-space:nowrap;
+}
+
+.premium-card{
+padding:18px;
+}
+
+}
     </style>
 </head>
 <body x-data="lifeSureApp()">
@@ -112,6 +124,79 @@
         </div>
     </section>
 
+<!-- HEALTH PACKAGES SECTION -->
+
+<section id="packages" class="max-w-[1400px] mx-auto px-6 py-14">
+
+<h2 class="text-2xl font-black text-brand mb-8 uppercase">Health Packages</h2>
+
+<div class="grid md:grid-cols-3 gap-6">
+
+<div class="premium-card p-6 rounded-sm">
+<h3 class="text-xl font-black text-brand">Basic Health Check</h3>
+<p class="text-sm text-gray-500 mt-2">CBC • Sugar • Lipid Profile</p>
+<div class="mt-4 flex justify-between items-center">
+<span class="text-2xl font-black text-accent">₹799</span>
+<button class="bg-brand text-white px-4 py-2 text-[10px] font-black uppercase">Book</button>
+</div>
+</div>
+
+<div class="premium-card p-6 rounded-sm">
+<h3 class="text-xl font-black text-brand">Diabetes Care Package</h3>
+<p class="text-sm text-gray-500 mt-2">HbA1c • Sugar • Kidney Test</p>
+<div class="mt-4 flex justify-between items-center">
+<span class="text-2xl font-black text-accent">₹599</span>
+<button class="bg-brand text-white px-4 py-2 text-[10px] font-black uppercase">Book</button>
+</div>
+</div>
+
+<div class="premium-card p-6 rounded-sm">
+<h3 class="text-xl font-black text-brand">Full Body Checkup</h3>
+<p class="text-sm text-gray-500 mt-2">70+ Tests Included</p>
+<div class="mt-4 flex justify-between items-center">
+<span class="text-2xl font-black text-accent">₹999</span>
+<button class="bg-brand text-white px-4 py-2 text-[10px] font-black uppercase">Book</button>
+</div>
+</div>
+
+</div>
+
+</section>
+
+<!-- WHY CHOOSE SECTION -->
+
+<section class="bg-white py-14">
+
+<div class="max-w-[1400px] mx-auto px-6">
+
+<h2 class="text-2xl font-black text-brand mb-10 uppercase">Why Choose LifeSure</h2>
+
+<div class="grid md:grid-cols-4 gap-6 text-center">
+
+<div>
+<div class="text-4xl mb-3">🧪</div>
+<p class="font-bold">Accurate Reports</p>
+</div>
+
+<div>
+<div class="text-4xl mb-3">🚑</div>
+<p class="font-bold">Free Home Collection</p>
+</div>
+
+<div>
+<div class="text-4xl mb-3">⚡</div>
+<p class="font-bold">Fast Results</p>
+</div>
+
+<div>
+<div class="text-4xl mb-3">😊</div>
+<p class="font-bold">Happy Patients</p>
+</div>
+
+</div>
+
+</div>
+</section>
     <section id="tests" class="max-w-[1400px] mx-auto px-4 md:px-8 py-12">
         <div class="flex items-center gap-4 mb-8">
             <h2 class="text-lg md:text-2xl font-black text-brand uppercase italic">Bestselling Tests</h2>
@@ -135,6 +220,15 @@
             </template>
         </div>
     </section>
+    <section class="bg-accent text-white text-center py-10">
+
+<h2 class="text-3xl font-black">Trusted By 10,000+ Patients</h2>
+
+<p class="mt-2 text-sm">Accurate Diagnostic Reports With Expert Care</p>
+
+<a href="tel:7266925657" class="mt-4 inline-block bg-white text-accent px-6 py-2 font-black uppercase">Call Now</a>
+
+</section>
 
     <footer id="support" class="bg-brand-dark text-white pt-20 pb-8 px-8 md:px-16">
         <div class="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-12 border-b border-white/10 pb-16">
@@ -217,15 +311,65 @@
                     { name: 'IMMUNOLOGY', icon: '🛡️' }
                 ],
                 banners: [
-                    { img: 'https://images.unsplash.com/photo-1579154273821-628670853f0e?q=80&w=1920', tag: 'Big Saving Days', title: 'PATHOLOGY<br/>EXCELLENCE HUB' },
-                    { img: 'https://images.unsplash.com/photo-1559839734-2b71f1536783?q=80&w=1920', tag: 'Expert Nodes', title: 'FREE HOME<br/>COLLECTION HUB' }
-                ],
+{
+img:"https://images.unsplash.com/photo-1581595219315-a187dd40c322?q=80&w=1920",
+tag:"Health Offer",
+title:"FULL BODY CHECKUP <br> STARTING ₹999"
+},
+{
+img:"https://images.unsplash.com/photo-1579154204601-01588f351e67?q=80&w=1920",
+tag:"Limited Offer",
+title:"UPTO 30% OFF <br> ON BLOOD TESTS"
+},
+{
+img:"https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1920",
+tag:"Expert Care",
+title:"FREE HOME <br> SAMPLE COLLECTION"
+},
+{
+img:"https://images.unsplash.com/photo-1580281657521-0c9c1a0f0c2b?q=80&w=1920",
+tag:"Trusted Lab",
+title:"FAST & ACCURATE <br> REPORTS"
+},
+{
+img:"https://images.unsplash.com/photo-1581093588401-22c1f7b9b1d0?q=80&w=1920",
+tag:"Happy Patients",
+title:"TRUSTED BY <br> 10,000+ PATIENTS"
+}
+],
                 tests: [
-                    { id: 1, name: 'Complete Blood Count (CBC)', dept: 'BLOOD TEST', price: 300, rating: 4.9 },
-                    { id: 2, name: 'Diabetes Profile (HbA1c)', dept: 'BIOCHEMISTRY', price: 599, rating: 4.8 },
-                    { id: 3, name: 'Thyroid Profile', dept: 'IMMUNOLOGY', price: 699, rating: 4.9 },
-                    { id: 4, name: 'Lipid Profile', dept: 'BIOCHEMISTRY', price: 799, rating: 4.7 }
-                ],
+
+{ id:1,name:'Complete Blood Count (CBC)',dept:'BLOOD TEST',price:300 },
+{ id:2,name:'Blood Sugar Fasting',dept:'BLOOD TEST',price:150 },
+{ id:3,name:'Blood Sugar PP',dept:'BLOOD TEST',price:150 },
+{ id:4,name:'HbA1c Diabetes Test',dept:'BIOCHEMISTRY',price:599 },
+{ id:5,name:'Lipid Profile',dept:'BIOCHEMISTRY',price:799 },
+{ id:6,name:'Liver Function Test (LFT)',dept:'BIOCHEMISTRY',price:850 },
+{ id:7,name:'Kidney Function Test (KFT)',dept:'BIOCHEMISTRY',price:850 },
+{ id:8,name:'Thyroid Profile (T3,T4,TSH)',dept:'IMMUNOLOGY',price:699 },
+{ id:9,name:'Vitamin D Test',dept:'BIOCHEMISTRY',price:900 },
+{ id:10,name:'Vitamin B12 Test',dept:'BIOCHEMISTRY',price:800 },
+
+{ id:11,name:'Malaria Test',dept:'PATHOLOGY',price:350 },
+{ id:12,name:'Dengue Test',dept:'PATHOLOGY',price:700 },
+{ id:13,name:'Typhoid Test',dept:'PATHOLOGY',price:500 },
+{ id:14,name:'Urine Routine Test',dept:'PATHOLOGY',price:150 },
+{ id:15,name:'Stool Routine Test',dept:'PATHOLOGY',price:200 },
+
+{ id:16,name:'Iron Profile',dept:'BIOCHEMISTRY',price:850 },
+{ id:17,name:'CRP Test',dept:'IMMUNOLOGY',price:650 },
+{ id:18,name:'ESR Test',dept:'HAEMATOLOGY',price:150 },
+{ id:19,name:'Platelet Count',dept:'HAEMATOLOGY',price:200 },
+{ id:20,name:'Coagulation Profile',dept:'HAEMATOLOGY',price:750 },
+
+{ id:21,name:'Pregnancy Test',dept:'IMMUNOLOGY',price:300 },
+{ id:22,name:'HIV Test',dept:'IMMUNOLOGY',price:450 },
+{ id:23,name:'Hepatitis B Test',dept:'IMMUNOLOGY',price:450 },
+{ id:24,name:'COVID RT PCR',dept:'PATHOLOGY',price:1200 },
+{ id:25,name:'Full Body Checkup Package',dept:'BIOCHEMISTRY',price:999 }
+
+],
+            
                 get filteredTests() {
                     return this.tests.filter(t => 
                         (this.activeDept === 'ALL TESTS' || t.dept === this.activeDept) &&
