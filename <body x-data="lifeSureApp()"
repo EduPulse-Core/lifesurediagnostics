@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LifeSure Diagnostics | Mumbai's Trusted Health Hub</title>
@@ -22,17 +24,94 @@
     </script>
 
     <style>
+        button{
+transition:all 0.3s ease;
+}
+
+button:hover{
+box-shadow:0 6px 20px rgba(31,164,99,0.4);
+}
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f3f6; color: #212121; overflow-x: hidden; }
-        .glass-header { background: #ffffff; border-bottom: 1px solid #e0e0e0; box-shadow: 0 1px 10px rgba(0,0,0,0.05); }
+        html{
+scroll-behavior:smooth;
+}
+        body{
+font-family:'Plus Jakarta Sans', sans-serif;
+background:linear-gradient(to bottom,#f8fafc,#eef2f7);
+color:#212121;
+overflow-x:hidden;
+}
+        .glass-header{
+background:rgba(255,255,255,0.85);
+backdrop-filter:blur(10px);
+border-bottom:1px solid rgba(0,0,0,0.05);
+box-shadow:0 4px 20px rgba(0,0,0,0.05);
+}
         .footer-link { font-size: 12px; font-weight: 500; color: #fff; transition: 0.2s; opacity: 0.8; }
         .footer-link:hover { opacity: 1; text-decoration: underline; }
         .cat-icon-wrapper { width: 64px; height: 64px; border-radius: 50%; background: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.08); display: flex; align-items: center; justify-content: center; margin-bottom: 8px; transition: 0.3s; }
-        .premium-card { background: white; border: 1px solid #f0f0f0; transition: 0.3s; }
-        .premium-card:hover { box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .premium-card{
+background:#fff;
+border:1px solid #eef2f7;
+border-radius:16px;
+transition:all 0.35s ease;
+box-shadow:0 6px 20px rgba(0,0,0,0.05);
+}
+    
+        .premium-card:hover{
+transform:translateY(-8px) scale(1.02);
+box-shadow:0 18px 40px rgba(0,0,0,0.15);
+}
         [x-cloak] { display: none !important; }
         .scroll-hide::-webkit-scrollbar { display: none; }
+        /* Section fade animation */
+section{
+opacity:0;
+transform:translateY(40px);
+animation:fadeUp 0.8s ease forwards;
+}
+section:nth-child(even){
+background:linear-gradient(to bottom,#ffffff,#f8fafc);
+}
+@keyframes fadeUp{
+from{
+opacity:0;
+transform:translateY(40px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+.premium-card:hover{
+    transform: translateY(-8px) scale(1.02);
+    box-shadow:0 18px 40px rgba(0,0,0,0.15);
+}
+.cat-icon-wrapper{
+    transition: all 0.3s ease;
+}
+
+.cat-item:hover span{
+color:#1FA463;
+}
+
+.cat-icon-wrapper i{
+font-size:26px;
+color:#0A5A8C;
+transition:all 0.3s ease;
+}
+
+.cat-icon-wrapper:hover i{
+color:#1FA463;
+transform:scale(1.1);
+}
+
+button:hover{
+    transform:translateY(-2px) scale(1.05);
+}
         @media (max-width:768px){
+
 
 nav{
 overflow-x:auto;
@@ -46,7 +125,7 @@ padding:18px;
 }
     </style>
 </head>
-<body x-data="lifeSureApp()">
+<body x-data="lifeSureApp()" x-init="init()">
 
     <div class="bg-brand-dark text-white text-[10px] font-bold py-2 px-6 md:px-12 flex justify-between items-center relative z-[1600] border-b border-white/5">
         <div class="flex gap-6">
@@ -101,7 +180,9 @@ padding:18px;
             <template x-for="cat in categories">
                 <div @click="activeDept = cat.name" class="cat-item flex flex-col items-center cursor-pointer px-4">
                     <div :class="activeDept === cat.name ? 'border-2 border-accent' : ''" class="cat-icon-wrapper">
-                        <span class="text-3xl" x-text="cat.icon"></span>
+                        <span class="text-3xl" x-html="cat.icon"></span>
+
+                
                     </div>
                     <span :class="activeDept === cat.name ? 'text-accent font-black' : 'text-slate-600 font-bold'" class="text-[10px] uppercase tracking-widest" x-text="cat.name"></span>
                 </div>
@@ -110,20 +191,65 @@ padding:18px;
     </section>
 
     <section class="max-w-[1400px] mx-auto px-0 md:px-4 mt-4">
-        <div class="relative h-[180px] md:h-[300px] bg-slate-800 md:rounded-sm overflow-hidden group">
+        <div class="relative h-[220px] md:h-[380px] bg-slate-800 md:rounded-xl overflow-hidden group shadow-2xl">
+            <div class="absolute inset-0 pointer-events-none">
+
+<i class="fa-solid fa-heart-pulse absolute top-10 left-10 text-white/20 text-5xl animate-pulse"></i>
+
+<i class="fa-solid fa-stethoscope absolute bottom-10 right-10 text-white/20 text-5xl animate-bounce"></i>
+
+<i class="fa-solid fa-syringe absolute top-20 right-20 text-white/20 text-4xl animate-pulse"></i>
+
+</div>
             <template x-for="(banner, index) in banners">
-                <div x-show="activeBanner === index" class="absolute inset-0 transition-opacity duration-700">
-                    <img :src="banner.img" class="w-full h-full object-cover opacity-60">
-                    <div class="absolute inset-y-0 left-0 flex flex-col justify-center px-10 md:px-20 text-white space-y-4">
-                        <span class="bg-red-600 text-[8px] font-black px-4 py-1 rounded w-fit uppercase tracking-widest" x-text="banner.tag"></span>
-                        <h2 class="text-2xl md:text-5xl font-black italic uppercase tracking-tighter" x-html="banner.title"></h2>
-                        <button class="bg-white text-brand px-6 py-2 rounded-sm font-black text-[10px] uppercase tracking-widest w-fit shadow-xl">Shop Now</button>
-                    </div>
-                </div>
+                <div x-show="activeBanner === index"
+x-transition:enter="transition ease-out duration-700"
+x-transition:enter-start="opacity-0 scale-105"
+x-transition:enter-end="opacity-100 scale-100"
+class="absolute inset-0">
+
+<img :src="banner.img" class="w-full h-full object-cover">
+
+<div class="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent"></div>
+
+<div class="absolute inset-y-0 left-0 flex flex-col justify-center px-10 md:px-20 text-white space-y-4">
+
+<span class="bg-red-600 text-[8px] font-black px-4 py-1 rounded w-fit uppercase tracking-widest" x-text="banner.tag"></span>
+
+<h2 class="text-2xl md:text-5xl font-black italic uppercase tracking-tighter" x-html="banner.title"></h2>
+
+<button class="bg-white text-brand px-6 py-2 rounded-sm font-black text-[10px] uppercase tracking-widest w-fit shadow-xl hover:scale-105 transition">
+Shop Now
+</button>
+
+</div>
+
+</div>
             </template>
         </div>
     </section>
+<section class="max-w-[1400px] mx-auto px-6 py-10">
 
+<div class="grid md:grid-cols-3 gap-6">
+
+<div class="bg-white p-6 shadow-lg rounded-xl hover:shadow-2xl hover:-translate-y-2 transition duration-300">
+<h3 class="font-black text-lg text-brand">Flat 30% OFF</h3>
+<p class="text-sm text-gray-500">On Blood Tests</p>
+</div>
+
+<div class="bg-white p-6 shadow-lg rounded-xl hover:shadow-2xl hover:-translate-y-2 transition duration-300">
+<h3 class="font-black text-lg text-brand">Free Home Collection</h3>
+<p class="text-sm text-gray-500">Book Today</p>
+</div>
+
+<div class="bg-white p-6 shadow-lg rounded-xl hover:shadow-2xl hover:-translate-y-2 transition duration-300">
+<h3 class="font-black text-lg text-brand">Reports Within 24 Hours</h3>
+<p class="text-sm text-gray-500">Fast & Accurate Testing</p>
+</div>
+
+</div>
+
+</section>
 <!-- HEALTH PACKAGES SECTION -->
 
 <section id="packages" class="max-w-[1400px] mx-auto px-6 py-14">
@@ -162,8 +288,77 @@ padding:18px;
 </div>
 
 </section>
+    <section class="py-12 bg-white border-y">
+
+<div class="max-w-[1200px] mx-auto text-center">
+
+<h2 class="text-xl font-black text-brand mb-4">
+Trusted Diagnostic Center in Mumbai
+</h2>
+
+<p class="text-gray-500 mb-8">
+Accurate Diagnostic Reports With Expert Care
+</p>
+
+<div class="flex justify-center items-center gap-6 flex-wrap">
+
+<div class="flex items-center gap-2 text-yellow-400 text-xl">
+<i class="fa-solid fa-star"></i>
+<i class="fa-solid fa-star"></i>
+<i class="fa-solid fa-star"></i>
+<i class="fa-solid fa-star"></i>
+<i class="fa-solid fa-star"></i>
+</div>
+
+<p class="font-bold text-gray-700">
+4.9 Google Rating
+</p>
+
+<span class="text-gray-400">
+Based on 500+ Patient Reviews
+</span>
+
+</div>
+
+</div>
+
+</section>
 
 <!-- WHY CHOOSE SECTION -->
+    <section class="py-16 bg-white">
+
+<div class="max-w-[1200px] mx-auto text-center">
+
+<h2 class="text-2xl font-black text-brand mb-10">Patient Reviews</h2>
+
+<div class="grid md:grid-cols-3 gap-8">
+
+<div class="premium-card p-6">
+<p class="text-sm text-gray-600">
+Very accurate reports and quick service.
+</p>
+<h4 class="font-bold mt-4">Rahul Sharma</h4>
+</div>
+
+<div class="premium-card p-6">
+<p class="text-sm text-gray-600">
+Home sample collection was very convenient.
+</p>
+<h4 class="font-bold mt-4">Ayesha Khan</h4>
+</div>
+
+<div class="premium-card p-6">
+<p class="text-sm text-gray-600">
+Best diagnostic lab in our area.
+</p>
+<h4 class="font-bold mt-4">Vikas Patel</h4>
+</div>
+
+</div>
+
+</div>
+
+</section>
 
 <section class="bg-white py-14">
 
@@ -204,8 +399,11 @@ padding:18px;
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <template x-for="test in filteredTests" :key="test.id">
-                <div class="premium-card p-6 flex flex-col justify-between rounded-sm">
+            <div class="premium-card p-6 flex flex-col justify-between rounded-xl bg-white shadow-lg hover:shadow-2xl hover:-translate-y-2 transition duration-300 border border-gray-100">
+            
                     <div class="space-y-3">
+                        <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b"
+class="w-full h-28 object-cover rounded mb-3">
                         <span class="text-[8px] font-black text-accent bg-accent/5 px-2 py-1 rounded-sm uppercase tracking-widest" x-text="test.dept"></span>
                         <h3 class="text-lg font-extrabold text-brand leading-tight tracking-tight" x-text="test.name"></h3>
                         <p class="text-[9px] text-slate-400 font-bold italic uppercase tracking-widest">Verified Accuracy Node</p>
@@ -220,13 +418,61 @@ padding:18px;
             </template>
         </div>
     </section>
-    <section class="bg-accent text-white text-center py-10">
+    <section class="py-10 bg-white">
 
-<h2 class="text-3xl font-black">Trusted By 10,000+ Patients</h2>
+<div class="max-w-[1200px] mx-auto flex justify-center items-center gap-10 flex-wrap text-center">
 
-<p class="mt-2 text-sm">Accurate Diagnostic Reports With Expert Care</p>
+<div>
+<i class="fa-solid fa-certificate text-4xl text-brand mb-2"></i>
+<p class="font-bold text-sm">NABL Standard</p>
+</div>
 
-<a href="tel:7266925657" class="mt-4 inline-block bg-white text-accent px-6 py-2 font-black uppercase">Call Now</a>
+<div>
+<i class="fa-solid fa-shield-heart text-4xl text-brand mb-2"></i>
+<p class="font-bold text-sm">ISO Certified Lab</p>
+</div>
+
+<div>
+<i class="fa-solid fa-user-doctor text-4xl text-brand mb-2"></i>
+<p class="font-bold text-sm">Expert Pathologist</p>
+</div>
+
+<div>
+<i class="fa-solid fa-flask text-4xl text-brand mb-2"></i>
+<p class="font-bold text-sm">Advanced Testing</p>
+</div>
+
+</div>
+
+</section>
+<section class="bg-accent text-white py-16 text-center">
+
+<h2 class="text-3xl font-black mb-3">
+Trusted By 10,000+ Patients
+</h2>
+
+<p class="text-sm mb-10 opacity-90">
+Accurate Diagnostic Reports With Expert Care
+</p>
+
+<div class="max-w-[1200px] mx-auto grid md:grid-cols-3 gap-10 text-center">
+
+<div>
+<h3 class="text-4xl font-black" x-text="patients"></h3>
+<p class="uppercase text-sm tracking-widest">Happy Patients</p>
+</div>
+
+<div>
+<h3 class="text-4xl font-black" x-text="testsDone"></h3>
+<p class="uppercase text-sm tracking-widest">Tests Completed</p>
+</div>
+
+<div>
+<h3 class="text-4xl font-black">24hr</h3>
+<p class="uppercase text-sm tracking-widest">Fast Report Delivery</p>
+</div>
+
+</div>
 
 </section>
 
@@ -297,19 +543,22 @@ padding:18px;
     </footer>
 
     <script>
-        function lifeSureApp() {
-            return {
-                search: '',
-                activeDept: 'ALL TESTS',
-                activeBanner: 0,
+        function lifeSureApp(){ 
+        return {
+search:'',
+activeDept:'ALL TESTS',
+activeBanner:0,
+patients:0,
+testsDone:0,
+bookingOpen:false,
                 categories: [
-                    { name: 'ALL TESTS', icon: '🩺' },
-                    { name: 'BLOOD TEST', icon: '🩸' },
-                    { name: 'PATHOLOGY', icon: '🔬' },
-                    { name: 'BIOCHEMISTRY', icon: '🧪' },
-                    { name: 'HAEMATOLOGY', icon: '💉' },
-                    { name: 'IMMUNOLOGY', icon: '🛡️' }
-                ],
+{ name:'ALL TESTS', icon:'<i class="fa-solid fa-stethoscope"></i>' },
+{ name:'BLOOD TEST', icon:'<i class="fa-solid fa-droplet"></i>' },
+{ name:'PATHOLOGY', icon:'<i class="fa-solid fa-microscope"></i>' },
+{ name:'BIOCHEMISTRY', icon:'<i class="fa-solid fa-vial"></i>' },
+{ name:'HAEMATOLOGY', icon:'<i class="fa-solid fa-syringe"></i>' },
+{ name:'IMMUNOLOGY', icon:'<i class="fa-solid fa-shield-virus"></i>' }
+],
                 banners: [
 {
 img:"https://images.unsplash.com/photo-1581595219315-a187dd40c322?q=80&w=1920",
@@ -376,11 +625,67 @@ title:"TRUSTED BY <br> 10,000+ PATIENTS"
                         (t.name.toLowerCase().includes(this.search.toLowerCase()))
                     );
                 },
-                init() {
-                    setInterval(() => { this.activeBanner = (this.activeBanner + 1) % this.banners.length; }, 6000);
-                }
+                init(){
+
+setInterval(()=>{
+this.activeBanner=(this.activeBanner+1)%this.banners.length
+},6000)
+
+// animated counters
+
+let p=0
+let t=0
+
+let counter=setInterval(()=>{
+
+if(p<10000){
+p+=200
+this.patients=p+"+"
+}
+
+if(t<25000){
+t+=500
+this.testsDone=t+"+"
+}
+
+if(p>=10000 && t>=25000){
+clearInterval(counter)
+}
+
+},40)
+
+}
             }
-        }
+      }
     </script>
+    <a href="https://wa.me/917266925657"
+class="fixed bottom-6 right-6 bg-green-500 text-white p-4 rounded-full shadow-2xl text-xl z-50 hover:scale-110 transition animate-bounce">
+<i class="fa-brands fa-whatsapp"></i>
+</a>
+    <div x-show="bookingOpen" x-cloak
+class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+
+<div class="bg-white p-8 rounded-xl w-[350px]">
+
+<h3 class="text-xl font-black text-brand mb-4">Book Test</h3>
+
+<input placeholder="Your Name"
+class="w-full border p-2 mb-3">
+
+<input placeholder="Phone Number"
+class="w-full border p-2 mb-3">
+
+<button class="bg-accent text-white w-full py-2 font-bold">
+Submit
+</button>
+
+<button @click="bookingOpen=false"
+class="mt-3 text-sm text-gray-500">
+Cancel
+</button>
+
+</div>
+
+</div>
 </body>
 </html>
