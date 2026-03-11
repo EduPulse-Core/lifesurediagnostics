@@ -191,7 +191,13 @@ padding:18px;
     </section>
 
     <section class="max-w-[1400px] mx-auto px-0 md:px-4 mt-4">
-        <div class="relative h-[220px] md:h-[380px] bg-slate-800 md:rounded-xl overflow-hidden group shadow-2xl">
+       <div 
+class="relative h-[220px] md:h-[380px] bg-slate-800 md:rounded-xl overflow-hidden group shadow-2xl"
+@touchstart="startX = $event.touches[0].clientX"
+@touchend="handleSwipe($event)"
+@mousedown="startX = $event.clientX"
+@mouseup="handleSwipe($event)"
+>
             <div class="absolute inset-0 pointer-events-none">
 
 <i class="fa-solid fa-heart-pulse absolute top-10 left-10 text-white/20 text-5xl animate-pulse"></i>
@@ -208,7 +214,7 @@ x-transition:enter-start="opacity-0 scale-105"
 x-transition:enter-end="opacity-100 scale-100"
 class="absolute inset-0">
 
-<img :src="banner.img" class="w-full h-full object-cover">
+<img :src="banner.img" class="w-full h-full object-cover brightness-75">
 
 <div class="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent"></div>
 
@@ -226,26 +232,135 @@ Shop Now
 
 </div>
             </template>
+           <!-- Banner Navigation Dots -->
+
+<div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+
+<template x-for="(banner,index) in banners">
+
+<div
+@click="activeBanner=index"
+:class="activeBanner===index ? 'bg-white w-6' : 'bg-white/50 w-3'"
+class="h-3 rounded-full cursor-pointer transition-all duration-300">
+</div>
+
+</template>
+
+</div>
         </div>
     </section>
 <section class="max-w-[1400px] mx-auto px-6 py-10">
 
 <div class="grid md:grid-cols-3 gap-6">
 
-<div class="bg-white p-6 shadow-lg rounded-xl hover:shadow-2xl hover:-translate-y-2 transition duration-300">
-<h3 class="font-black text-lg text-brand">Flat 30% OFF</h3>
-<p class="text-sm text-gray-500">On Blood Tests</p>
+<div class="premium-card p-6 rounded-xl bg-gradient-to-r from-green-50 to-white border-l-4 border-green-500">
+
+<h3 class="font-black text-lg text-green-700">
+🔥 Flat 30% OFF
+</h3>
+
+<p class="text-sm text-gray-600 mt-2">
+On Blood Tests & Health Packages
+</p>
+
+<p class="text-xs text-gray-400 mt-2">
+Limited time diagnostic offer
+</p>
+
 </div>
 
-<div class="bg-white p-6 shadow-lg rounded-xl hover:shadow-2xl hover:-translate-y-2 transition duration-300">
-<h3 class="font-black text-lg text-brand">Free Home Collection</h3>
-<p class="text-sm text-gray-500">Book Today</p>
+<div class="premium-card p-6 rounded-xl bg-gradient-to-r from-blue-50 to-white border-l-4 border-blue-500">
+
+<h3 class="font-black text-lg text-blue-700">
+🚑 Free Home Collection
+</h3>
+
+<p class="text-sm text-gray-600 mt-2">
+Sample collection at your doorstep
+</p>
+
+<p class="text-xs text-gray-400 mt-2">
+Safe • Hygienic • Professional
+</p>
+
 </div>
 
-<div class="bg-white p-6 shadow-lg rounded-xl hover:shadow-2xl hover:-translate-y-2 transition duration-300">
-<h3 class="font-black text-lg text-brand">Reports Within 24 Hours</h3>
-<p class="text-sm text-gray-500">Fast & Accurate Testing</p>
+<div class="premium-card p-6 rounded-xl bg-gradient-to-r from-purple-50 to-white border-l-4 border-purple-500">
+
+<h3 class="font-black text-lg text-purple-700">
+⚡ Reports Within 24 Hours
+</h3>
+
+<p class="text-sm text-gray-600 mt-2">
+Fast & Accurate Diagnostic Reports
+</p>
+
+<p class="text-xs text-gray-400 mt-2">
+Trusted by thousands of patients
+</p>
+
 </div>
+
+</div>
+
+</section>
+    <section class="max-w-[1400px] mx-auto px-6 py-10">
+
+<h2 class="text-xl md:text-2xl font-black text-brand mb-8 uppercase">
+Popular Test Categories
+</h2>
+
+<div class="grid grid-cols-2 md:grid-cols-5 gap-6 text-center">
+
+<a href="#tests" class="premium-card p-6 hover:scale-105 transition">
+
+<i class="fa-solid fa-droplet text-3xl text-red-500 mb-3"></i>
+
+<h3 class="font-bold text-brand text-sm">
+Blood Tests
+</h3>
+
+</a>
+
+<a href="#tests" class="premium-card p-6 hover:scale-105 transition">
+
+<i class="fa-solid fa-heart-pulse text-3xl text-pink-500 mb-3"></i>
+
+<h3 class="font-bold text-brand text-sm">
+Diabetes Tests
+</h3>
+
+</a>
+
+<a href="#tests" class="premium-card p-6 hover:scale-105 transition">
+
+<i class="fa-solid fa-vial text-3xl text-purple-500 mb-3"></i>
+
+<h3 class="font-bold text-brand text-sm">
+Thyroid Tests
+</h3>
+
+</a>
+
+<a href="#tests" class="premium-card p-6 hover:scale-105 transition">
+
+<i class="fa-solid fa-capsules text-3xl text-green-500 mb-3"></i>
+
+<h3 class="font-bold text-brand text-sm">
+Vitamin Tests
+</h3>
+
+</a>
+
+<a href="#tests" class="premium-card p-6 hover:scale-105 transition">
+
+<i class="fa-solid fa-stethoscope text-3xl text-blue-500 mb-3"></i>
+
+<h3 class="font-bold text-brand text-sm">
+Full Body Checkup
+</h3>
+
+</a>
 
 </div>
 
@@ -391,6 +506,52 @@ Best diagnostic lab in our area.
 </div>
 
 </div>
+</section>
+    <section class="max-w-[1400px] mx-auto px-6 py-10">
+
+<h2 class="text-xl md:text-2xl font-black text-brand mb-6 uppercase">
+Trending Tests
+</h2>
+
+<div class="flex gap-6 overflow-x-auto pb-4 scroll-hide">
+
+<div class="min-w-[220px] premium-card p-5 text-center">
+<img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b"
+class="w-full h-28 object-cover rounded mb-3">
+<h3 class="font-bold text-brand">CBC Test</h3>
+<p class="text-sm text-gray-500">Complete Blood Count</p>
+</div>
+
+<div class="min-w-[220px] premium-card p-5 text-center">
+<img src="https://images.unsplash.com/photo-1580281657521-0c9c1a0f0c2b"
+class="w-full h-28 object-cover rounded mb-3">
+<h3 class="font-bold text-brand">Thyroid Test</h3>
+<p class="text-sm text-gray-500">T3 • T4 • TSH</p>
+</div>
+
+<div class="min-w-[220px] premium-card p-5 text-center">
+<img src="https://images.unsplash.com/photo-1581093458791-9d15482442f6"
+class="w-full h-28 object-cover rounded mb-3">
+<h3 class="font-bold text-brand">Vitamin D</h3>
+<p class="text-sm text-gray-500">Bone Health Test</p>
+</div>
+
+<div class="min-w-[220px] premium-card p-5 text-center">
+<img src="https://images.unsplash.com/photo-1579154204601-01588f351e67"
+class="w-full h-28 object-cover rounded mb-3">
+<h3 class="font-bold text-brand">Diabetes Test</h3>
+<p class="text-sm text-gray-500">HbA1c Test</p>
+</div>
+
+<div class="min-w-[220px] premium-card p-5 text-center">
+<img src="https://images.unsplash.com/photo-1581595219315-a187dd40c322"
+class="w-full h-28 object-cover rounded mb-3">
+<h3 class="font-bold text-brand">Lipid Profile</h3>
+<p class="text-sm text-gray-500">Cholesterol Test</p>
+</div>
+
+</div>
+
 </section>
     <section id="tests" class="max-w-[1400px] mx-auto px-4 md:px-8 py-12">
         <div class="flex items-center gap-4 mb-8">
@@ -551,6 +712,7 @@ activeBanner:0,
 patients:0,
 testsDone:0,
 bookingOpen:false,
+startX:0,
                 categories: [
 { name:'ALL TESTS', icon:'<i class="fa-solid fa-stethoscope"></i>' },
 { name:'BLOOD TEST', icon:'<i class="fa-solid fa-droplet"></i>' },
@@ -559,21 +721,22 @@ bookingOpen:false,
 { name:'HAEMATOLOGY', icon:'<i class="fa-solid fa-syringe"></i>' },
 { name:'IMMUNOLOGY', icon:'<i class="fa-solid fa-shield-virus"></i>' }
 ],
-                banners: [
+            
+banners:[
 {
-img:"https://images.unsplash.com/photo-1581595219315-a187dd40c322?q=80&w=1920",
+img:"https://images.unsplash.com/photo-1579154204601-01588f351e67?q=80&w=1920",
 tag:"Health Offer",
 title:"FULL BODY CHECKUP <br> STARTING ₹999"
 },
 {
-img:"https://images.unsplash.com/photo-1579154204601-01588f351e67?q=80&w=1920",
+img:"https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1920",
 tag:"Limited Offer",
 title:"UPTO 30% OFF <br> ON BLOOD TESTS"
 },
 {
-img:"https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1920",
+img:"https://images.unsplash.com/photo-1581595219315-a187dd40c322?q=80&w=1920",
 tag:"Expert Care",
-title:"FREE HOME <br> SAMPLE COLLECTION"
+title:"FREE HOME SAMPLE <br> COLLECTION"
 },
 {
 img:"https://images.unsplash.com/photo-1580281657521-0c9c1a0f0c2b?q=80&w=1920",
@@ -581,9 +744,9 @@ tag:"Trusted Lab",
 title:"FAST & ACCURATE <br> REPORTS"
 },
 {
-img:"https://images.unsplash.com/photo-1581093588401-22c1f7b9b1d0?q=80&w=1920",
-tag:"Happy Patients",
-title:"TRUSTED BY <br> 10,000+ PATIENTS"
+img:"https://images.unsplash.com/photo-1581093458791-9d15482442f6?q=80&w=1920",
+tag:"Advanced Testing",
+title:"MODERN DIAGNOSTIC <br> TECHNOLOGY"
 }
 ],
                 tests: [
@@ -625,7 +788,50 @@ title:"TRUSTED BY <br> 10,000+ PATIENTS"
                         (t.name.toLowerCase().includes(this.search.toLowerCase()))
                     );
                 },
-                init(){
+    {init(){
+
+setInterval(()=>{
+this.activeBanner=(this.activeBanner+1)%this.banners.length
+},6000)
+
+// animated counters
+
+let p=0
+let t=0
+
+let counter=setInterval(()=>{
+
+if(p<10000){
+p+=200
+this.patients=p+"+"
+}
+
+if(t<25000){
+t+=500
+this.testsDone=t+"+"
+}
+
+if(p>=10000 && t>=25000){
+clearInterval(counter)
+}
+
+},40)
+
+},
+
+handleSwipe(e){
+
+let endX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX
+
+if(this.startX - endX > 50){
+this.activeBanner = (this.activeBanner + 1) % this.banners.length
+}
+
+if(endX - this.startX > 50){
+this.activeBanner = (this.activeBanner - 1 + this.banners.length) % this.banners.length
+}
+
+},
 
 setInterval(()=>{
 this.activeBanner=(this.activeBanner+1)%this.banners.length
@@ -663,26 +869,77 @@ class="fixed bottom-6 right-6 bg-green-500 text-white p-4 rounded-full shadow-2x
 <i class="fa-brands fa-whatsapp"></i>
 </a>
     <div x-show="bookingOpen" x-cloak
-class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+class="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
 
-<div class="bg-white p-8 rounded-xl w-[350px]">
+<div class="bg-white rounded-xl overflow-hidden shadow-2xl flex w-[700px]">
 
-<h3 class="text-xl font-black text-brand mb-4">Book Test</h3>
+<!-- Left Side -->
 
-<input placeholder="Your Name"
-class="w-full border p-2 mb-3">
+<div class="bg-brand text-white p-8 w-1/2 flex flex-col justify-between">
 
-<input placeholder="Phone Number"
-class="w-full border p-2 mb-3">
+<div>
 
-<button class="bg-accent text-white w-full py-2 font-bold">
-Submit
+<h2 class="text-2xl font-black mb-3">
+Login
+</h2>
+
+<p class="text-sm opacity-80">
+Get access to your reports, bookings and health packages
+</p>
+
+</div>
+
+<i class="fa-solid fa-heart-pulse text-6xl opacity-30"></i>
+
+</div>
+
+<!-- Right Side -->
+<div class="p-8 w-1/2">
+
+<div class="flex gap-6 mb-6 font-bold text-sm">
+
+<button class="text-brand border-b-2 border-brand pb-1">
+Login
 </button>
 
-<button @click="bookingOpen=false"
-class="mt-3 text-sm text-gray-500">
-Cancel
+<button class="text-gray-400 hover:text-brand">
+Register
 </button>
+
+</div>
+
+<input 
+placeholder="Enter Mobile Number"
+class="w-full border-b p-2 mb-6 outline-none">
+
+<button 
+class="bg-accent text-white w-full py-3 font-bold rounded hover:scale-105 transition">
+
+Request OTP
+
+</button>
+
+<p class="text-xs text-gray-500 mt-4">
+
+By continuing you agree to our Terms & Privacy Policy
+
+</p>
+
+<p class="text-sm text-brand mt-6 font-bold cursor-pointer">
+
+New User? Create Account
+
+</p>
+
+<button
+@click="bookingOpen=false"
+class="absolute top-4 right-4 text-gray-400 text-xl">
+
+×
+
+</button>
+
+</div>
 
 </div>
 
