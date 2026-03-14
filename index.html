@@ -26,6 +26,47 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     </script>
 
     <style>
+        .premium-card{
+position:relative;
+overflow:hidden;
+}
+
+.premium-card::after{
+content:'';
+position:absolute;
+top:0;
+left:-100%;
+width:100%;
+height:100%;
+background:linear-gradient(120deg,transparent,rgba(255,255,255,.6),transparent);
+transition:all .6s;
+}
+
+.premium-card:hover::after{
+left:100%;
+}
+        .scroll-hide{
+scroll-behavior:smooth;
+}
+        .premium-card{
+background:#fff;
+border-radius:18px;
+border:1px solid #edf1f7;
+transition:all .35s ease;
+box-shadow:0 10px 30px rgba(0,0,0,0.06);
+}
+
+.premium-card:hover{
+transform:translateY(-10px) scale(1.03);
+box-shadow:0 25px 60px rgba(0,0,0,0.18);
+}
+        .trending-card img{
+transition:transform .4s ease;
+}
+
+.trending-card:hover img{
+transform:scale(1.08);
+}
         body{
 animation:fadePage .6s ease;
 }
@@ -49,18 +90,6 @@ transform:translateY(-3px);
 box-shadow:0 10px 25px rgba(0,0,0,0.15);
 }
 
-.premium-card{
-background:#fff;
-border-radius:18px;
-border:1px solid #edf1f7;
-transition:all .35s ease;
-box-shadow:0 10px 30px rgba(0,0,0,0.06);
-}
-
-.premium-card:hover{
-transform:translateY(-10px) scale(1.02);
-box-shadow:0 25px 60px rgba(0,0,0,0.15);
-}
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         html{
 scroll-behavior:smooth;
@@ -80,19 +109,17 @@ box-shadow:0 4px 20px rgba(0,0,0,0.05);
         .footer-link { font-size: 12px; font-weight: 500; color: #fff; transition: 0.2s; opacity: 0.8; }
         .footer-link:hover { opacity: 1; text-decoration: underline; }
         .cat-icon-wrapper{
-width:78px;
-height:78px;
-border-radius:50%;
-background:linear-gradient(145deg,#ffffff,#eef3ff);
-box-shadow:0 10px 25px rgba(0,0,0,0.08);
+width:72px;
+height:72px;
+border-radius:18px;
+background:#ffffff;
+box-shadow:0 12px 25px rgba(0,0,0,0.08);
 display:flex;
 align-items:center;
 justify-content:center;
 margin-bottom:10px;
 transition:all .35s ease;
-border:2px solid transparent;
 }
-
 .cat-item:hover .cat-icon-wrapper{
 transform:translateY(-6px) scale(1.08);
 box-shadow:0 18px 45px rgba(0,0,0,0.18);
@@ -322,8 +349,7 @@ x-transition:enter-start="opacity-0 scale-105"
 x-transition:enter-end="opacity-100 scale-100"
 class="absolute inset-0">
 
-    <img :src="banner.img"
-class="w-full h-full object-cover brightness-[0.8] scale-105 transition duration-[7000ms]">
+    <img :src="banner.img"class="w-full h-full object-cover brightness-[0.8] transition-transform duration-[8000ms] group-hover:scale-110"
 
 <div class="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent"></div>
 
@@ -384,6 +410,121 @@ class="h-3 rounded-full cursor-pointer transition-all duration-300">
 </span>
 
 </div>
+    <section class="max-w-[1400px] mx-auto px-6 py-10">
+
+<h2 class="text-2xl font-black text-brand mb-6 uppercase">
+Most Booked Tests
+</h2>
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+
+<!-- CBC -->
+
+<div class="premium-card p-6 text-center">
+<img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=500"
+class="w-full h-28 object-cover rounded-lg mb-4">
+
+<h3 class="font-bold text-brand">
+CBC Test
+</h3>
+
+<p class="text-xs text-gray-500 mb-3">
+Complete Blood Count
+</p>
+
+<p class="text-xl font-black text-accent mb-3">
+₹299
+</p>
+
+<button
+@click="bookingOpen=true"
+class="bg-gradient-to-r from-brand to-accent text-white px-4 py-2 text-xs font-black rounded">
+Book Now
+</button>
+
+</div>
+
+<!-- THYROID -->
+
+<div class="premium-card p-6 text-center">
+<img src="https://images.unsplash.com/photo-1579154204601-01588f351e67?q=80&w=500"
+class="w-full h-28 object-cover rounded-lg mb-4">
+
+<h3 class="font-bold text-brand">
+Thyroid Test
+</h3>
+
+<p class="text-xs text-gray-500 mb-3">
+T3 • T4 • TSH
+</p>
+
+<p class="text-xl font-black text-accent mb-3">
+₹399
+</p>
+
+<button
+@click="bookingOpen=true"
+class="bg-gradient-to-r from-brand to-accent text-white px-4 py-2 text-xs font-black rounded">
+Book Now
+</button>
+
+</div>
+
+<!-- DIABETES -->
+
+<div class="premium-card p-6 text-center">
+<img src="https://images.unsplash.com/photo-1579165466949-3180a3d056d1?q=80&w=500"
+class="w-full h-28 object-cover rounded-lg mb-4">
+
+<h3 class="font-bold text-brand">
+Diabetes Test
+</h3>
+
+<p class="text-xs text-gray-500 mb-3">
+HbA1c Test
+</p>
+
+<p class="text-xl font-black text-accent mb-3">
+₹499
+</p>
+
+<button
+@click="bookingOpen=true"
+class="bg-gradient-to-r from-brand to-accent text-white px-4 py-2 text-xs font-black rounded">
+Book Now
+</button>
+
+</div>
+
+<!-- VITAMIN D -->
+
+<div class="premium-card p-6 text-center">
+<img src="https://images.unsplash.com/photo-1581093458791-9d15482442f6?q=80&w=500"
+class="w-full h-28 object-cover rounded-lg mb-4">
+
+<h3 class="font-bold text-brand">
+Vitamin D Test
+</h3>
+
+<p class="text-xs text-gray-500 mb-3">
+Bone Health Test
+</p>
+
+<p class="text-xl font-black text-accent mb-3">
+₹699
+</p>
+
+<button
+@click="bookingOpen=true"
+class="bg-gradient-to-r from-brand to-accent text-white px-4 py-2 text-xs font-black rounded">
+Book Now
+</button>
+
+</div>
+
+</div>
+
+</section>
 <section class="max-w-[1400px] mx-auto px-6 py-10">
 
 <div class="grid md:grid-cols-3 gap-6">
@@ -585,6 +726,54 @@ Based on 500+ Patient Reviews
 </div>
 
 </section>
+    <section class="bg-slate-50 py-16">
+
+<div class="max-w-[1200px] mx-auto grid md:grid-cols-2 gap-10 items-center">
+
+<img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=900"
+class="rounded-2xl shadow-xl">
+
+<div>
+
+<h2 class="text-3xl font-black text-brand mb-4">
+Meet Our Expert Pathologist
+</h2>
+
+<p class="text-gray-600 mb-6">
+LifeSure Diagnostics is managed by <b>Mohd Tauheed, M.Sc.</b> with years of
+experience in pathology and clinical diagnostics. Our laboratory ensures
+accurate reports with modern diagnostic technology.
+</p>
+
+<div class="grid grid-cols-2 gap-4 text-sm">
+
+<div class="premium-card p-4 text-center">
+<h3 class="font-black text-xl text-accent">10+</h3>
+<p>Years Experience</p>
+</div>
+
+<div class="premium-card p-4 text-center">
+<h3 class="font-black text-xl text-accent">25K+</h3>
+<p>Tests Done</p>
+</div>
+
+<div class="premium-card p-4 text-center">
+<h3 class="font-black text-xl text-accent">10K+</h3>
+<p>Patients</p>
+</div>
+
+<div class="premium-card p-4 text-center">
+<h3 class="font-black text-xl text-accent">99%</h3>
+<p>Accuracy</p>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
 
 <!-- WHY CHOOSE SECTION -->
     <section class="py-16 bg-white">
@@ -593,33 +782,29 @@ Based on 500+ Patient Reviews
 
 <h2 class="text-2xl font-black text-brand mb-10">Patient Reviews</h2>
 
-<div class="grid md:grid-cols-3 gap-8">
+<div class="grid md:grid-cols-4 gap-8 text-center">
 
 <div class="premium-card p-6">
-<p class="text-sm text-gray-600">
-Very accurate reports and quick service.
-</p>
-<h4 class="font-bold mt-4">Rahul Sharma</h4>
+<i class="fa-solid fa-vial text-3xl text-accent mb-4"></i>
+<p class="font-bold">Accurate Reports</p>
 </div>
 
 <div class="premium-card p-6">
-<p class="text-sm text-gray-600">
-Home sample collection was very convenient.
-</p>
-<h4 class="font-bold mt-4">Ayesha Khan</h4>
+<i class="fa-solid fa-truck-medical text-3xl text-accent mb-4"></i>
+<p class="font-bold">Free Home Collection</p>
 </div>
 
 <div class="premium-card p-6">
-<p class="text-sm text-gray-600">
-Best diagnostic lab in our area.
-</p>
-<h4 class="font-bold mt-4">Vikas Patel</h4>
+<i class="fa-solid fa-bolt text-3xl text-accent mb-4"></i>
+<p class="font-bold">Fast Results</p>
+</div>
+
+<div class="premium-card p-6">
+<i class="fa-solid fa-user-group text-3xl text-accent mb-4"></i>
+<p class="font-bold">Happy Patients</p>
 </div>
 
 </div>
-
-</div>
-
 </section>
 
 <section class="bg-white py-14">
@@ -654,7 +839,7 @@ Best diagnostic lab in our area.
 
 </div>
 </section>
-    <section class="max-w-[1400px] mx-auto px-6 py-10">
+   <section class="max-w-[1400px] mx-auto px-6 py-10">
 
 <h2 class="text-xl md:text-2xl font-black text-brand mb-6 uppercase">
 Trending Tests
@@ -662,37 +847,47 @@ Trending Tests
 
 <div class="flex gap-6 overflow-x-auto pb-4 scroll-hide snap-x snap-mandatory">
 
-<div class="min-w-[220px] premium-card p-5 text-center">
-<img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b"
-class="min-w-[220px] premium-card p-5 text-center snap-start">
+<!-- CBC -->
+
+<div class="min-w-[220px] premium-card p-4 text-center snap-start trending-card">
+<img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=600"
+class="w-full h-28 object-cover rounded mb-3">
 <h3 class="font-bold text-brand">CBC Test</h3>
 <p class="text-sm text-gray-500">Complete Blood Count</p>
 </div>
 
-<div class="min-w-[220px] premium-card p-5 text-center">
-<img src="https://images.unsplash.com/photo-1581093588401-22c1f7b9b1d0?q=80&w=400"
-class="min-w-[220px] premium-card p-5 text-center snap-start">
+<!-- THYROID -->
+
+<div class="min-w-[220px] premium-card p-4 text-center snap-start trending-card">
+<img src="https://images.unsplash.com/photo-1579154204601-01588f351e67?q=80&w=600"
+class="w-full h-32 object-cover rounded-lg mb-3">
 <h3 class="font-bold text-brand">Thyroid Test</h3>
 <p class="text-sm text-gray-500">T3 • T4 • TSH</p>
 </div>
 
-<div class="min-w-[220px] premium-card p-5 text-center">
-<img src="https://images.unsplash.com/photo-1579154204601-01588f351e67?q=80&w=400"
-class="min-w-[220px] premium-card p-5 text-center snap-start">
+<!-- VITAMIN D -->
+
+<div class="min-w-[220px] premium-card p-4 text-center snap-start trending-card">
+<img src="https://images.unsplash.com/photo-1581093458791-9d15482442f6?q=80&w=600"
+class="w-full h-32 object-cover rounded-lg mb-3">
 <h3 class="font-bold text-brand">Vitamin D</h3>
 <p class="text-sm text-gray-500">Bone Health Test</p>
 </div>
 
-<div class="min-w-[220px] premium-card p-5 text-center">
-<img src="https://images.unsplash.com/photo-1579154204601-01588f351e67"
-class="min-w-[220px] premium-card p-5 text-center snap-start">
+<!-- DIABETES -->
+
+<div class="min-w-[220px] premium-card p-4 text-center snap-start trending-card">
+<img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=600"
+class="w-full h-32 object-cover rounded-lg mb-3">
 <h3 class="font-bold text-brand">Diabetes Test</h3>
 <p class="text-sm text-gray-500">HbA1c Test</p>
 </div>
 
-<div class="min-w-[220px] premium-card p-5 text-center">
-<img src="https://images.unsplash.com/photo-1581595219315-a187dd40c322"
-class="min-w-[220px] premium-card p-5 text-center snap-start">
+<!-- LIPID -->
+
+<div class="min-w-[220px] premium-card p-4 text-center snap-start trending-card">
+<img src="https://images.unsplash.com/photo-1579165466949-3180a3d056d1?q=80&w=600"
+class="w-full h-32 object-cover rounded-lg mb-3">
 <h3 class="font-bold text-brand">Lipid Profile</h3>
 <p class="text-sm text-gray-500">Cholesterol Test</p>
 </div>
@@ -891,31 +1086,31 @@ startX:0,
 banners:[
 
 {
-img:"https://images.unsplash.com/photo-1579154204601-01588f351e67?q=80&w=1920",
+img:"https://images.unsplash.com/photo-1581595219315-a187dd40c322?q=80&w=1920",
 tag:"Health Offer",
 title:"FULL BODY CHECKUP <br> STARTING ₹999"
 },
 
 {
-img:"https://images.unsplash.com/photo-1580281657521-0c9c1a0f0c2b?q=80&w=1920",
+img:"https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=1920",
 tag:"Limited Offer",
 title:"UPTO 30% OFF <br> ON BLOOD TESTS"
 },
 
 {
-img:"https://images.unsplash.com/photo-1581595219315-a187dd40c322?q=80&w=1920",
+img:"https://images.unsplash.com/photo-1579154204601-01588f351e67?q=80&w=1920",
 tag:"Expert Care",
 title:"FREE HOME SAMPLE <br> COLLECTION"
 },
 
 {
-img:"https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=1920",
+img:"https://images.unsplash.com/photo-1579165466949-3180a3d056d1?q=80&w=1920",
 tag:"Trusted Lab",
 title:"FAST & ACCURATE <br> REPORTS"
 },
 
 {
-img:"https://images.unsplash.com/photo-1579165466949-3180a3d056d1?q=80&w=1920",
+img:"https://images.unsplash.com/photo-1581093458791-9d15482442f6?q=80&w=1920",
 tag:"Advanced Testing",
 title:"MODERN DIAGNOSTIC <br> TECHNOLOGY"
 }
