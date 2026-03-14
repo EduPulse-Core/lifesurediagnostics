@@ -55,7 +55,25 @@ box-shadow:0 4px 20px rgba(0,0,0,0.05);
 }
         .footer-link { font-size: 12px; font-weight: 500; color: #fff; transition: 0.2s; opacity: 0.8; }
         .footer-link:hover { opacity: 1; text-decoration: underline; }
-        .cat-icon-wrapper { width: 64px; height: 64px; border-radius: 50%; background: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.08); display: flex; align-items: center; justify-content: center; margin-bottom: 8px; transition: 0.3s; }
+        .cat-icon-wrapper{
+width:72px;
+height:72px;
+border-radius:50%;
+background:linear-gradient(145deg,#ffffff,#eef3ff);
+box-shadow:0 10px 25px rgba(0,0,0,0.08);
+display:flex;
+align-items:center;
+justify-content:center;
+margin-bottom:10px;
+transition:all .35s ease;
+border:2px solid transparent;
+}
+
+.cat-item:hover .cat-icon-wrapper{
+transform:translateY(-6px) scale(1.08);
+box-shadow:0 18px 45px rgba(0,0,0,0.18);
+border-color:#1FA463;
+}
         .premium-card{
 background:#fff;
 border:1px solid #eef2f7;
@@ -237,7 +255,8 @@ class="p-3 hover:bg-gray-100 cursor-pointer text-sm border-b">
 
     <section class="max-w-[1400px] mx-auto px-0 md:px-4 mt-4">
        <div 
-class="relative h-[240px] md:h-[420px]"bg-slate-800 md:rounded-xl overflow-hidden group shadow-2xl transition-all duration-700"
+<div
+class="relative h-[240px] md:h-[420px] bg-slate-800 md:rounded-xl overflow-hidden group shadow-2xl transition-all duration-700"
 @touchstart="startX = $event.touches[0].clientX"
 @touchend="handleSwipe($event)"
 @mousedown="startX = $event.clientX"
@@ -260,7 +279,7 @@ x-transition:enter-start="opacity-0 scale-105"
 x-transition:enter-end="opacity-100 scale-100"
 class="absolute inset-0">
 
-<img :src="banner.img" class="w-full h-full object-cover brightness-[0.6]">
+<img :src="banner.img" class="w-full h-full object-cover brightness-[0.75] scale-105 transition duration-[6000ms]">
 
 <div class="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent"></div>
 
