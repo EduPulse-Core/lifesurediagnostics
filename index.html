@@ -26,16 +26,40 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     </script>
 
     <style>
-        .premium-card:hover{
-transform:translateY(-8px) scale(1.03);
-box-shadow:0 20px 50px rgba(10,90,140,0.25);
+        body{
+animation:fadePage .6s ease;
 }
-        button{
-transition:all 0.3s ease;
+
+@keyframes fadePage{
+from{
+opacity:0;
+transform:translateY(10px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+       button{
+transition:all .25s ease;
 }
 
 button:hover{
-box-shadow:0 6px 20px rgba(31,164,99,0.4);
+transform:translateY(-3px);
+box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+
+.premium-card{
+background:#fff;
+border-radius:18px;
+border:1px solid #edf1f7;
+transition:all .35s ease;
+box-shadow:0 10px 30px rgba(0,0,0,0.06);
+}
+
+.premium-card:hover{
+transform:translateY(-10px) scale(1.02);
+box-shadow:0 25px 60px rgba(0,0,0,0.15);
 }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         html{
@@ -56,8 +80,8 @@ box-shadow:0 4px 20px rgba(0,0,0,0.05);
         .footer-link { font-size: 12px; font-weight: 500; color: #fff; transition: 0.2s; opacity: 0.8; }
         .footer-link:hover { opacity: 1; text-decoration: underline; }
         .cat-icon-wrapper{
-width:72px;
-height:72px;
+width:78px;
+height:78px;
 border-radius:50%;
 background:linear-gradient(145deg,#ffffff,#eef3ff);
 box-shadow:0 10px 25px rgba(0,0,0,0.08);
@@ -74,12 +98,32 @@ transform:translateY(-6px) scale(1.08);
 box-shadow:0 18px 45px rgba(0,0,0,0.18);
 border-color:#1FA463;
 }
+
+.cat-icon-wrapper i{
+font-size:34px;
+color:#0A5A8C;
+transition:all .35s ease;
+}
+
+.cat-item:hover i{
+color:#1FA463;
+transform:scale(1.15);
+}
+
+.cat-item{
+transition:all .3s ease;
+}
+
+.cat-item:hover{
+transform:translateY(-4px);
+}
+
         .premium-card{
 background:#fff;
-border:1px solid #eef2f7;
-border-radius:16px;
-transition:all 0.35s ease;
-box-shadow:0 6px 20px rgba(0,0,0,0.05);
+border-radius:18px;
+border:1px solid #edf1f7;
+transition:all .35s ease;
+box-shadow:0 10px 30px rgba(0,0,0,0.06);
 }
     
         .premium-card:hover{
@@ -121,14 +165,14 @@ color:#1FA463;
 }
 
 .cat-icon-wrapper i{
-font-size:26px;
+font-size:34px;
 color:#0A5A8C;
-transition:all 0.3s ease;
+transition:all .35s ease;
 }
 
-.cat-icon-wrapper:hover i{
+.cat-item:hover i{
 color:#1FA463;
-transform:scale(1.1);
+transform:scale(1.15);
 }
 
 button:hover{
@@ -186,7 +230,7 @@ padding:18px;
 type="text"
 x-model="search"
 placeholder="Search for blood tests, health packages and more"
-class="w-full bg-[#f0f5ff] rounded-sm py-2 px-4 pr-12 text-sm font-medium outline-none border border-transparent focus:bg-white focus:border-brand/20 transition-all shadow-inner">
+class="w-full bg-white rounded-lg py-3 px-5 pr-12 text-sm font-medium outline-none border border-gray-200 focus:border-accent focus:ring-2 focus:ring-accent/30 transition-all shadow-sm">
 
 <button class="absolute right-0 top-0 bottom-0 px-4 bg-brand text-white rounded-r-sm">
 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -247,7 +291,7 @@ class="p-3 hover:bg-gray-100 cursor-pointer text-sm border-b">
 
                 
                     </div>
-                    <span :class="activeDept === cat.name ? 'text-accent font-black' : 'text-slate-600 font-bold'" class="text-[10px] uppercase tracking-widest" x-text="cat.name"></span>
+                    <span :class="activeDept === cat.name ? 'text-accent font-black' : 'text-slate-600 font-bold'" class="text-[11px] font-bold tracking-wide" x-text="cat.name"></span>
                 </div>
             </template>
         </div>
@@ -255,7 +299,6 @@ class="p-3 hover:bg-gray-100 cursor-pointer text-sm border-b">
 
     <section class="max-w-[1400px] mx-auto px-0 md:px-4 mt-4">
        <div 
-<div
 class="relative h-[240px] md:h-[420px] bg-slate-800 md:rounded-xl overflow-hidden group shadow-2xl transition-all duration-700"
 @touchstart="startX = $event.touches[0].clientX"
 @touchend="handleSwipe($event)"
@@ -279,7 +322,8 @@ x-transition:enter-start="opacity-0 scale-105"
 x-transition:enter-end="opacity-100 scale-100"
 class="absolute inset-0">
 
-<img :src="banner.img" class="w-full h-full object-cover brightness-[0.75] scale-105 transition duration-[6000ms]">
+    <img :src="banner.img"
+class="w-full h-full object-cover brightness-[0.8] scale-105 transition duration-[7000ms]">
 
 <div class="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent"></div>
 
@@ -397,7 +441,7 @@ Trusted by thousands of patients
 </section>
     <section class="max-w-[1400px] mx-auto px-6 py-10">
 
-<h2 class="text-xl md:text-2xl font-black text-brand mb-8 uppercase">
+<h2 class="text-xl md:text-3xl font-extrabold text-brand mb-10 tracking-tight">
 Popular Test Categories
 </h2>
 
@@ -616,41 +660,39 @@ Best diagnostic lab in our area.
 Trending Tests
 </h2>
 
-<div class="flex gap-6 overflow-x-auto pb-4 scroll-hide">
+<div class="flex gap-6 overflow-x-auto pb-4 scroll-hide snap-x snap-mandatory">
 
 <div class="min-w-[220px] premium-card p-5 text-center">
 <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b"
-class="w-full h-28 object-cover rounded mb-3">
+class="min-w-[220px] premium-card p-5 text-center snap-start">
 <h3 class="font-bold text-brand">CBC Test</h3>
 <p class="text-sm text-gray-500">Complete Blood Count</p>
 </div>
 
 <div class="min-w-[220px] premium-card p-5 text-center">
 <img src="https://images.unsplash.com/photo-1581093588401-22c1f7b9b1d0?q=80&w=400"
-class="w-full h-28 object-cover rounded mb-3">
-class="w-full h-28 object-cover rounded mb-3">
+class="min-w-[220px] premium-card p-5 text-center snap-start">
 <h3 class="font-bold text-brand">Thyroid Test</h3>
 <p class="text-sm text-gray-500">T3 • T4 • TSH</p>
 </div>
 
 <div class="min-w-[220px] premium-card p-5 text-center">
 <img src="https://images.unsplash.com/photo-1579154204601-01588f351e67?q=80&w=400"
-class="w-full h-28 object-cover rounded mb-3">
-class="w-full h-28 object-cover rounded mb-3">
+class="min-w-[220px] premium-card p-5 text-center snap-start">
 <h3 class="font-bold text-brand">Vitamin D</h3>
 <p class="text-sm text-gray-500">Bone Health Test</p>
 </div>
 
 <div class="min-w-[220px] premium-card p-5 text-center">
 <img src="https://images.unsplash.com/photo-1579154204601-01588f351e67"
-class="w-full h-28 object-cover rounded mb-3">
+class="min-w-[220px] premium-card p-5 text-center snap-start">
 <h3 class="font-bold text-brand">Diabetes Test</h3>
 <p class="text-sm text-gray-500">HbA1c Test</p>
 </div>
 
 <div class="min-w-[220px] premium-card p-5 text-center">
 <img src="https://images.unsplash.com/photo-1581595219315-a187dd40c322"
-class="w-full h-28 object-cover rounded mb-3">
+class="min-w-[220px] premium-card p-5 text-center snap-start">
 <h3 class="font-bold text-brand">Lipid Profile</h3>
 <p class="text-sm text-gray-500">Cholesterol Test</p>
 </div>
@@ -867,13 +909,13 @@ title:"FREE HOME SAMPLE <br> COLLECTION"
 },
 
 {
-img:"https://images.unsplash.com/photo-1581091215367-59ab6c1f0f9d?q=80&w=1920",
+img:"https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=1920",
 tag:"Trusted Lab",
 title:"FAST & ACCURATE <br> REPORTS"
 },
 
 {
-img:"https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1920",
+img:"https://images.unsplash.com/photo-1579165466949-3180a3d056d1?q=80&w=1920",
 tag:"Advanced Testing",
 title:"MODERN DIAGNOSTIC <br> TECHNOLOGY"
 }
@@ -921,9 +963,9 @@ title:"MODERN DIAGNOSTIC <br> TECHNOLOGY"
 
 init(){
 
-setInterval(()=>{
-this.activeBanner=(this.activeBanner+1)%this.banners.length
-},6000)
+    setInterval(()=>{
+this.activeBanner = (this.activeBanner + 1) % this.banners.length
+},5000)
 
 // animated counters
 let p=0
