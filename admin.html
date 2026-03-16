@@ -10,6 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 
@@ -18,7 +19,7 @@ font-family:Poppins;
 background:#f5f7fb;
 }
 
-/* RGB Glow Cards */
+/* RGB glow border */
 
 .rgb-card{
 background:white;
@@ -26,39 +27,55 @@ border-radius:16px;
 padding:20px;
 position:relative;
 overflow:hidden;
-box-shadow:0 10px 25px rgba(0,0,0,0.08);
+box-shadow:0 10px 30px rgba(0,0,0,0.08);
+transition:0.3s;
+}
+
+.rgb-card:hover{
+transform:translateY(-5px);
 }
 
 .rgb-card::before{
 content:'';
 position:absolute;
 inset:-2px;
-background:linear-gradient(45deg,#00ffcc,#00aaff,#8b5cf6,#ff00cc);
+background:linear-gradient(45deg,#00ffd0,#00aaff,#8b5cf6,#ff00cc);
 z-index:-1;
-filter:blur(10px);
-opacity:.3;
+filter:blur(12px);
+opacity:.35;
 }
 
 /* Sidebar */
 
 .sidebar{
 background:white;
-box-shadow:0 10px 20px rgba(0,0,0,.1);
+box-shadow:0 10px 30px rgba(0,0,0,0.1);
 }
 
 /* RGB Button */
 
 .rgb-btn{
-background:linear-gradient(45deg,#00ffcc,#00aaff,#8b5cf6);
+background:linear-gradient(45deg,#00ffd0,#00aaff,#8b5cf6);
 color:white;
 font-weight:600;
 padding:10px 20px;
 border-radius:10px;
-transition:.3s;
+transition:0.3s;
 }
 
 .rgb-btn:hover{
 transform:scale(1.05);
+}
+
+/* Scrollbar */
+
+::-webkit-scrollbar{
+width:6px;
+}
+
+::-webkit-scrollbar-thumb{
+background:#ccc;
+border-radius:10px;
 }
 
 </style>
@@ -71,11 +88,17 @@ transform:scale(1.05);
 
 <div class="sidebar w-64 min-h-screen p-6 hidden md:block">
 
-<h1 class="text-2xl font-bold text-green-600 mb-10">
+<div class="flex items-center gap-3 mb-10">
 
-LifeSure Admin
+<img src="logo.png" class="w-10">
+
+<h1 class="text-xl font-bold text-green-600">
+
+LifeSure
 
 </h1>
+
+</div>
 
 <ul class="space-y-4 font-medium">
 
@@ -93,7 +116,7 @@ LifeSure Admin
 
 </div>
 
-<!-- Main Content -->
+<!-- Main -->
 
 <div class="flex-1 p-6">
 
@@ -107,7 +130,7 @@ Dashboard
 
 </h2>
 
-<div class="flex gap-4 items-center">
+<div class="flex items-center gap-4">
 
 <button class="rgb-btn">
 
@@ -121,63 +144,63 @@ AI Assistant
 
 </div>
 
-<!-- Stats Cards -->
+<!-- Stats -->
 
 <div class="grid md:grid-cols-4 gap-6 mb-6">
 
 <div class="rgb-card">
 
-<h3 class="text-gray-500">Today's Patients</h3>
-
-<p class="text-3xl font-bold">18</p>
-
-</div>
-
-<div class="rgb-card">
-
-<h3 class="text-gray-500">Revenue</h3>
-
-<p class="text-3xl font-bold text-green-600">₹6,250</p>
+<p class="text-gray-500">Today's Patients</p>
+<h2 class="text-3xl font-bold">18</h2>
 
 </div>
 
 <div class="rgb-card">
 
-<h3 class="text-gray-500">Profit</h3>
-
-<p class="text-3xl font-bold text-blue-600">₹4,100</p>
+<p class="text-gray-500">Revenue</p>
+<h2 class="text-3xl font-bold text-green-600">₹6,250</h2>
 
 </div>
 
 <div class="rgb-card">
 
-<h3 class="text-gray-500">Pending Reports</h3>
+<p class="text-gray-500">Profit</p>
+<h2 class="text-3xl font-bold text-blue-600">₹4,100</h2>
 
-<p class="text-3xl font-bold text-red-500">3</p>
+</div>
+
+<div class="rgb-card">
+
+<p class="text-gray-500">Pending Reports</p>
+<h2 class="text-3xl font-bold text-red-500">3</h2>
 
 </div>
 
 </div>
 
-<!-- Earnings Graph Area -->
+<!-- Charts -->
 
-<div class="rgb-card mb-6">
+<div class="grid md:grid-cols-2 gap-6 mb-6">
 
-<h3 class="font-semibold mb-4">
+<div class="rgb-card">
 
-Earnings Overview
+<h3 class="font-semibold mb-4">Earnings Overview</h3>
 
-</h3>
+<canvas id="earningsChart"></canvas>
 
-<div class="h-40 flex items-center justify-center text-gray-400">
+</div>
 
-Graph will appear here
+<div class="rgb-card">
+
+<h3 class="font-semibold mb-4">Patients Growth</h3>
+
+<canvas id="patientsChart"></canvas>
 
 </div>
 
 </div>
 
-<!-- AI Assistant Panel -->
+<!-- AI Panel -->
 
 <div class="rgb-card">
 
@@ -189,8 +212,8 @@ AI Assistant
 
 <input
 type="text"
-placeholder="Ask AI to generate report..."
-class="border p-3 w-full rounded-lg mb-3">
+placeholder="Ask AI: Generate CBC report for Rahul"
+class="border w-full p-3 rounded-lg mb-4">
 
 <button class="rgb-btn w-full">
 
@@ -201,6 +224,71 @@ Ask AI
 </div>
 
 </div>
+
+<script>
+
+/* Earnings Chart */
+
+new Chart(document.getElementById('earningsChart'),{
+
+type:'line',
+
+data:{
+labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+
+datasets:[{
+
+label:'Revenue',
+
+data:[1200,2100,1800,3000,2500,4000,6250],
+
+borderColor:'#00aaff',
+
+backgroundColor:'rgba(0,170,255,0.2)',
+
+tension:0.4,
+
+fill:true
+
+}]
+
+},
+
+options:{
+plugins:{legend:{display:false}}
+}
+
+})
+
+
+/* Patients Chart */
+
+new Chart(document.getElementById('patientsChart'),{
+
+type:'bar',
+
+data:{
+labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+
+datasets:[{
+
+label:'Patients',
+
+data:[5,8,7,10,9,12,18],
+
+backgroundColor:'#00ffd0'
+
+}]
+
+},
+
+options:{
+plugins:{legend:{display:false}}
+}
+
+})
+
+</script>
 
 </body>
 </html>
