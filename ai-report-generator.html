@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>LifeSure AI Report Generator</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+body{
+font-family:Poppins;
+background:#f5f7fb;
+}
+
+.card{
+background:white;
+border-radius:16px;
+padding:20px;
+box-shadow:0 10px 25px rgba(0,0,0,0.08);
+}
+
+.glow{
+background:linear-gradient(45deg,#00ffd0,#00aaff,#8b5cf6);
+color:white;
+font-weight:600;
+padding:10px 20px;
+border-radius:10px;
+}
+</style>
+
+</head>
+
+<body class="p-6">
+
+<h1 class="text-2xl font-bold mb-6 text-green-600">
+LifeSure AI Report Generator
+</h1>
+
+<div class="grid md:grid-cols-2 gap-6">
+
+<!-- Upload Section -->
+
+<div class="card">
+
+<h2 class="font-semibold mb-4">
+Upload Report File
+</h2>
+
+<input type="file"
+class="border p-3 w-full rounded-lg mb-4">
+
+<p class="text-sm text-gray-500 mb-4">
+Upload DOCX, PDF or TXT report. AI will read and analyze it.
+</p>
+
+<button class="glow w-full">
+Analyze Report
+</button>
+
+</div>
+
+<!-- Rough Input -->
+
+<div class="card">
+
+<h2 class="font-semibold mb-4">
+Enter Rough Test Values
+</h2>
+
+<textarea
+placeholder="Example:
+Hb = 8.5
+WBC = 14000
+Platelets = 1.2"
+class="border p-3 w-full h-40 rounded-lg mb-4"></textarea>
+
+<button class="glow w-full">
+Analyze Values
+</button>
+
+</div>
+
+</div>
+
+<!-- AI Analysis -->
+
+<div class="card mt-6">
+
+<h2 class="font-semibold mb-4">
+AI Analysis Preview
+</h2>
+
+<table class="w-full text-left border">
+
+<thead>
+<tr class="bg-gray-100">
+<th class="p-2">Test</th>
+<th class="p-2">Result</th>
+<th class="p-2">Range</th>
+<th class="p-2">Status</th>
+</tr>
+</thead>
+
+<tbody>
+
+<tr>
+<td class="p-2">Hemoglobin</td>
+<td class="p-2">8.5</td>
+<td class="p-2">13-17</td>
+<td class="p-2 text-red-500">Low</td>
+</tr>
+
+<tr>
+<td class="p-2">WBC</td>
+<td class="p-2">14000</td>
+<td class="p-2">4000-11000</td>
+<td class="p-2 text-red-500">High</td>
+</tr>
+
+<tr>
+<td class="p-2">Platelets</td>
+<td class="p-2">1.2</td>
+<td class="p-2">1.5-4.5</td>
+<td class="p-2 text-red-500">Low</td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<!-- AI Interpretation -->
+
+<div class="card mt-6">
+
+<h2 class="font-semibold mb-4">
+AI Interpretation
+</h2>
+
+<p class="text-gray-700">
+Hemoglobin is below normal range suggesting anemia. Elevated WBC count may indicate infection or inflammation. Platelet count is decreased which may increase bleeding risk. Clinical correlation advised.
+</p>
+
+</div>
+
+<!-- Generate Report -->
+
+<div class="card mt-6 text-center">
+
+<h2 class="font-semibold mb-4">
+Generate Final Report
+</h2>
+
+<button class="glow">
+Preview LifeSure Report
+</button>
+
+<button class="glow ml-4">
+Generate Final PDF
+</button>
+
+</div>
+
+</body>
+</html>
