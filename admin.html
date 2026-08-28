@@ -477,19 +477,58 @@ async function safeTable(table, columns="*"){
  if(error){console.error(table,error);return []}
  return data||[];
 }
+async function getAdminBookings(){
 
+  const { data, error } =
+    await supabaseClient.rpc("get_admin_bookings");
+
+  if(error){
+    console.error("Admin bookings error:", error);
+    return [];
+  }
+
+  return data || [];
+}
 async function loadData(){
- [
-  ["bookings","*"],["enquiries","*"],["patients","*"],["reports","*"],
-  ["payments","*"],["expenses","*"],["franchises","*"],["tests","*"],
-  ["staff","*"],["attendance","*"],["salary_payments","*"],
-  ["inventory_items","*"],["audit_logs","*"]
- ].forEach(async()=>{});
+
+  const [
+    bookings,enquiries,patients,reports,payments,expenses,
+    franchises,tests,staff,attendance,payroll,inventory,audit
+  ] = await Promise.all([
+    getAdminBookings(),
+    safeTable("enquiries"),
+    safeTable("patients"),
+    safeTable("reports"),
+    safeTable("payments"),
+    safeTable("expenses"),
+    safeTable("franchises"),
+    safeTable("tests"),
+    safeTable("staff"),
+    safeTable("attendance"),
+    safeTable("salary_payments"),
+    safeTable("inventory_items"),
+    safeTable("audit_logs")
+  ]);
+
+  state.bookings = bookings || [];
+  state.enquiries = enquiries || [];
+  state.patients = patients || [];
+  state.reports = reports || [];
+  state.payments = payments || [];
+  state.expenses = expenses || [];
+  state.franchises = franchises || [];
+  state.tests = tests || [];
+  state.staff = staff || [];
+  state.attendance = attendance || [];
+  state.payroll = payroll || [];
+  state.inventory = inventory || [];
+  state.audit = audit || [];
+}
  const [
   bookings,enquiries,patients,reports,payments,expenses,franchises,tests,
   staff,attendance,payroll,inventory,audit
  ]=await Promise.all([
-   safeTable("bookings"),safeTable("enquiries"),safeTable("patients"),safeTable("reports"),
+   getAdminBookings(),safeTable("enquiries"),safeTable("patients"),safeTable("reports"),
    safeTable("payments"),safeTable("expenses"),safeTable("franchises"),safeTable("tests"),
    safeTable("staff"),safeTable("attendance"),safeTable("salary_payments"),
    safeTable("inventory_items"),safeTable("audit_logs")
