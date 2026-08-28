@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#075985">
@@ -710,7 +711,25 @@
     function openWhatsApp(message){
       window.open("https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent(message),"_blank","noopener");
     }
+const SUPABASE_URL =
+  "https://evzgfprzxsgxsymvwsip.supabase.co";
 
+const SUPABASE_PUBLISHABLE_KEY =
+  "Psb_publishable_IJC51IW4TePmMzCsbJ7Vyw_6fkqqV67";
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY,
+    {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
+    }
+  );
+    
     $("bookingForm").addEventListener("submit",e=>{
       e.preventDefault();
       const name=$("name").value.trim();
