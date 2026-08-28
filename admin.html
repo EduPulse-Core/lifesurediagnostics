@@ -483,9 +483,18 @@ async function getAdminBookings() {
     await supabaseClient.rpc("get_admin_bookings");
 
   if (error) {
-    console.error("Admin bookings error:", error);
+
+    console.error("ADMIN BOOKINGS ERROR:", error);
+
+    showToast(
+      "Bookings error: " + error.message
+    );
+
     return [];
+
   }
+
+  console.log("ADMIN BOOKINGS DATA:", data);
 
   return data || [];
 }
