@@ -1,811 +1,307 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#082f49">
+  <title>LifeSure | Secure Clinical Portal</title>
 
-    <title>LifeSure | Secure Portal</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background:
-                radial-gradient(circle at 10% 10%, rgba(31,164,99,.18), transparent 35%),
-                radial-gradient(circle at 90% 90%, rgba(14,42,71,.22), transparent 40%),
-                #f4f8f7;
-        }
-
-        .glass {
-            background: rgba(255,255,255,.94);
-            backdrop-filter: blur(30px);
-            border: 1px solid rgba(255,255,255,.8);
-        }
-
-        .input {
-            transition: .25s ease;
-        }
-
-        .input:focus {
-            box-shadow: 0 0 0 4px rgba(31,164,99,.12);
-        }
-
-        .btn {
-            transition: .25s ease;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .btn:active {
-            transform: scale(.98);
-        }
-
-        [x-cloak] {
-            display: none !important;
-        }
-    </style>
+  <style>
+    :root{--navy:#082f49;--deep:#061d2d;--blue:#075985;--green:#16a765;--green2:#0b8d55;--mint:#e9f9f1;--ink:#102235;--muted:#64748b;--line:#e2e8f0;--bg:#f3f7fa;--danger:#b91c1c}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;font-family:Manrope,Arial,sans-serif;color:var(--ink);background:radial-gradient(circle at 10% 10%,rgba(22,167,101,.16),transparent 34%),radial-gradient(circle at 90% 90%,rgba(7,89,133,.17),transparent 38%),var(--bg)}
+    button,input{font:inherit}button{cursor:pointer}
+    .wrap{min-height:100vh;display:grid;place-items:center;padding:24px}
+    .shell{width:min(1000px,100%);display:grid;grid-template-columns:1.02fr .98fr;overflow:hidden;border:1px solid rgba(255,255,255,.75);border-radius:30px;background:rgba(255,255,255,.94);box-shadow:0 30px 100px rgba(6,29,45,.16)}
+    .visual{position:relative;padding:44px;color:#fff;background:linear-gradient(145deg,rgba(8,47,73,.97),rgba(7,89,133,.92)),url("https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=1400&q=85") center/cover;overflow:hidden}
+    .visual:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.08),rgba(0,0,0,.18));pointer-events:none}
+    .brand,.visual-content,.visual-bottom{position:relative;z-index:2}
+    .brand{display:flex;align-items:center;gap:11px}
+    .brand-mark{width:48px;height:48px;border-radius:15px;background:#fff;color:var(--green);display:grid;place-items:center;font-weight:900;font-size:20px;box-shadow:0 12px 30px rgba(0,0,0,.15)}
+    .brand strong{font:800 22px "Plus Jakarta Sans"}.brand strong span{color:#68e4a7}.brand small{display:block;color:#a6becb;font-size:8px;letter-spacing:2px;text-transform:uppercase;font-weight:800;margin-top:2px}
+    .visual-content{margin-top:100px}.eyebrow{display:inline-flex;align-items:center;gap:7px;padding:8px 11px;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
+    .visual h1{font:800 clamp(34px,4vw,56px)/1.02 "Plus Jakarta Sans";letter-spacing:-2px;margin:18px 0 15px}.visual p{max-width:560px;font-size:13px;line-height:1.8;color:#d9e7ef}
+    .mini-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:28px}.mini{padding:14px;border-radius:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1)}.mini b{display:block;font-size:11px}.mini span{display:block;font-size:8px;color:#a9c0cb;margin-top:3px}
+    .visual-bottom{position:absolute;left:44px;bottom:28px;color:#7f9cac;font-size:8px;letter-spacing:1.8px;text-transform:uppercase}
+    .panel{padding:38px 42px;background:#fff}.mode-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;background:#f1f5f9;border-radius:13px;margin-bottom:25px}
+    .mode-tabs button{border:0;background:transparent;padding:11px;border-radius:9px;color:#94a3b8;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1.3px}.mode-tabs button.active{background:#fff;color:var(--navy);box-shadow:0 3px 12px rgba(8,47,73,.08)}
+    .header{margin-bottom:23px}.header .badge{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;background:var(--mint);color:#087443;font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:1.3px}
+    .header h2{font:800 28px "Plus Jakarta Sans";color:var(--navy);letter-spacing:-.8px;margin:13px 0 5px}.header p{font-size:11px;color:#94a3b8;line-height:1.6;margin:0}
+    .msg{display:none;border-radius:12px;padding:11px 12px;font-size:10px;font-weight:700;margin-bottom:13px;line-height:1.5}.msg.show{display:block}.msg.error{background:#fff1f2;border:1px solid #fecdd3;color:var(--danger)}.msg.success{background:var(--mint);border:1px solid #bbf7d0;color:#166534}
+    .field{margin-bottom:14px}.field label{display:block;margin:0 0 6px 3px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1.4px;color:#64748b}
+    .input{width:100%;height:46px;border:1px solid var(--line);border-radius:12px;background:#f8fafc;padding:0 13px;outline:0;color:var(--ink);font-size:11px}.input:focus{border-color:#66c99a;background:#fff;box-shadow:0 0 0 3px rgba(22,167,101,.08)}
+    .password-wrap{position:relative}.password-wrap .input{padding-right:45px}.eye{position:absolute;right:5px;top:5px;height:36px;width:36px;border:0;background:transparent;color:#64748b;border-radius:9px}
+    .primary{width:100%;height:47px;border:0;border-radius:12px;background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:2px;box-shadow:0 12px 25px rgba(22,167,101,.18)}
+    .secondary{width:100%;height:44px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--navy);font-size:10px;font-weight:800}
+    .link-row{display:flex;justify-content:space-between;gap:8px;margin-top:10px}.link-btn{border:0;background:none;color:var(--blue);font-size:9px;font-weight:800;padding:0}
+    .note{font-size:9px;color:#94a3b8;line-height:1.6;text-align:center;margin-top:15px}.hidden{display:none!important}
+    .divider{display:flex;align-items:center;gap:9px;color:#cbd5e1;font-size:8px;text-transform:uppercase;letter-spacing:1px;margin:20px 0}.divider:before,.divider:after{content:"";height:1px;background:#eef2f5;flex:1}
+    .footer{text-align:center;margin-top:24px;color:#cbd5e1;font-size:8px;letter-spacing:1.7px;text-transform:uppercase;font-weight:800}
+    @media(max-width:800px){.shell{grid-template-columns:1fr}.visual{display:none}.panel{padding:28px 22px}.wrap{padding:12px}}
+  </style>
 </head>
-
 <body>
+<div class="wrap">
+  <div class="shell">
+    <aside class="visual">
+      <div class="brand"><div class="brand-mark">LS</div><div><strong>Life<span>Sure</span></strong><small>Diagnostics Hub</small></div></div>
+      <div class="visual-content">
+        <div class="eyebrow">● Secure clinical platform</div>
+        <h1>Your health.<br><span style="color:#68e4a7">Our responsibility.</span></h1>
+        <p>One secure entry point for LifeSure patients, staff and management. Access diagnostic services, reports and operational tools with role-based access.</p>
+        <div class="mini-grid"><div class="mini"><b>Bookings</b><span>Live workflow</span></div><div class="mini"><b>Reports</b><span>Secure access</span></div><div class="mini"><b>Management</b><span>Role based</span></div></div>
+      </div>
+      <div class="visual-bottom">LifeSure Diagnostics • Mumbai</div>
+    </aside>
 
-<div
-    class="min-h-screen flex items-center justify-center p-5"
-    x-data="lifeSureAuth()"
-    x-init="init()"
->
+    <main class="panel">
+      <div class="mode-tabs">
+        <button id="adminTab" class="active" onclick="setPortal('admin')">Admin</button>
+        <button id="staffTab" onclick="setPortal('staff')">Staff</button>
+        <button id="patientTab" onclick="setPortal('patient')">Patient</button>
+      </div>
 
-    <div class="glass w-full max-w-5xl rounded-[38px] shadow-2xl overflow-hidden grid md:grid-cols-2">
-
-        <!-- LEFT BRAND PANEL -->
-        <div class="hidden md:flex bg-[#0E2A47] text-white p-12 flex-col justify-between relative overflow-hidden">
-
-            <div class="relative z-10">
-
-                <div class="flex items-center gap-4 mb-12">
-                    <div class="w-14 h-14 rounded-2xl bg-white flex items-center justify-center">
-                        <span class="text-[#1FA463] text-2xl font-black">LS</span>
-                    </div>
-
-                    <div>
-                        <div class="font-extrabold text-xl">
-                            LifeSure
-                        </div>
-
-                        <div class="text-[9px] tracking-[.3em] text-white/50 uppercase">
-                            Diagnostics Hub
-                        </div>
-                    </div>
-                </div>
-
-                <div class="text-xs uppercase tracking-[.35em] text-emerald-300 font-bold mb-5">
-                    Secure Clinical Platform
-                </div>
-
-                <h1 class="text-5xl font-extrabold leading-tight tracking-tight">
-                    Your health.
-                    <br>
-                    <span class="text-emerald-400">Our responsibility.</span>
-                </h1>
-
-                <p class="text-white/60 mt-7 leading-7 max-w-md">
-                    Secure access to diagnostic bookings, reports,
-                    patient records and LifeSure management services.
-                </p>
-
-            </div>
-
-            <div class="relative z-10">
-
-                <div class="grid grid-cols-3 gap-3">
-
-                    <div class="bg-white/10 rounded-2xl p-4">
-                        <div class="text-emerald-300 font-bold text-lg">24/7</div>
-                        <div class="text-[9px] text-white/50 uppercase tracking-wider">
-                            Access
-                        </div>
-                    </div>
-
-                    <div class="bg-white/10 rounded-2xl p-4">
-                        <div class="text-emerald-300 font-bold text-lg">SSL</div>
-                        <div class="text-[9px] text-white/50 uppercase tracking-wider">
-                            Secure
-                        </div>
-                    </div>
-
-                    <div class="bg-white/10 rounded-2xl p-4">
-                        <div class="text-emerald-300 font-bold text-lg">NABL</div>
-                        <div class="text-[9px] text-white/50 uppercase tracking-wider">
-                            Ready
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="mt-7 text-[9px] text-white/30 uppercase tracking-[.25em]">
-                    LifeSure Diagnostics • Mumbai
-                </div>
-
-            </div>
-
-            <div class="absolute -right-32 -bottom-32 w-96 h-96 rounded-full bg-emerald-500/10 blur-3xl"></div>
-            <div class="absolute -left-32 top-1/3 w-72 h-72 rounded-full bg-blue-400/10 blur-3xl"></div>
-
+      <section id="loginView">
+        <div class="header">
+          <span class="badge">● Secure portal</span>
+          <h2 id="loginTitle">Welcome back</h2>
+          <p id="loginSubtitle">Sign in with your LifeSure Super Admin account.</p>
         </div>
-
-
-        <!-- RIGHT LOGIN PANEL -->
-        <div class="p-7 sm:p-10 md:p-14">
-
-            <!-- MOBILE BRAND -->
-            <div class="md:hidden flex items-center gap-3 mb-8">
-
-                <div class="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center">
-                    <span class="text-[#1FA463] font-black">LS</span>
-                </div>
-
-                <div>
-                    <div class="font-extrabold text-[#0E2A47] text-lg">
-                        LifeSure
-                    </div>
-
-                    <div class="text-[8px] uppercase tracking-[.25em] text-slate-400">
-                        Diagnostics Hub
-                    </div>
-                </div>
-
-            </div>
-
-
-            <!-- HEADER -->
-            <div class="mb-8">
-
-                <div class="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-emerald-50 text-[#1FA463] text-[9px] font-extrabold uppercase tracking-wider mb-4">
-                    <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                    Secure Portal
-                </div>
-
-                <h2 class="text-3xl font-extrabold text-[#0E2A47] tracking-tight">
-                    Welcome back
-                </h2>
-
-                <p class="text-slate-400 text-sm mt-2">
-                    Sign in to continue to LifeSure.
-                </p>
-
-            </div>
-
-
-            <!-- ROLE SELECTOR -->
-            <div class="grid grid-cols-3 gap-2 p-1.5 bg-slate-100 rounded-2xl mb-7">
-
-                <button
-                    type="button"
-                    @click="portal='admin'"
-                    :class="portal === 'admin'
-                        ? 'bg-white text-[#0E2A47] shadow-sm'
-                        : 'text-slate-400'"
-                    class="py-3 rounded-xl text-[9px] font-extrabold uppercase tracking-wider transition"
-                >
-                    Admin
-                </button>
-
-                <button
-                    type="button"
-                    @click="portal='staff'"
-                    :class="portal === 'staff'
-                        ? 'bg-white text-[#0E2A47] shadow-sm'
-                        : 'text-slate-400'"
-                    class="py-3 rounded-xl text-[9px] font-extrabold uppercase tracking-wider transition"
-                >
-                    Staff
-                </button>
-
-                <button
-                    type="button"
-                    @click="portal='patient'"
-                    :class="portal === 'patient'
-                        ? 'bg-white text-[#0E2A47] shadow-sm'
-                        : 'text-slate-400'"
-                    class="py-3 rounded-xl text-[9px] font-extrabold uppercase tracking-wider transition"
-                >
-                    Patient
-                </button>
-
-            </div>
-
-
-            <!-- ERROR -->
-            <div
-                x-show="error"
-                x-cloak
-                class="mb-5 p-4 rounded-2xl bg-red-50 border border-red-100 text-red-600 text-xs font-semibold"
-                x-text="error"
-            ></div>
-
-
-            <!-- SUCCESS -->
-            <div
-                x-show="success"
-                x-cloak
-                class="mb-5 p-4 rounded-2xl bg-emerald-50 border border-emerald-100 text-emerald-700 text-xs font-semibold"
-                x-text="success"
-            ></div>
-
-
-            <!-- LOGIN FORM -->
-            <form @submit.prevent="login()" class="space-y-5">
-
-                <div>
-
-                    <label class="block ml-2 mb-2 text-[9px] font-extrabold uppercase tracking-[.2em] text-slate-400">
-                        Email Address
-                    </label>
-
-                    <input
-                        type="email"
-                        x-model="email"
-                        required
-                        autocomplete="email"
-                        placeholder="you@example.com"
-                        class="input w-full px-5 py-4 rounded-2xl bg-slate-50 border-2 border-transparent focus:border-emerald-500 outline-none text-sm font-semibold text-slate-700"
-                    >
-
-                </div>
-
-
-                <div>
-
-                    <label class="block ml-2 mb-2 text-[9px] font-extrabold uppercase tracking-[.2em] text-slate-400">
-                        Password
-                    </label>
-
-                    <input
-                        type="password"
-                        x-model="password"
-                        required
-                        autocomplete="current-password"
-                        placeholder="Enter your password"
-                        class="input w-full px-5 py-4 rounded-2xl bg-slate-50 border-2 border-transparent focus:border-emerald-500 outline-none text-sm font-semibold text-slate-700"
-                    >
-
-                </div>
-
-
-                <button
-                    type="submit"
-                    :disabled="loading"
-                    class="btn w-full py-5 rounded-2xl bg-[#1FA463] hover:bg-[#178a52] text-white font-extrabold text-[10px] uppercase tracking-[.3em] shadow-xl shadow-emerald-900/10 disabled:opacity-60 disabled:cursor-not-allowed"
-                >
-
-                    <span x-show="!loading">
-                        Sign In Securely
-                    </span>
-
-                    <span x-show="loading">
-                        Authenticating...
-                    </span>
-
-                </button>
-
-            </form>
-
-
-            <!-- PATIENT REGISTRATION -->
-            <div
-                x-show="portal === 'patient'"
-                x-cloak
-                class="mt-8 pt-7 border-t border-slate-100"
-            >
-
-                <button
-                    @click="showRegister = !showRegister"
-                    type="button"
-                    class="w-full text-center text-xs font-bold text-[#1FA463] hover:underline"
-                >
-                    <span x-text="showRegister ? 'Hide registration' : 'New patient? Create account'"></span>
-                </button>
-
-
-                <form
-                    x-show="showRegister"
-                    @submit.prevent="registerPatient()"
-                    class="mt-5 space-y-4"
-                >
-
-                    <input
-                        type="text"
-                        x-model="register.name"
-                        required
-                        placeholder="Full name"
-                        class="input w-full px-5 py-4 rounded-2xl bg-slate-50 outline-none border-2 border-transparent focus:border-emerald-500 text-sm font-semibold"
-                    >
-
-                    <input
-                        type="email"
-                        x-model="register.email"
-                        required
-                        placeholder="Email address"
-                        class="input w-full px-5 py-4 rounded-2xl bg-slate-50 outline-none border-2 border-transparent focus:border-emerald-500 text-sm font-semibold"
-                    >
-
-                    <input
-                        type="password"
-                        x-model="register.password"
-                        minlength="8"
-                        required
-                        placeholder="Create password (8+ characters)"
-                        class="input w-full px-5 py-4 rounded-2xl bg-slate-50 outline-none border-2 border-transparent focus:border-emerald-500 text-sm font-semibold"
-                    >
-
-                    <button
-                        type="submit"
-                        :disabled="loading"
-                        class="w-full py-4 rounded-2xl bg-[#0E2A47] text-white font-bold text-xs"
-                    >
-                        Create Patient Account
-                    </button>
-
-                </form>
-
-            </div>
-
-
-            <!-- FOOTER -->
-            <div class="mt-10 pt-6 border-t border-slate-100">
-
-                <div class="flex justify-center gap-3 mb-4">
-
-                    <span class="px-3 py-2 rounded-xl bg-slate-50 text-[8px] font-black text-slate-400">
-                        SSL
-                    </span>
-
-                    <span class="px-3 py-2 rounded-xl bg-slate-50 text-[8px] font-black text-slate-400">
-                        RLS
-                    </span>
-
-                    <span class="px-3 py-2 rounded-xl bg-slate-50 text-[8px] font-black text-slate-400">
-                        SECURE AUTH
-                    </span>
-
-                </div>
-
-                <p class="text-center text-[8px] font-bold uppercase tracking-[.25em] text-slate-300">
-                    LifeSure Diagnostics • Secure Clinical Access
-                </p>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-<!-- Alpine -->
-<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
+        <div id="loginError" class="msg error"></div>
+        <div id="loginSuccess" class="msg success"></div>
+
+        <form id="loginForm">
+          <div class="field"><label>Email Address</label><input id="email" class="input" type="email" autocomplete="username" required placeholder="lifesurediagnostics@gmail.com"></div>
+          <div class="field"><label>Password</label><div class="password-wrap"><input id="password" class="input" type="password" autocomplete="current-password" required placeholder="Enter your password"><button type="button" class="eye" id="eye" onclick="togglePassword()">◉</button></div></div>
+          <button id="loginBtn" class="primary" type="submit">Sign In Securely</button>
+        </form>
+
+        <div class="link-row"><button type="button" class="link-btn" onclick="showReset()">Forgot password?</button><button type="button" class="link-btn" onclick="clearMessages()">Clear</button></div>
+        <div id="patientRegisterLink" class="divider hidden">Patient registration</div>
+        <button id="registerBtn" class="secondary hidden" type="button" onclick="showRegister()">Create Patient Account</button>
+        <p class="note">Authentication is handled by Supabase. The browser never receives a service-role/secret key.</p>
+      </section>
+
+      <section id="resetView" class="hidden">
+        <div class="header"><span class="badge">● Password recovery</span><h2>Reset your password</h2><p>We'll send a secure recovery link to your registered email.</p></div>
+        <div id="resetError" class="msg error"></div><div id="resetSuccess" class="msg success"></div>
+        <form id="resetRequestForm"><div class="field"><label>Email Address</label><input id="resetEmail" class="input" type="email" required placeholder="lifesurediagnostics@gmail.com"></div><button id="resetBtn" class="primary" type="submit">Send Recovery Link</button></form>
+        <div style="margin-top:12px"><button class="secondary" type="button" onclick="showLogin()">Back to Login</button></div>
+        <p class="note">For security, the system does not reveal whether an email address exists.</p>
+      </section>
+
+      <section id="updateView" class="hidden">
+        <div class="header"><span class="badge">● Recovery session active</span><h2>Create new password</h2><p>Choose a strong new password for your LifeSure account.</p></div>
+        <div id="updateError" class="msg error"></div><div id="updateSuccess" class="msg success"></div>
+        <form id="updateForm">
+          <div class="field"><label>New Password</label><div class="password-wrap"><input id="newPassword" class="input" type="password" minlength="8" required placeholder="At least 8 characters"><button type="button" class="eye" onclick="toggleNewPassword()">◉</button></div></div>
+          <div class="field"><label>Confirm New Password</label><input id="confirmPassword" class="input" type="password" minlength="8" required placeholder="Repeat new password"></div>
+          <button id="updateBtn" class="primary" type="submit">Save New Password</button>
+        </form>
+        <p class="note">After the password is updated, you'll return to the login screen.</p>
+      </section>
+
+      <section id="registerView" class="hidden">
+        <div class="header"><span class="badge">● Patient registration</span><h2>Create patient account</h2><p>Register an account for the LifeSure patient portal.</p></div>
+        <div id="registerError" class="msg error"></div><div id="registerSuccess" class="msg success"></div>
+        <form id="registerForm">
+          <div class="field"><label>Full Name</label><input id="regName" class="input" required placeholder="Full legal name"></div>
+          <div class="field"><label>Email Address</label><input id="regEmail" class="input" type="email" required placeholder="you@example.com"></div>
+          <div class="field"><label>Password</label><input id="regPassword" class="input" type="password" minlength="8" required placeholder="Create 8+ character password"></div>
+          <button id="registerSubmit" class="primary" type="submit">Create Patient Account</button>
+        </form>
+        <div style="margin-top:12px"><button class="secondary" type="button" onclick="showLogin()">Back to Login</button></div>
+      </section>
+
+      <div class="footer">LifeSure Diagnostics • Secure Clinical Access</div>
+    </main>
+  </div>
+</div>
 
 <script>
-
-const SUPABASE_URL =
-    'https://evzgfprzxsgsymvwisp.supabase.co';
-
-const SUPABASE_PUBLISHABLE_KEY =
-    'sb_publishable_IJC51IW4TePmMzCsbJ7Vyw_6fkqqV67';
-
-const supabaseClient =
-    window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_PUBLISHABLE_KEY
-    );
-
-
-function lifeSureAuth() {
-
-    return {
-
-        portal: 'admin',
-
-        email: '',
-        password: '',
-
-        loading: false,
-        error: '',
-        success: '',
-
-        showRegister: false,
-
-        register: {
-            name: '',
-            email: '',
-            password: ''
-        },
-
-
-        async init() {
-
-            this.error = '';
-            this.success = '';
-
-            const {
-                data: {
-                    session
-                }
-            } = await supabaseClient.auth.getSession();
-
-            if (!session) {
-                return;
-            }
-
-            /*
-             * If an existing session is found,
-             * verify the database profile before redirecting.
-             */
-
-            const profile = await this.getProfile(session.user.id);
-
-            if (!profile) {
-                await supabaseClient.auth.signOut();
-                return;
-            }
-
-            this.redirectByRole(profile.role);
-
-        },
-
-
-        async getProfile(userId) {
-
-            const {
-                data,
-                error
-            } = await supabaseClient
-
-                .from('profiles')
-
-                .select('id, full_name, email, role')
-
-                .eq('id', userId)
-
-                .maybeSingle();
-
-
-            if (error) {
-
-                console.error(
-                    'Profile lookup error:',
-                    error
-                );
-
-                return null;
-
-            }
-
-            return data;
-
-        },
-
-
-        async login() {
-
-            this.error = '';
-            this.success = '';
-
-            if (!this.email || !this.password) {
-
-                this.error =
-                    'Please enter your email and password.';
-
-                return;
-
-            }
-
-
-            this.loading = true;
-
-
-            try {
-
-                const {
-                    data,
-                    error
-                } = await supabaseClient.auth.signInWithPassword({
-
-                    email: this.email.trim(),
-
-                    password: this.password
-
-                });
-
-
-                if (error) {
-                    throw error;
-                }
-
-
-                const user = data.user;
-
-
-                if (!user) {
-
-                    throw new Error(
-                        'Authentication failed.'
-                    );
-
-                }
-
-
-                const profile =
-                    await this.getProfile(user.id);
-
-
-                /*
-                 * Authentication succeeded,
-                 * but database authorization is checked separately.
-                 */
-
-                if (!profile) {
-
-                    await supabaseClient.auth.signOut();
-
-                    throw new Error(
-                        'Your account does not have a LifeSure profile.'
-                    );
-
-                }
-
-
-                /*
-                 * ADMIN PORTAL
-                 */
-
-                if (
-                    this.portal === 'admin' &&
-                    profile.role !== 'super_admin'
-                ) {
-
-                    await supabaseClient.auth.signOut();
-
-                    throw new Error(
-                        'This account does not have Super Admin access.'
-                    );
-
-                }
-
-
-                /*
-                 * STAFF PORTAL
-                 *
-                 * We currently allow staff roles through the
-                 * database role system.
-                 */
-
-                if (
-                    this.portal === 'staff' &&
-                    profile.role === 'patient'
-                ) {
-
-                    await supabaseClient.auth.signOut();
-
-                    throw new Error(
-                        'Patient accounts cannot access the staff portal.'
-                    );
-
-                }
-
-
-                this.success =
-                    'Authentication successful. Opening LifeSure...';
-
-
-                this.redirectByRole(
-                    profile.role
-                );
-
-
-            } catch (error) {
-
-                console.error(error);
-
-                this.error =
-                    error.message ||
-                    'Unable to sign in.';
-
-            } finally {
-
-                this.loading = false;
-
-            }
-
-        },
-
-
-        async registerPatient() {
-
-            this.error = '';
-            this.success = '';
-
-            if (
-                !this.register.name ||
-                !this.register.email ||
-                !this.register.password
-            ) {
-
-                this.error =
-                    'Please complete all registration fields.';
-
-                return;
-
-            }
-
-
-            this.loading = true;
-
-
-            try {
-
-                const {
-                    data,
-                    error
-                } = await supabaseClient.auth.signUp({
-
-                    email:
-                        this.register.email.trim(),
-
-                    password:
-                        this.register.password,
-
-                    options: {
-
-                        data: {
-
-                            full_name:
-                                this.register.name.trim()
-
-                        }
-
-                    }
-
-                });
-
-
-                if (error) {
-                    throw error;
-                }
-
-
-                /*
-                 * If email confirmation is enabled,
-                 * Supabase may return a user without a session.
-                 */
-
-                if (!data.session) {
-
-                    this.success =
-                        'Account created. Please verify your email, then sign in.';
-
-                    this.loading = false;
-
-                    return;
-
-                }
-
-
-                /*
-                 * Patient profile creation is intentionally
-                 * handled separately until the exact patient
-                 * role/schema is confirmed.
-                 */
-
-                this.success =
-                    'Account created successfully.';
-
-                this.email =
-                    this.register.email;
-
-                this.password = '';
-
-                this.register = {
-                    name: '',
-                    email: '',
-                    password: ''
-                };
-
-                this.showRegister = false;
-
-
-            } catch (error) {
-
-                console.error(error);
-
-                this.error =
-                    error.message ||
-                    'Registration failed.';
-
-            } finally {
-
-                this.loading = false;
-
-            }
-
-        },
-
-
-        redirectByRole(role) {
-
-            /*
-             * Super Admin → Management Command Center
-             */
-
-            if (role === 'super_admin') {
-
-                window.location.href =
-                    'admin.html';
-
-                return;
-
-            }
-
-
-            /*
-             * Future staff dashboards.
-             *
-             * We will replace these with dedicated
-             * dashboards as the system is built.
-             */
-
-            if (
-                role === 'management' ||
-                role === 'accounts' ||
-                role === 'hr' ||
-                role === 'lab_staff' ||
-                role === 'reception'
-            ) {
-
-                window.location.href =
-                    'admin.html';
-
-                return;
-
-            }
-
-
-            /*
-             * Future patient portal.
-             */
-
-            if (role === 'patient') {
-
-                window.location.href =
-                    'index.html';
-
-                return;
-
-            }
-
-
-            this.error =
-                'Your LifeSure role is not configured yet.';
-
+  const SUPABASE_URL = "https://evzgfprzxsgsymvwisp.supabase.co";
+  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_IJC51IW4TePmMzCsbJ7Vyw_6fkqqV67";
+
+  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+  });
+
+  let portal = "admin";
+  const $ = (id) => document.getElementById(id);
+
+  function showMsg(id, text){$(id).textContent=text;$(id).classList.add("show")}
+  function hideMsg(id){$(id).classList.remove("show");$(id).textContent=""}
+  function clearMessages(){["loginError","loginSuccess","resetError","resetSuccess","updateError","updateSuccess","registerError","registerSuccess"].forEach(hideMsg)}
+
+  function setPortal(value){
+    portal=value;
+    $("adminTab").classList.toggle("active",value==="admin");
+    $("staffTab").classList.toggle("active",value==="staff");
+    $("patientTab").classList.toggle("active",value==="patient");
+    $("loginTitle").textContent=value==="admin"?"Welcome back":value==="staff"?"Staff access":"Patient access";
+    $("loginSubtitle").textContent=value==="admin"?"Sign in with your LifeSure Super Admin account.":value==="staff"?"Sign in with your authorized staff account.":"Sign in to access your patient portal.";
+    $("registerBtn").classList.toggle("hidden",value!=="patient");
+    $("patientRegisterLink").classList.toggle("hidden",value!=="patient");
+    clearMessages();
+  }
+
+  function hideAll(){["loginView","resetView","updateView","registerView"].forEach(x=>$(x).classList.add("hidden"))}
+  function showLogin(){hideAll();$("loginView").classList.remove("hidden");clearMessages()}
+  function showReset(){hideAll();$("resetView").classList.remove("hidden");clearMessages();$("resetEmail").value=$("email").value.trim();$("resetEmail").focus()}
+  function showUpdatePassword(){hideAll();$("updateView").classList.remove("hidden");clearMessages();$("newPassword").focus()}
+  function showRegister(){hideAll();$("registerView").classList.remove("hidden");clearMessages()}
+  function togglePassword(){$("password").type=$("password").type==="password"?"text":"password"}
+  function toggleNewPassword(){$("newPassword").type=$("newPassword").type==="password"?"text":"password"}
+
+  async function getProfile(userId){
+    const {data,error}=await supabaseClient.from("profiles").select("id,full_name,email,role").eq("id",userId).maybeSingle();
+    if(error){console.error("Profile query failed:",error);throw new Error("Unable to read LifeSure profile. Check the profiles RLS policy.")}
+    return data;
+  }
+
+  async function redirectByRole(profile){
+    if(!profile)throw new Error("Your account has no LifeSure profile yet.");
+    if(profile.role==="super_admin"){window.location.href="admin.html";return}
+    if(["management","accounts","hr","lab_staff","reception"].includes(profile.role)){window.location.href="admin.html";return}
+    if(profile.role==="patient"){window.location.href="patient.html";return}
+    throw new Error("Your LifeSure role is not configured.");
+  }
+
+  async function handleLogin(event){
+    event.preventDefault();clearMessages();
+    const email=$("email").value.trim(),password=$("password").value;
+    $("loginBtn").disabled=true;$("loginBtn").textContent="Authenticating...";
+    try{
+      const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+      if(error)throw error;
+      if(!data.user)throw new Error("Authentication failed.");
+      const profile=await getProfile(data.user.id);
+      if(portal==="admin"&&profile?.role!=="super_admin"){await supabaseClient.auth.signOut();throw new Error("This account does not have Super Admin access.")}
+      if(portal==="staff"&&!["super_admin","management","accounts","hr","lab_staff","reception"].includes(profile?.role)){await supabaseClient.auth.signOut();throw new Error("This account is not authorized for staff access.")}
+      showMsg("loginSuccess","Authentication successful. Opening LifeSure...");
+      await redirectByRole(profile);
+    }catch(error){
+      console.error("LOGIN ERROR:",error);
+      showMsg("loginError",error?.message||"Unable to sign in.");
+    }finally{
+      $("loginBtn").disabled=false;$("loginBtn").textContent="Sign In Securely";
+    }
+  }
+
+  async function handleResetRequest(event){
+    event.preventDefault();hideMsg("resetError");hideMsg("resetSuccess");
+    const email=$("resetEmail").value.trim();
+    $("resetBtn").disabled=true;$("resetBtn").textContent="Sending...";
+    try{
+      const redirectTo=window.location.origin+window.location.pathname;
+      const {error}=await supabaseClient.auth.resetPasswordForEmail(email,{redirectTo});
+      if(error)throw error;
+      showMsg("resetSuccess","Recovery email requested. Open the newest email and use its link. Ignore older links.");
+    }catch(error){
+      console.error("RESET REQUEST ERROR:",error);
+      showMsg("resetError",error?.message||"Unable to request a recovery email.");
+    }finally{
+      $("resetBtn").disabled=false;$("resetBtn").textContent="Send Recovery Link";
+    }
+  }
+
+  async function handleUpdatePassword(event){
+    event.preventDefault();hideMsg("updateError");hideMsg("updateSuccess");
+    const password=$("newPassword").value,confirm=$("confirmPassword").value;
+    if(password.length<8){showMsg("updateError","Use a password with at least 8 characters.");return}
+    if(password!==confirm){showMsg("updateError","The two passwords do not match.");return}
+    $("updateBtn").disabled=true;$("updateBtn").textContent="Updating...";
+    try{
+      const {error}=await supabaseClient.auth.updateUser({password});
+      if(error)throw error;
+      showMsg("updateSuccess","Password updated successfully. You can now sign in with your new password.");
+      await supabaseClient.auth.signOut();
+      setTimeout(showLogin,1300);
+    }catch(error){
+      console.error("PASSWORD UPDATE ERROR:",error);
+      showMsg("updateError",error?.message||"Unable to update password.");
+    }finally{
+      $("updateBtn").disabled=false;$("updateBtn").textContent="Save New Password";
+    }
+  }
+
+  async function handleRegister(event){
+    event.preventDefault();hideMsg("registerError");hideMsg("registerSuccess");
+    const name=$("regName").value.trim(),email=$("regEmail").value.trim(),password=$("regPassword").value;
+    $("registerSubmit").disabled=true;$("registerSubmit").textContent="Creating...";
+    try{
+      const {data,error}=await supabaseClient.auth.signUp({email,password,options:{data:{full_name:name}}});
+      if(error)throw error;
+      if(!data.session){
+        showMsg("registerSuccess","Account created. Check your email for confirmation, then sign in.");
+      }else{
+        showMsg("registerSuccess","Account created. The LifeSure patient profile workflow will finish setup.");
+      }
+    }catch(error){
+      console.error("REGISTER ERROR:",error);
+      showMsg("registerError",error?.message||"Unable to create patient account.");
+    }finally{
+      $("registerSubmit").disabled=false;$("registerSubmit").textContent="Create Patient Account";
+    }
+  }
+
+  /*
+   * Supabase emits PASSWORD_RECOVERY when a valid recovery
+   * link has created the recovery session.
+   */
+  supabaseClient.auth.onAuthStateChange((event,session)=>{
+    if(event==="PASSWORD_RECOVERY"&&session)showUpdatePassword();
+  });
+
+  (async function init(){
+    const hash=window.location.hash;
+
+    if(hash.includes("error=")){
+      const params=new URLSearchParams(hash.replace(/^#/,""));
+      const code=params.get("error_code")||"";
+      const description=params.get("error_description")||"";
+      showLogin();
+      showMsg("loginError",description||code||"The recovery link is invalid or expired. Request a fresh link.");
+      history.replaceState(null,document.title,window.location.pathname);
+      return;
+    }
+
+    /*
+     * Give Supabase time to process a recovery URL, then inspect
+     * the session. Recovery links contain type=recovery/access_token.
+     */
+    if(hash.includes("type=recovery")||hash.includes("access_token")){
+      setTimeout(async()=>{
+        const {data}=await supabaseClient.auth.getSession();
+        if(data.session){
+          showUpdatePassword();
+        }else{
+          showMsg("loginError","The recovery session could not be created. Request a fresh recovery link.");
         }
+      },250);
+      return;
+    }
 
-    };
+    const {data}=await supabaseClient.auth.getSession();
 
-}
+    if(data.session){
+      try{
+        const profile=await getProfile(data.session.user.id);
+        await redirectByRole(profile);
+      }catch(error){
+        console.error("SESSION CHECK ERROR:",error);
+        await supabaseClient.auth.signOut();
+      }
+    }
+  })();
 
+  $("loginForm").addEventListener("submit",handleLogin);
+  $("resetRequestForm").addEventListener("submit",handleResetRequest);
+  $("updateForm").addEventListener("submit",handleUpdatePassword);
+  $("registerForm").addEventListener("submit",handleRegister);
 </script>
-
 </body>
 </html>
