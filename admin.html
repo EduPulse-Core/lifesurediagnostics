@@ -477,75 +477,150 @@ async function safeTable(table, columns="*"){
  if(error){console.error(table,error);return []}
  return data||[];
 }
-async function getAdminBookings(){
+async function getAdminBookings() {
 
   const { data, error } =
     await supabaseClient.rpc("get_admin_bookings");
 
-  if(error){
+  if (error) {
     console.error("Admin bookings error:", error);
     return [];
   }
 
   return data || [];
 }
-async function loadData(){
+
+
+async function loadData() {
 
   const [
-    bookings,enquiries,patients,reports,payments,expenses,
-    franchises,tests,staff,attendance,payroll,inventory,audit
+    bookings,
+    enquiries,
+    patients,
+    reports,
+    payments,
+    expenses,
+    franchises,
+    tests,
+    staff,
+    attendance,
+    payroll,
+    inventory,
+    audit
   ] = await Promise.all([
+
     getAdminBookings(),
+
     safeTable("enquiries"),
+
     safeTable("patients"),
+
     safeTable("reports"),
+
     safeTable("payments"),
+
     safeTable("expenses"),
+
     safeTable("franchises"),
+
     safeTable("tests"),
+
     safeTable("staff"),
+
     safeTable("attendance"),
+
     safeTable("salary_payments"),
+
     safeTable("inventory_items"),
+
     safeTable("audit_logs")
+
   ]);
 
-  state.bookings = bookings || [];
-  state.enquiries = enquiries || [];
-  state.patients = patients || [];
-  state.reports = reports || [];
-  state.payments = payments || [];
-  state.expenses = expenses || [];
-  state.franchises = franchises || [];
-  state.tests = tests || [];
-  state.staff = staff || [];
-  state.attendance = attendance || [];
-  state.payroll = payroll || [];
-  state.inventory = inventory || [];
-  state.audit = audit || [];
-}
- const [
-  bookings,enquiries,patients,reports,payments,expenses,franchises,tests,
-  staff,attendance,payroll,inventory,audit
- ]=await Promise.all([
-   getAdminBookings(),safeTable("enquiries"),safeTable("patients"),safeTable("reports"),
-   safeTable("payments"),safeTable("expenses"),safeTable("franchises"),safeTable("tests"),
-   safeTable("staff"),safeTable("attendance"),safeTable("salary_payments"),
-   safeTable("inventory_items"),safeTable("audit_logs")
- ]);
- state.bookings=bookings.sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
- state.enquiries=enquiries.sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
- state.patients=patients.sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
- state.reports=reports.sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
- state.payments=payments.sort((a,b)=>new Date(b.received_at||0)-new Date(a.received_at||0));
- state.expenses=expenses.sort((a,b)=>new Date(b.expense_date||b.created_at||0)-new Date(a.expense_date||a.created_at||0));
- state.franchises=franchises;
- state.tests=tests;
- state.staff=staff;
- state.attendance=attendance.sort((a,b)=>new Date(b.attendance_date||0)-new Date(a.attendance_date||0));
- state.payroll=payroll;
- state.inventory=inventory;
- state.audit=audit.sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
+
+  state.bookings =
+    (bookings || []).sort(
+      (a, b) =>
+        new Date(b.created_at || 0) -
+        new Date(a.created_at || 0)
+    );
+
+
+  state.enquiries =
+    (enquiries || []).sort(
+      (a, b) =>
+        new Date(b.created_at || 0) -
+        new Date(a.created_at || 0)
+    );
+
+
+  state.patients =
+    (patients || []).sort(
+      (a, b) =>
+        new Date(b.created_at || 0) -
+        new Date(a.created_at || 0)
+    );
+
+
+  state.reports =
+    (reports || []).sort(
+      (a, b) =>
+        new Date(b.created_at || 0) -
+        new Date(a.created_at || 0)
+    );
+
+
+  state.payments =
+    (payments || []).sort(
+      (a, b) =>
+        new Date(b.received_at || 0) -
+        new Date(a.received_at || 0)
+    );
+
+
+  state.expenses =
+    (expenses || []).sort(
+      (a, b) =>
+        new Date(b.expense_date || b.created_at || 0) -
+        new Date(a.expense_date || a.created_at || 0)
+    );
+
+
+  state.franchises =
+    franchises || [];
+
+
+  state.tests =
+    tests || [];
+
+
+  state.staff =
+    staff || [];
+
+
+  state.attendance =
+    (attendance || []).sort(
+      (a, b) =>
+        new Date(b.attendance_date || 0) -
+        new Date(a.attendance_date || 0)
+    );
+
+
+  state.payroll =
+    payroll || [];
+
+
+  state.inventory =
+    inventory || [];
+
+
+  state.audit =
+    (audit || []).sort(
+      (a, b) =>
+        new Date(b.created_at || 0) -
+        new Date(a.created_at || 0)
+    );
+
 }
 
 function totals(){
@@ -615,39 +690,445 @@ function renderCharts(){
 }
 
 function renderBookings(){
- const q=(document.getElementById("bookingSearch")?.value||"").toLowerCase();
- const f=document.getElementById("bookingFilter")?.value||"ALL";
- const rows=state.bookings.filter(b=>(f==="ALL"||b.status===f)&&(!q||JSON.stringify(b).toLowerCase().includes(q)));
- document.getElementById("bookingRows").innerHTML=rows.length?rows.map(b=>`
- <tr><td><span class="id">${esc(b.booking_code||b.id)}</span><div class="muted">${fmtDate(b.created_at)}</div></td>
- <td><span class="person">${esc(b.patient_name||b.name||"—")}</span><div class="muted">${esc(b.phone||"")}</div></td>
- <td>${esc(b.test_name||b.test||"—")}</td><td>${esc(b.collection_type||b.collection||"—")}</td>
- <td>${statusBadge(b.status)}</td><td>${money(b.net_charge||b.subtotal)}</td>
- <td><button class="btn btn-light" onclick="viewBooking('${esc(b.id)}')">View</button></td></tr>`).join("")
- : `<tr><td colspan="7"><div class="empty"><div class="big">⌕</div><b>No matching bookings</b><span>Try another search or filter.</span></div></td></tr>`;
+
+  const q =
+    (document.getElementById("bookingSearch")?.value || "")
+      .toLowerCase()
+      .trim();
+
+  const f =
+    document.getElementById("bookingFilter")?.value || "ALL";
+
+
+  const rows = state.bookings.filter(b => {
+
+    const searchable = [
+      b.booking_code,
+      b.patient_name,
+      b.patient_phone,
+      b.patient_email,
+      b.test_name,
+      b.package_name,
+      b.status,
+      b.collection_type
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    const statusMatch =
+      f === "ALL" || b.status === f;
+
+    const searchMatch =
+      !q || searchable.includes(q);
+
+    return statusMatch && searchMatch;
+
+  });
+
+
+  document.getElementById("bookingRows").innerHTML =
+    rows.length
+
+    ? rows.map(b => `
+
+      <tr>
+
+        <!-- BOOKING -->
+
+        <td>
+
+          <span class="id">
+            ${esc(b.booking_code || b.booking_id || "—")}
+          </span>
+
+          <div class="muted">
+            ${fmtDate(b.created_at)}
+          </div>
+
+        </td>
+
+
+        <!-- PATIENT -->
+
+        <td>
+
+          <span class="person">
+            ${esc(b.patient_name || "—")}
+          </span>
+
+          <div class="muted">
+            ${esc(b.patient_phone || "—")}
+          </div>
+
+          ${
+            b.patient_email
+              ? `<div class="muted">${esc(b.patient_email)}</div>`
+              : ""
+          }
+
+        </td>
+
+
+        <!-- TEST / PACKAGE -->
+
+        <td>
+
+          <span class="person">
+            ${
+              esc(
+                b.test_name ||
+                b.package_name ||
+                "General Test Enquiry"
+              )
+            }
+          </span>
+
+        </td>
+
+
+        <!-- COLLECTION -->
+
+        <td>
+
+          <span class="muted">
+            ${esc(b.collection_type || "—")}
+          </span>
+
+          ${
+            b.collection_address
+              ? `
+                <div class="muted">
+                  ${esc(b.collection_address)}
+                </div>
+              `
+              : ""
+          }
+
+        </td>
+
+
+        <!-- STATUS -->
+
+        <td>
+          ${statusBadge(b.status)}
+        </td>
+
+
+        <!-- AMOUNT -->
+
+        <td>
+
+          <span class="person">
+            ${money(b.net_charge)}
+          </span>
+
+          ${
+            b.payment_status
+              ? `
+                <div class="muted">
+                  Payment: ${esc(b.payment_status)}
+                </div>
+              `
+              : ""
+          }
+
+        </td>
+
+
+        <!-- ACTION -->
+
+        <td>
+
+          <button
+            class="btn btn-light"
+            onclick="viewBooking('${esc(b.booking_id)}')"
+          >
+            View
+          </button>
+
+        </td>
+
+      </tr>
+
+    `).join("")
+
+    : `
+
+      <tr>
+
+        <td colspan="7">
+
+          <div class="empty">
+
+            <div class="big">⌕</div>
+
+            <b>No matching bookings</b>
+
+            <span>
+              Try another search or filter.
+            </span>
+
+          </div>
+
+        </td>
+
+      </tr>
+
+    `;
+
 }
 
 function viewBooking(id){
- const b=state.bookings.find(x=>String(x.id)===String(id));if(!b)return;
- document.getElementById("modalTitle").textContent=`Booking ${b.booking_code||b.id}`;
- document.getElementById("modalBody").innerHTML=`<div class="detail-grid">
- <div class="detail"><label>Patient</label><strong>${esc(b.patient_name||b.name||"—")}</strong></div>
- <div class="detail"><label>Mobile</label><strong>${esc(b.phone||"—")}</strong></div>
- <div class="detail"><label>Test</label><strong>${esc(b.test_name||b.test||"—")}</strong></div>
- <div class="detail"><label>Status</label><strong>${statusBadge(b.status)}</strong></div>
- <div class="detail"><label>Collection</label><strong>${esc(b.collection_type||b.collection||"—")}</strong></div>
- <div class="detail"><label>Preferred date</label><strong>${esc(b.preferred_collection_at||b.date||"—")}</strong></div>
- <div class="detail"><label>Net charge</label><strong>${money(b.net_charge||b.subtotal)}</strong></div>
- <div class="detail"><label>Test cost</label><strong>${money(b.test_cost)}</strong></div>
- <div class="detail" style="grid-column:1/-1"><label>Collection address / notes</label><strong>${esc(b.collection_address||b.address||b.notes||"—")}</strong></div>
- </div>
- <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
-   <button class="btn btn-primary" onclick="changeBookingStatus('${esc(b.id)}','confirmed')">Confirm</button>
-   <button class="btn btn-light" onclick="changeBookingStatus('${esc(b.id)}','sample_collected')">Sample Collected</button>
-   <button class="btn btn-light" onclick="changeBookingStatus('${esc(b.id)}','processing')">Processing</button>
-   <button class="btn btn-dark" onclick="changeBookingStatus('${esc(b.id)}','completed')">Complete</button>
- </div>`;
- document.getElementById("detailModal").classList.add("show");
+
+  const b = state.bookings.find(
+    x => String(x.booking_id) === String(id)
+  );
+
+  if(!b){
+
+    showToast("Booking details not found.");
+
+    return;
+  }
+
+
+  document.getElementById("modalTitle").textContent =
+    `Booking ${b.booking_code || b.booking_id}`;
+
+
+  document.getElementById("modalBody").innerHTML = `
+
+    <div class="detail-grid">
+
+      <div class="detail">
+        <label>Booking ID</label>
+        <strong>
+          ${esc(b.booking_code || b.booking_id)}
+        </strong>
+      </div>
+
+
+      <div class="detail">
+        <label>Created</label>
+        <strong>
+          ${fmtDate(b.created_at)}
+        </strong>
+      </div>
+
+
+      <div class="detail">
+        <label>Patient Name</label>
+        <strong>
+          ${esc(b.patient_name || "—")}
+        </strong>
+      </div>
+
+
+      <div class="detail">
+        <label>Mobile</label>
+        <strong>
+          ${esc(b.patient_phone || "—")}
+        </strong>
+      </div>
+
+
+      <div class="detail">
+        <label>Email</label>
+        <strong>
+          ${esc(b.patient_email || "—")}
+        </strong>
+      </div>
+
+
+      <div class="detail">
+        <label>Gender</label>
+        <strong>
+          ${esc(b.patient_gender || "—")}
+        </strong>
+      </div>
+
+
+      <div class="detail">
+        <label>Test / Package</label>
+        <strong>
+          ${esc(
+            b.test_name ||
+            b.package_name ||
+            "General Test Enquiry"
+          )}
+        </strong>
+      </div>
+
+
+      <div class="detail">
+        <label>Collection</label>
+        <strong>
+          ${esc(b.collection_type || "—")}
+        </strong>
+      </div>
+
+
+      <div class="detail">
+        <label>Preferred Date</label>
+        <strong>
+          ${fmtDate(b.preferred_collection_at)}
+        </strong>
+      </div>
+
+
+      <div class="detail">
+        <label>Status</label>
+        <strong>
+          ${statusBadge(b.status)}
+        </strong>
+      </div>
+
+
+      <div class="detail">
+        <label>Payment Status</label>
+        <strong>
+          ${statusBadge(b.payment_status)}
+        </strong>
+      </div>
+
+
+      <div class="detail">
+        <label>Report Status</label>
+        <strong>
+          ${statusBadge(b.report_status)}
+        </strong>
+      </div>
+
+
+      <div class="detail">
+        <label>Net Charge</label>
+        <strong>
+          ${money(b.net_charge)}
+        </strong>
+      </div>
+
+
+      <div class="detail">
+        <label>Actual Test Cost</label>
+        <strong>
+          ${money(b.test_cost)}
+        </strong>
+      </div>
+
+
+      <div class="detail">
+        <label>Estimated Net Profit</label>
+        <strong>
+          ${money(b.net_profit)}
+        </strong>
+      </div>
+
+
+      <div class="detail">
+        <label>Patient Address</label>
+        <strong>
+          ${esc(b.patient_address || "—")}
+        </strong>
+      </div>
+
+
+      <div class="detail">
+        <label>Collection Address</label>
+        <strong>
+          ${esc(b.collection_address || "—")}
+        </strong>
+      </div>
+
+
+      <div
+        class="detail"
+        style="grid-column:1/-1"
+      >
+
+        <label>Notes</label>
+
+        <strong>
+          ${esc(b.notes || "—")}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div
+      style="
+        margin-top:16px;
+        display:flex;
+        gap:8px;
+        flex-wrap:wrap;
+      "
+    >
+
+      <button
+        class="btn btn-primary"
+        onclick="changeBookingStatus(
+          '${esc(b.booking_id)}',
+          'confirmed'
+        )"
+      >
+        Confirm
+      </button>
+
+
+      <button
+        class="btn btn-light"
+        onclick="changeBookingStatus(
+          '${esc(b.booking_id)}',
+          'sample_collected'
+        )"
+      >
+        Sample Collected
+      </button>
+
+
+      <button
+        class="btn btn-light"
+        onclick="changeBookingStatus(
+          '${esc(b.booking_id)}',
+          'processing'
+        )"
+      >
+        Processing
+      </button>
+
+
+      <button
+        class="btn btn-dark"
+        onclick="changeBookingStatus(
+          '${esc(b.booking_id)}',
+          'completed'
+        )"
+      >
+        Complete
+      </button>
+
+
+      <button
+        class="btn btn-red"
+        onclick="changeBookingStatus(
+          '${esc(b.booking_id)}',
+          'cancelled'
+        )"
+      >
+        Cancel
+      </button>
+
+    </div>
+
+  `;
+
+
+  document
+    .getElementById("detailModal")
+    .classList.add("show");
+
 }
 function closeModal(){document.getElementById("detailModal").classList.remove("show")}
 
