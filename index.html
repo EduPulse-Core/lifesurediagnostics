@@ -730,49 +730,89 @@ const supabaseClient =
     }
   );
     
-    $("bookingForm").addEventListener("submit",e=>{
-      e.preventDefault();
-      const name=$("name").value.trim();
-      const phone=$("phone").value.replace(/\D/g,"");
-      const test=$("selectedTest").value;
-      const collection=$("collection").value;
-      const date=$("date").value || "Not specified";
-      const address=$("address").value.trim() || "Not provided";
+  $("bookingForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-      if(!name || phone.length!==10){
-        showToast("Please enter a valid name and 10-digit mobile number.");
-        return;
-      }
+  const name = $("name").value.trim();
+  const phone = $("phone").value.replace(/\D/g, "");
+  const test = $("selectedTest").value.trim();
+  const collection = $("collection").value;
+  const date = $("date").value || "Not specified";
+  const address = $("address").value.trim() || "Not provided";
 
-      const booking={
-        id:"LS-"+Date.now(),
-        name,phone,test,collection,date,address,
-        status:"Pending",
-        createdAt:new Date().toLocaleString("en-IN")
-      };
+  if (!name || phone.length !== 10) {
+    showToast("Please enter a valid name and 10-digit mobile number.");
+    return;
+  }
 
-      const existing=JSON.parse(localStorage.getItem("lifesure_bookings")||"[]");
-      existing.push(booking);
-      localStorage.setItem("lifesure_bookings",JSON.stringify(existing));
+  const submitButton =
+    $("bookingForm").querySelector('button[type="submit"]');
 
-      const msg =
+  if (submitButton) {
+    submitButton.disabled = true;
+    submitButton.dataset.oldText = submitButton.textContent;
+    submitButton.textContent = "Creating booking...";
+  }
+
+  try {
+    const { data: booking, error } =
+      await supabaseClient.rpc("create_public_booking", {
+        p_name: name,
+        p_phone: phone,
+        p_test: test,
+        p_collection: collection,
+        p_date: date,
+        p_address: address
+      });
+
+    if (error) {
+      console.error("Booking creation error:", error);
+      throw error;
+    }
+
+    if (!booking) {
+      throw new Error("Booking was not returned by the server.");
+    }
+
+    const msg =
 `🧪 LifeSure Diagnostics — Booking Request
 
-Booking ID: ${booking.id}
-Name: ${name}
-Mobile: ${phone}
-Test / Package: ${test}
-Collection: ${collection}
-Preferred Date: ${date}
-Address / Notes: ${address}
+Booking ID: ${booking.booking_code}
+Name: ${booking.patient_name}
+Mobile: ${booking.phone}
+Test / Package: ${booking.test || "General Test Enquiry"}
+Collection: ${booking.collection}
+Preferred Date: ${booking.date}
+Address / Notes: ${booking.address}
+
+Status: Pending
 
 Please confirm availability and booking details.`;
 
-      $("bookingForm").style.display="none";
-      $("success").classList.add("show");
-      openWhatsApp(msg);
-    });
+    $("bookingForm").style.display = "none";
+    $("success").classList.add("show");
 
+    setTimeout(() => {
+      openWhatsApp(msg);
+    }, 300);
+
+  } catch (error) {
+    console.error("BOOKING ERROR:", error);
+
+    showToast(
+      error?.message ||
+      "Unable to create booking. Please try again."
+    );
+
+  } finally {
+    if (submitButton) {
+      submitButton.disabled = false;
+      submitButton.textContent =
+        submitButton.dataset.oldText ||
+        "Confirm & WhatsApp";
+    }
+  }
+});
     // HERO CAROUSEL
     const slides=[...document.querySelectorAll(".slide")];
     function buildDots(){
