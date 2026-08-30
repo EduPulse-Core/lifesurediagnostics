@@ -411,7 +411,13 @@
       <div class="container">
         <div class="section-head">
           <div><div class="kicker">Popular diagnostics</div><h2 class="section-title">Most Booked Lab Tests</h2><p class="section-desc">Quick access to commonly requested investigations.</p></div>
-          <a class="view-all" href="#tests">View all tests <i class="fa-solid fa-arrow-right"></i></a>
+         <button
+  class="view-all"
+  type="button"
+  onclick="showAllTests()"
+>
+  View all tests <i class="fa-solid fa-arrow-right"></i>
+</button>
         </div>
         <div class="test-grid" id="testGrid"></div>
       </div>
@@ -629,7 +635,9 @@
     id: t.id,
     code: t.code,
     name: t.name,
-    dept: t.department || "DIAGNOSTICS",
+    dept: t.department && t.department !== "Needs Configuration"
+  ? t.department
+  : "DIAGNOSTICS",
     price: Number(t.patient_price || 0),
     old: 0,
     desc: buildTestDescription(t),
@@ -695,13 +703,36 @@
         </button>`).join("");
     }
 
-    function setDepartment(dept){
-      activeDept = dept;
-      renderCategories();
-      renderTests();
-      document.querySelector("#tests").scrollIntoView({behavior:"smooth",block:"start"});
-    }
+   function setDepartment(dept){
+  activeDept = dept;
+  renderCategories();
+  renderTests();
+  document.querySelector("#tests").scrollIntoView({
+    behavior:"smooth",
+    block:"start"
+  });
+}
 
+function showAllTests() {
+
+  activeDept = "ALL TESTS";
+
+  $("search").value = "";
+
+  renderCategories();
+  renderTests();
+
+  document
+    .querySelector("#tests")
+    .scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+}
+
+function renderTests(){
+  // ...
+}
     function renderTests(){
       const query = $("search").value.trim().toLowerCase();
       const filtered = tests.filter(t =>
@@ -723,7 +754,14 @@
             <h3>${t.name}</h3>
             <p>${t.desc}</p>
             <div class="test-bottom">
-              <div><span class="price">₹${t.price}</span><span class="old">₹${t.old}</span></div>
+             <div>
+  <span class="price">₹${t.price}</span>
+  ${
+    t.old && Number(t.old) > Number(t.price)
+      ? `<span class="old">₹${t.old}</span>`
+      : ""
+  }
+</div>
               <button class="btn btn-primary small-btn" onclick="openBooking('${t.name.replace(/'/g,"\\'")}')">Book</button>
             </div>
           </div>
