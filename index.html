@@ -259,6 +259,611 @@
       .test-grid{grid-template-columns:1fr}.features{grid-template-columns:1fr}.trust-strip{grid-template-columns:1fr}
       .hero-card{height:500px}.slide h2{font-size:30px}
     }
+    /* =========================================================
+   SMART MULTI-TEST BOOKING CART
+========================================================= */
+
+.booking-cart-fab{
+  position:fixed;
+
+  right:22px;
+  bottom:22px;
+
+  z-index:1800;
+
+  min-width:210px;
+
+  padding:11px 13px;
+
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  border-radius:16px;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--blue-deep),
+      var(--blue)
+    );
+
+  color:#fff;
+
+  box-shadow:
+    0 18px 45px rgba(6,29,45,.25);
+
+  transform:translateY(20px);
+  opacity:0;
+  pointer-events:none;
+
+  transition:
+    opacity .3s ease,
+    transform .35s var(--ease),
+    box-shadow .25s ease;
+}
+
+.booking-cart-fab.show{
+  opacity:1;
+  transform:translateY(0);
+  pointer-events:auto;
+}
+
+.booking-cart-fab:hover{
+  box-shadow:
+    0 22px 55px rgba(6,29,45,.32);
+
+  transform:
+    translateY(-2px);
+}
+
+.cart-icon{
+  width:39px;
+  height:39px;
+
+  flex:0 0 auto;
+
+  display:grid;
+  place-items:center;
+
+  border-radius:12px;
+
+  background:rgba(255,255,255,.12);
+
+  color:#66e0a5;
+}
+
+.cart-copy{
+  min-width:0;
+  text-align:left;
+}
+
+.cart-copy strong{
+  display:block;
+
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.2px;
+}
+
+.cart-copy small{
+  display:block;
+
+  margin-top:2px;
+
+  color:#b9d7e4;
+
+  font-size:8px;
+}
+
+.cart-arrow{
+  margin-left:auto;
+
+  width:27px;
+  height:27px;
+
+  display:grid;
+  place-items:center;
+
+  border-radius:9px;
+
+  background:rgba(255,255,255,.10);
+
+  font-size:10px;
+}
+
+.cart-backdrop{
+  position:fixed;
+  inset:0;
+
+  z-index:1900;
+
+  background:rgba(3,20,31,.42);
+
+  backdrop-filter:blur(5px);
+
+  opacity:0;
+  visibility:hidden;
+
+  transition:
+    opacity .25s ease,
+    visibility .25s ease;
+}
+
+.cart-backdrop.show{
+  opacity:1;
+  visibility:visible;
+}
+
+.booking-cart-drawer{
+  position:fixed;
+
+  top:0;
+  right:0;
+  bottom:0;
+
+  width:min(455px,100%);
+
+  z-index:2000;
+
+  display:flex;
+  flex-direction:column;
+
+  background:#fff;
+
+  box-shadow:
+    -25px 0 80px rgba(6,29,45,.18);
+
+  transform:translateX(102%);
+
+  transition:
+    transform .42s var(--ease);
+}
+
+.booking-cart-drawer.show{
+  transform:translateX(0);
+}
+
+.cart-head{
+  padding:22px 20px 18px;
+
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:15px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f7fcfd,
+      #eef9f4
+    );
+
+  border-bottom:1px solid var(--line);
+}
+
+.cart-eyebrow{
+  display:block;
+
+  color:var(--green-dark);
+
+  font-size:7px;
+  font-weight:800;
+
+  text-transform:uppercase;
+  letter-spacing:1.6px;
+}
+
+.cart-head h3{
+  margin-top:4px;
+
+  color:var(--navy);
+
+  font-family:"Plus Jakarta Sans",sans-serif;
+
+  font-size:18px;
+
+  letter-spacing:-.5px;
+}
+
+.cart-head p{
+  margin-top:4px;
+
+  color:var(--muted);
+
+  font-size:8px;
+}
+
+.cart-close{
+  width:34px;
+  height:34px;
+
+  display:grid;
+  place-items:center;
+
+  border:1px solid var(--line);
+  border-radius:10px;
+
+  background:#fff;
+  color:var(--muted);
+
+  transition:.2s ease;
+}
+
+.cart-close:hover{
+  color:var(--navy);
+  transform:rotate(3deg);
+}
+
+.cart-body{
+  flex:1;
+
+  overflow-y:auto;
+
+  padding:12px 18px 18px;
+}
+
+.cart-empty{
+  min-height:320px;
+
+  display:grid;
+  place-items:center;
+
+  text-align:center;
+}
+
+.cart-empty-icon{
+  width:68px;
+  height:68px;
+
+  margin:0 auto 12px;
+
+  display:grid;
+  place-items:center;
+
+  border-radius:21px;
+
+  background:var(--mint);
+  color:var(--green);
+
+  font-size:22px;
+}
+
+.cart-empty strong{
+  display:block;
+
+  color:var(--navy);
+
+  font-size:12px;
+}
+
+.cart-empty p{
+  margin-top:5px;
+
+  max-width:250px;
+
+  color:var(--muted);
+
+  font-size:8px;
+
+  line-height:1.6;
+}
+
+.cart-item{
+  display:grid;
+
+  grid-template-columns:
+    1fr
+    auto;
+
+  gap:10px;
+
+  padding:14px 0;
+
+  border-bottom:1px solid #edf2f5;
+
+  animation:cartItemIn .28s var(--ease);
+}
+
+@keyframes cartItemIn{
+  from{
+    opacity:0;
+    transform:translateY(5px);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+.cart-item-main{
+  min-width:0;
+}
+
+.cart-item-main strong{
+  display:block;
+
+  color:var(--navy);
+
+  font-size:9px;
+  line-height:1.45;
+}
+
+.cart-item-code{
+  margin-top:3px;
+
+  color:var(--muted);
+
+  font-size:7px;
+}
+
+.cart-item-price{
+  margin-top:6px;
+
+  color:var(--green-dark);
+
+  font-size:9px;
+
+  font-weight:800;
+}
+
+.cart-item-actions{
+  display:flex;
+  align-items:center;
+  gap:5px;
+}
+
+.cart-qty{
+  display:flex;
+  align-items:center;
+
+  border:1px solid var(--line);
+
+  border-radius:9px;
+
+  overflow:hidden;
+}
+
+.cart-qty button{
+  width:25px;
+  height:27px;
+
+  background:#f7fafc;
+  color:var(--blue);
+
+  font-size:9px;
+}
+
+.cart-qty span{
+  min-width:27px;
+
+  text-align:center;
+
+  color:var(--navy);
+
+  font-size:8px;
+  font-weight:800;
+}
+
+.cart-remove{
+  width:28px;
+  height:28px;
+
+  display:grid;
+  place-items:center;
+
+  border-radius:9px;
+
+  background:#fff2f2;
+  color:#c24141;
+
+  font-size:9px;
+}
+
+.cart-footer{
+  padding:17px 18px 19px;
+
+  background:#fff;
+
+  border-top:1px solid var(--line);
+
+  box-shadow:
+    0 -15px 35px rgba(6,29,45,.05);
+}
+
+.cart-total-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  margin-bottom:11px;
+}
+
+.cart-total-row span{
+  color:var(--muted);
+
+  font-size:9px;
+  font-weight:700;
+}
+
+.cart-total-row strong{
+  color:var(--navy);
+
+  font-family:"Plus Jakarta Sans",sans-serif;
+
+  font-size:20px;
+}
+
+.cart-checkout-btn{
+  width:100%;
+
+  min-height:45px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+}
+
+.cart-checkout-btn:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+}
+
+.cart-clear-btn{
+  width:100%;
+
+  margin-top:8px;
+
+  padding:8px;
+
+  background:transparent;
+
+  color:#8b9ba5;
+
+  font-size:8px;
+  font-weight:800;
+}
+
+.cart-clear-btn:hover{
+  color:#c24141;
+}
+
+
+/* Test-card state */
+
+.test-card-cart-added{
+  border-color:#82d5ab !important;
+
+  box-shadow:
+    0 10px 28px rgba(22,167,101,.10);
+}
+
+.test-add-btn{
+  position:relative;
+}
+
+.test-add-btn.is-added{
+  background:
+    linear-gradient(
+      135deg,
+      #0d9f5a,
+      #087443
+    ) !important;
+
+  color:#fff !important;
+
+  border-color:transparent !important;
+}
+
+
+/* Booking modal selected test list */
+
+.selected-tests-summary{
+  grid-column:1/-1;
+
+  padding:13px;
+
+  border-radius:13px;
+
+  border:1px solid #dcece4;
+
+  background:#f5fbf8;
+}
+
+.selected-tests-summary-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  gap:10px;
+
+  margin-bottom:8px;
+}
+
+.selected-tests-summary-head strong{
+  color:var(--navy);
+
+  font-size:9px;
+}
+
+.selected-tests-summary-head span{
+  color:var(--green-dark);
+
+  font-size:8px;
+  font-weight:800;
+}
+
+.selected-tests-list{
+  display:grid;
+  gap:6px;
+}
+
+.selected-test-line{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+
+  color:#58707d;
+
+  font-size:8px;
+}
+
+.selected-test-line strong{
+  color:var(--navy);
+
+  font-size:8px;
+}
+
+.selected-tests-total{
+  display:flex;
+  justify-content:space-between;
+
+  padding-top:8px;
+  margin-top:8px;
+
+  border-top:1px dashed #cee1d7;
+
+  color:var(--green-dark);
+
+  font-size:8px;
+  font-weight:800;
+}
+
+
+/* Mobile */
+
+@media(max-width:700px){
+
+  .booking-cart-fab{
+    right:12px;
+    bottom:12px;
+
+    min-width:0;
+
+    width:calc(100% - 24px);
+
+    justify-content:flex-start;
+  }
+
+  .cart-arrow{
+    margin-left:auto;
+  }
+
+}
+
+@media(prefers-reduced-motion:reduce){
+
+  .booking-cart-drawer,
+  .cart-backdrop,
+  .booking-cart-fab,
+  .cart-item{
+    animation:none !important;
+    transition:none !important;
+  }
+
+}
   </style>
 </head>
 
@@ -586,7 +1191,11 @@
   <label>Test / Package</label>
   <input id="selectedTest" readonly>
 </div>
-
+<div
+  class="selected-tests-summary"
+  id="selectedTestsSummary"
+>
+</div>
 <div class="field">
   <label>Patient Price</label>
   <input id="selectedPrice" readonly value="₹0">
@@ -641,7 +1250,116 @@
   </div>
 
   <div class="toast" id="toast"></div>
+<!-- =====================================================
+     LIFESURE SMART BOOKING CART
+====================================================== -->
 
+<button
+  type="button"
+  id="bookingCartFab"
+  class="booking-cart-fab"
+  aria-label="Open selected tests"
+  onclick="openBookingCart()"
+>
+  <span class="cart-icon">
+    <i class="fa-solid fa-flask"></i>
+  </span>
+
+  <span class="cart-copy">
+    <strong id="cartFabCount">0 Tests</strong>
+    <small id="cartFabTotal">₹0</small>
+  </span>
+
+  <span class="cart-arrow">
+    <i class="fa-solid fa-arrow-right"></i>
+  </span>
+</button>
+
+
+<div
+  class="cart-backdrop"
+  id="bookingCartBackdrop"
+  onclick="closeBookingCart(event)"
+></div>
+
+
+<aside
+  class="booking-cart-drawer"
+  id="bookingCartDrawer"
+  aria-label="Selected tests"
+>
+
+  <div class="cart-head">
+
+    <div>
+      <span class="cart-eyebrow">
+        LifeSure Booking
+      </span>
+
+      <h3>
+        Your Selected Tests
+      </h3>
+
+      <p>
+        Add multiple investigations to one booking.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="cart-close"
+      onclick="closeBookingCart()"
+      aria-label="Close cart"
+    >
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+
+  </div>
+
+
+  <div
+    class="cart-body"
+    id="bookingCartBody"
+  ></div>
+
+
+  <div class="cart-footer">
+
+    <div class="cart-total-row">
+
+      <span>
+        Total
+      </span>
+
+      <strong id="cartDrawerTotal">
+        ₹0
+      </strong>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="btn btn-primary cart-checkout-btn"
+      id="cartContinueButton"
+      onclick="continueFromCart()"
+    >
+      Continue Booking
+      <i class="fa-solid fa-arrow-right"></i>
+    </button>
+
+
+    <button
+      type="button"
+      class="cart-clear-btn"
+      onclick="clearBookingCart()"
+    >
+      Clear selection
+    </button>
+
+  </div>
+
+</aside>
   <script>
     const WHATSAPP = "917266925657";
 
@@ -828,7 +1546,922 @@ function renderTests(){
       renderTests();
       document.querySelector("#tests").scrollIntoView({behavior:"smooth"});
     }
+/* =========================================================
+   MULTI-TEST BOOKING CART
+========================================================= */
 
+let bookingCart = [];
+
+const BOOKING_CART_KEY =
+  "lifesure_booking_cart_v1";
+
+
+function loadBookingCart(){
+
+  try{
+
+    const saved =
+      localStorage.getItem(
+        BOOKING_CART_KEY
+      );
+
+    const parsed =
+      saved
+        ? JSON.parse(saved)
+        : [];
+
+    if(
+      Array.isArray(parsed)
+    ){
+
+      bookingCart =
+        parsed.filter(
+          item =>
+            item &&
+            item.test_code &&
+            item.name
+        );
+
+    }
+
+  }catch(error){
+
+    console.error(
+      "CART LOAD ERROR:",
+      error
+    );
+
+    bookingCart = [];
+
+  }
+
+
+  renderBookingCart();
+
+}
+
+
+function saveBookingCart(){
+
+  try{
+
+    localStorage.setItem(
+      BOOKING_CART_KEY,
+      JSON.stringify(
+        bookingCart
+      )
+    );
+
+  }catch(error){
+
+    console.error(
+      "CART SAVE ERROR:",
+      error
+    );
+
+  }
+
+}
+
+
+function cartTotal(){
+
+  return bookingCart.reduce(
+    (
+      total,
+      item
+    ) => {
+
+      return total +
+        (
+          Number(
+            item.price || 0
+          ) *
+          Number(
+            item.quantity || 1
+          )
+        );
+
+    },
+    0
+  );
+
+}
+
+
+function cartCount(){
+
+  return bookingCart.reduce(
+    (
+      total,
+      item
+    ) =>
+      total +
+      Number(
+        item.quantity || 1
+      ),
+    0
+  );
+
+}
+
+
+function formatCartMoney(
+  value
+){
+
+  return Number(
+    value || 0
+  ).toLocaleString(
+    "en-IN"
+  );
+
+}
+
+
+function addTestToBooking(
+  test
+){
+
+  if(
+    !test ||
+    !test.code ||
+    !test.name
+  ){
+
+    showToast(
+      "This test cannot be added right now.",
+      true
+    );
+
+    return;
+
+  }
+
+
+  const code =
+    String(
+      test.code
+    ).trim();
+
+
+  const existingIndex =
+    bookingCart.findIndex(
+      item =>
+        item.test_code === code
+    );
+
+
+  if(
+    existingIndex >= 0
+  ){
+
+    showToast(
+      "Test is already in your booking."
+    );
+
+    openBookingCart();
+
+    return;
+
+  }
+
+
+  bookingCart.push({
+
+    test_code:
+      code,
+
+    name:
+      String(
+        test.name
+      ),
+
+    price:
+      Number(
+        test.price || 0
+      ),
+
+    quantity:
+      1
+
+  });
+
+
+  saveBookingCart();
+
+  renderBookingCart();
+
+  showToast(
+    `${test.name} added to your booking.`
+  );
+
+}
+
+
+function removeTestFromBooking(
+  code
+){
+
+  bookingCart =
+    bookingCart.filter(
+      item =>
+        item.test_code !==
+        code
+    );
+
+
+  saveBookingCart();
+
+  renderBookingCart();
+
+}
+
+
+function changeCartQuantity(
+  code,
+  delta
+){
+
+  const item =
+    bookingCart.find(
+      x =>
+        x.test_code ===
+        code
+    );
+
+
+  if(!item)
+    return;
+
+
+  const next =
+    Number(
+      item.quantity || 1
+    ) +
+    Number(delta);
+
+
+  if(next <= 0){
+
+    removeTestFromBooking(
+      code
+    );
+
+    return;
+
+  }
+
+
+  if(next > 20){
+
+    showToast(
+      "Maximum quantity reached."
+    );
+
+    return;
+
+  }
+
+
+  item.quantity =
+    next;
+
+
+  saveBookingCart();
+
+  renderBookingCart();
+
+}
+
+
+function clearBookingCart(){
+
+  if(
+    bookingCart.length === 0
+  )
+    return;
+
+
+  bookingCart = [];
+
+  saveBookingCart();
+
+  renderBookingCart();
+
+  closeBookingCart();
+
+}
+
+
+function renderBookingCart(){
+
+  const count =
+    cartCount();
+
+  const total =
+    cartTotal();
+
+
+  const fab =
+    document.getElementById(
+      "bookingCartFab"
+    );
+
+  const countEl =
+    document.getElementById(
+      "cartFabCount"
+    );
+
+  const totalEl =
+    document.getElementById(
+      "cartFabTotal"
+    );
+
+  const drawerTotal =
+    document.getElementById(
+      "cartDrawerTotal"
+    );
+
+  const body =
+    document.getElementById(
+      "bookingCartBody"
+    );
+
+  const continueBtn =
+    document.getElementById(
+      "cartContinueButton"
+    );
+
+
+  if(countEl){
+
+    countEl.textContent =
+      `${count} ${
+        count === 1
+          ? "Test"
+          : "Tests"
+      }`;
+
+  }
+
+
+  if(totalEl){
+
+    totalEl.textContent =
+      `₹${formatCartMoney(total)}`;
+
+  }
+
+
+  if(drawerTotal){
+
+    drawerTotal.textContent =
+      `₹${formatCartMoney(total)}`;
+
+  }
+
+
+  if(fab){
+
+    fab.classList.toggle(
+      "show",
+      count > 0
+    );
+
+  }
+
+
+  if(continueBtn){
+
+    continueBtn.disabled =
+      count === 0;
+
+  }
+
+
+  if(!body)
+    return;
+
+
+  if(
+    bookingCart.length === 0
+  ){
+
+    body.innerHTML = `
+
+      <div class="cart-empty">
+
+        <div>
+
+          <div class="cart-empty-icon">
+
+            <i class="fa-solid fa-flask-vial"></i>
+
+          </div>
+
+          <strong>
+            Your booking is empty
+          </strong>
+
+          <p>
+            Search the LifeSure test catalogue and
+            add the investigations you need.
+          </p>
+
+        </div>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  body.innerHTML =
+
+    bookingCart.map(
+      item => {
+
+        const quantity =
+          Number(
+            item.quantity || 1
+          );
+
+
+        const lineTotal =
+          Number(
+            item.price || 0
+          ) *
+          quantity;
+
+
+        return `
+
+          <div class="cart-item">
+
+            <div class="cart-item-main">
+
+              <strong>
+                ${escapeCartHtml(
+                  item.name
+                )}
+              </strong>
+
+              <div class="cart-item-code">
+                ${escapeCartHtml(
+                  item.test_code
+                )}
+              </div>
+
+              <div class="cart-item-price">
+                ₹${formatCartMoney(
+                  lineTotal
+                )}
+              </div>
+
+            </div>
+
+
+            <div class="cart-item-actions">
+
+              <div class="cart-qty">
+
+                <button
+                  type="button"
+                  aria-label="Decrease quantity"
+                  onclick="changeCartQuantity(
+                    '${escapeJs(
+                      item.test_code
+                    )}',
+                    -1
+                  )"
+                >
+                  −
+                </button>
+
+                <span>
+                  ${quantity}
+                </span>
+
+                <button
+                  type="button"
+                  aria-label="Increase quantity"
+                  onclick="changeCartQuantity(
+                    '${escapeJs(
+                      item.test_code
+                    )}',
+                    1
+                  )"
+                >
+                  +
+                </button>
+
+              </div>
+
+
+              <button
+                type="button"
+                class="cart-remove"
+                aria-label="Remove test"
+                onclick="removeTestFromBooking(
+                  '${escapeJs(
+                    item.test_code
+                  )}'
+                )"
+              >
+                <i class="fa-solid fa-trash"></i>
+              </button>
+
+            </div>
+
+          </div>
+
+        `;
+
+      }
+    ).join("");
+
+}
+
+
+function openBookingCart(){
+
+  renderBookingCart();
+
+  document
+    .getElementById(
+      "bookingCartDrawer"
+    )
+    .classList.add(
+      "show"
+    );
+
+
+  document
+    .getElementById(
+      "bookingCartBackdrop"
+    )
+    .classList.add(
+      "show"
+    );
+
+
+  document.body.style.overflow =
+    "hidden";
+
+}
+
+
+function closeBookingCart(
+  event
+){
+
+  if(
+    event &&
+    event.target &&
+    event.target.id !==
+      "bookingCartBackdrop"
+  )
+    return;
+
+
+  document
+    .getElementById(
+      "bookingCartDrawer"
+    )
+    .classList.remove(
+      "show"
+    );
+
+
+  document
+    .getElementById(
+      "bookingCartBackdrop"
+    )
+    .classList.remove(
+      "show"
+    );
+
+
+  document.body.style.overflow =
+    "";
+
+}
+
+
+function continueFromCart(){
+
+  if(
+    bookingCart.length === 0
+  ){
+
+    showToast(
+      "Add at least one test first.",
+      true
+    );
+
+    return;
+
+  }
+
+
+  closeBookingCart();
+
+  openBooking();
+
+}
+
+
+function escapeCartHtml(
+  value
+){
+
+  return String(
+    value ?? ""
+  )
+  .replaceAll(
+    "&",
+    "&amp;"
+  )
+  .replaceAll(
+    "<",
+    "&lt;"
+  )
+  .replaceAll(
+    ">",
+    "&gt;"
+  )
+  .replaceAll(
+    '"',
+    "&quot;"
+  )
+  .replaceAll(
+    "'",
+    "&#039;"
+  );
+
+}
+
+
+function escapeJs(
+  value
+){
+
+  return String(
+    value ?? ""
+  )
+  .replaceAll(
+    "\\",
+    "\\\\"
+  )
+  .replaceAll(
+    "'",
+    "\\'"
+  );
+
+}
+
+
+/* =========================================================
+   OPEN BOOKING MODAL
+========================================================= */
+
+function openBooking(
+  testName = null
+){
+
+  /*
+   * Backwards compatibility:
+   *
+   * Existing hero/buttons can still call:
+   *
+   * openBooking("CBC")
+   *
+   * We now add that test to the cart
+   * instead of creating a one-test-only booking.
+   */
+
+  if(
+    testName &&
+    testName !== "General Test Enquiry" &&
+    testName !== "Quick Booking" &&
+    testName !== "Blood Test Enquiry" &&
+    testName !== "Diagnostic Test Enquiry" &&
+    testName !== "Home Sample Collection" &&
+    testName !== "Full Body Checkup Package"
+  ){
+
+    const matched =
+      tests.find(
+        t =>
+          String(t.name)
+            .toLowerCase() ===
+          String(testName)
+            .toLowerCase()
+      );
+
+
+    if(matched){
+
+      addTestToBooking(
+        matched
+      );
+
+    }
+
+  }
+
+
+  $("bookingModal")
+    .classList
+    .add("show");
+
+
+  $("success")
+    .classList
+    .remove("show");
+
+
+  $("bookingForm")
+    .style
+    .display =
+    "grid";
+
+
+  $("date").min =
+    new Date()
+      .toISOString()
+      .split("T")[0];
+
+
+  renderBookingSelection();
+function renderSelectedTestsSummary(){
+
+  const box =
+    document.getElementById(
+      "selectedTestsSummary"
+    );
+
+
+  if(!box)
+    return;
+
+
+  if(
+    bookingCart.length === 0
+  ){
+
+    box.innerHTML = `
+
+      <div class="selected-tests-summary-head">
+
+        <strong>
+          No tests selected
+        </strong>
+
+        <span>
+          Add tests from catalogue
+        </span>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+renderSelectedTestsSummary();
+
+  const total =
+    cartTotal();
+
+
+  box.innerHTML = `
+
+    <div class="selected-tests-summary-head">
+
+      <strong>
+        Selected Tests
+      </strong>
+
+      <span>
+        ${cartCount()} ${
+          cartCount() === 1
+            ? "Test"
+            : "Tests"
+        }
+      </span>
+
+    </div>
+
+
+    <div class="selected-tests-list">
+
+      ${
+        bookingCart.map(
+          item => `
+
+            <div class="selected-test-line">
+
+              <span>
+                ${escapeCartHtml(
+                  item.name
+                )}
+                ${
+                  Number(item.quantity || 1) > 1
+                    ? ` × ${item.quantity}`
+                    : ""
+                }
+              </span>
+
+              <strong>
+                ₹${formatCartMoney(
+                  Number(item.price || 0) *
+                  Number(item.quantity || 1)
+                )}
+              </strong>
+
+            </div>
+
+          `
+        ).join("")
+      }
+
+    </div>
+
+
+    <div class="selected-tests-total">
+
+      <span>
+        Booking subtotal
+      </span>
+
+      <span>
+        ₹${formatCartMoney(total)}
+      </span>
+
+    </div>
+
+  `;
+
+}
+
+  setTimeout(
+    () => $("name").focus(),
+    80
+  );
+
+
+  document.body.style.overflow =
+    "hidden";
+
+}
+
+
+/* =========================================================
+   BOOKING SELECTION SUMMARY
+========================================================= */
+
+function renderBookingSelection(){
+
+  const field =
+    document.getElementById(
+      "selectedTest"
+    );
+
+
+  if(!field)
+    return;
+
+
+  const count =
+    cartCount();
+
+
+  if(count === 0){
+
+    field.value =
+      "Select tests from the catalogue";
+
+    return;
+
+  }
+
+
+  field.value =
+    bookingCart
+      .map(
+        item =>
+          `${item.name} × ${item.quantity || 1}`
+      )
+      .join(
+        " • "
+      );
+
+}
     function openBooking(testName){
 
   $("bookingModal").classList.add("show");
