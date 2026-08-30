@@ -1,0 +1,2882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="theme-color" content="#062b3f">
+  <meta
+    name="description"
+    content="LifeSure Diagnostics secure billing and payment checkout."
+  >
+
+  <title>LifeSure Diagnostics | Secure Billing</title>
+
+  <link rel="icon" type="image/png" href="logo.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  >
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root{
+      --navy:#062b3f;
+      --navy-2:#083b54;
+      --blue:#075985;
+      --blue-soft:#eaf5fa;
+
+      --green:#16a765;
+      --green-dark:#087443;
+      --green-soft:#eaf9f1;
+
+      --ink:#102235;
+      --muted:#64748b;
+      --muted-2:#94a3b8;
+
+      --line:#e4edf2;
+      --line-2:#d9e5eb;
+
+      --bg:#f4f8fb;
+      --white:#fff;
+
+      --danger:#dc2626;
+      --danger-soft:#fef2f2;
+
+      --warning:#b45309;
+      --warning-soft:#fff7ed;
+
+      --shadow-sm:0 8px 28px rgba(6,43,63,.06);
+      --shadow-md:0 18px 55px rgba(6,43,63,.10);
+      --shadow-lg:0 30px 90px rgba(6,43,63,.14);
+
+      --radius-xl:30px;
+      --radius-lg:22px;
+      --radius-md:16px;
+
+      --ease:cubic-bezier(.22,1,.36,1);
+    }
+
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+    }
+
+    html{
+      scroll-behavior:smooth;
+    }
+
+    body{
+      min-height:100vh;
+      font-family:Manrope,Arial,sans-serif;
+      background:
+        radial-gradient(circle at 0 0,rgba(22,167,101,.08),transparent 26%),
+        radial-gradient(circle at 100% 0,rgba(7,89,133,.09),transparent 30%),
+        var(--bg);
+      color:var(--ink);
+      overflow-x:hidden;
+    }
+
+    button,
+    input,
+    select{
+      font:inherit;
+    }
+
+    button{
+      border:0;
+      cursor:pointer;
+    }
+
+    a{
+      color:inherit;
+      text-decoration:none;
+    }
+
+    .shell{
+      min-height:100vh;
+    }
+
+    /* ======================================================
+       TOP NAV
+    ====================================================== */
+
+    .topbar{
+      height:38px;
+      background:var(--navy);
+      color:#dbeafe;
+      font-size:11px;
+    }
+
+    .topbar-inner{
+      width:min(1240px,calc(100% - 32px));
+      height:100%;
+      margin:auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
+
+    .secure-label{
+      display:flex;
+      align-items:center;
+      gap:7px;
+      font-weight:800;
+    }
+
+    .secure-label i{
+      color:#5ee7a7;
+    }
+
+    .topbar-right{
+      display:flex;
+      align-items:center;
+      gap:15px;
+      color:#a9c5d4;
+    }
+
+    .topbar-right strong{
+      color:white;
+    }
+
+    .navbar{
+      position:sticky;
+      top:0;
+      z-index:1000;
+      background:rgba(255,255,255,.90);
+      backdrop-filter:blur(20px);
+      border-bottom:1px solid rgba(220,231,237,.92);
+    }
+
+    .nav-inner{
+      width:min(1240px,calc(100% - 32px));
+      min-height:76px;
+      margin:auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:11px;
+      min-width:max-content;
+    }
+
+    .brand img{
+      width:48px;
+      height:48px;
+      object-fit:contain;
+    }
+
+    .brand-name{
+      font-family:"Plus Jakarta Sans",sans-serif;
+      font-size:23px;
+      line-height:1;
+      font-weight:800;
+      letter-spacing:-1px;
+      color:var(--blue);
+    }
+
+    .brand-name span{
+      color:var(--green);
+    }
+
+    .brand-sub{
+      display:block;
+      margin-top:4px;
+      font-size:8px;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      color:#94a3b8;
+      font-weight:800;
+    }
+
+    .nav-security{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      color:var(--muted);
+      font-size:11px;
+      font-weight:700;
+    }
+
+    .nav-security .dot{
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background:#29bb73;
+      box-shadow:0 0 0 5px rgba(41,187,115,.10);
+    }
+
+    /* ======================================================
+       PAGE
+    ====================================================== */
+
+    .page{
+      width:min(1240px,calc(100% - 32px));
+      margin:0 auto;
+      padding:34px 0 80px;
+    }
+
+    /* ======================================================
+       STEPPER
+    ====================================================== */
+
+    .stepper-wrap{
+      display:flex;
+      justify-content:center;
+      margin-bottom:30px;
+    }
+
+    .stepper{
+      width:min(760px,100%);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .step{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      color:#a1afbb;
+      font-size:11px;
+      font-weight:800;
+      white-space:nowrap;
+      transition:.3s ease;
+    }
+
+    .step-circle{
+      width:34px;
+      height:34px;
+      border-radius:50%;
+      background:#e6eef2;
+      color:#64748b;
+      display:grid;
+      place-items:center;
+      font-size:11px;
+      transition:.35s var(--ease);
+    }
+
+    .step.active{
+      color:var(--green-dark);
+    }
+
+    .step.active .step-circle{
+      color:white;
+      background:linear-gradient(135deg,var(--green),#079355);
+      box-shadow:0 8px 24px rgba(22,167,101,.24);
+    }
+
+    .step.done{
+      color:var(--blue);
+    }
+
+    .step.done .step-circle{
+      color:white;
+      background:var(--blue);
+    }
+
+    .step-line{
+      flex:1;
+      height:2px;
+      margin:0 10px;
+      background:#dce6eb;
+      position:relative;
+      overflow:hidden;
+      min-width:35px;
+    }
+
+    .step-line::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:var(--green);
+      transform:scaleX(0);
+      transform-origin:left;
+      transition:.45s var(--ease);
+    }
+
+    .step-line.active::after{
+      transform:scaleX(1);
+    }
+
+    /* ======================================================
+       HEADER
+    ====================================================== */
+
+    .page-heading{
+      text-align:center;
+      margin-bottom:30px;
+      animation:fadeUp .55s var(--ease);
+    }
+
+    .kicker{
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      padding:7px 11px;
+      border-radius:999px;
+      background:var(--green-soft);
+      color:var(--green-dark);
+      font-size:9px;
+      text-transform:uppercase;
+      letter-spacing:1.8px;
+      font-weight:800;
+      margin-bottom:11px;
+    }
+
+    .page-heading h1{
+      font-family:"Plus Jakarta Sans",sans-serif;
+      color:var(--navy);
+      font-size:clamp(29px,4vw,42px);
+      letter-spacing:-1.7px;
+      line-height:1.06;
+    }
+
+    .page-heading p{
+      max-width:680px;
+      margin:9px auto 0;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.65;
+    }
+
+    /* ======================================================
+       MAIN GRID
+    ====================================================== */
+
+    .checkout-grid{
+      display:grid;
+      grid-template-columns:minmax(0,1.25fr) minmax(340px,.75fr);
+      gap:22px;
+      align-items:start;
+    }
+
+    .panel{
+      background:rgba(255,255,255,.96);
+      border:1px solid var(--line);
+      border-radius:var(--radius-xl);
+      box-shadow:var(--shadow-md);
+      overflow:hidden;
+      animation:fadeUp .6s var(--ease);
+    }
+
+    .panel + .panel{
+      animation-delay:.08s;
+    }
+
+    .panel-head{
+      padding:24px 26px 21px;
+      border-bottom:1px solid #edf2f5;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:18px;
+    }
+
+    .panel-title{
+      color:var(--navy);
+      font-family:"Plus Jakarta Sans",sans-serif;
+      font-size:19px;
+      letter-spacing:-.5px;
+    }
+
+    .panel-subtitle{
+      margin-top:5px;
+      color:var(--muted);
+      font-size:10px;
+      line-height:1.6;
+    }
+
+    .reference-chip{
+      flex:0 0 auto;
+      border:1px solid #dce9ef;
+      background:#f8fbfc;
+      color:#567080;
+      padding:8px 10px;
+      border-radius:10px;
+      font-size:9px;
+      font-weight:800;
+      letter-spacing:.3px;
+    }
+
+    /* ======================================================
+       PATIENT
+    ====================================================== */
+
+    .patient{
+      padding:20px 26px;
+      border-bottom:1px solid #edf2f5;
+    }
+
+    .patient-card{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      padding:16px;
+      border-radius:18px;
+      background:
+        linear-gradient(135deg,#f8fcfd,#f0f8f6);
+      border:1px solid #e0ecef;
+    }
+
+    .patient-avatar{
+      width:48px;
+      height:48px;
+      border-radius:15px;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(135deg,#e8f8ef,#dff4ea);
+      color:var(--green-dark);
+      font-size:18px;
+      flex:0 0 auto;
+    }
+
+    .patient-main{
+      min-width:0;
+    }
+
+    .patient-name{
+      font-size:14px;
+      font-weight:800;
+      color:var(--navy);
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+
+    .patient-meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:9px;
+      margin-top:5px;
+      color:var(--muted);
+      font-size:9px;
+    }
+
+    .patient-meta span{
+      display:flex;
+      align-items:center;
+      gap:5px;
+    }
+
+    /* ======================================================
+       TEST / SERVICES
+    ====================================================== */
+
+    .services{
+      padding:22px 26px;
+    }
+
+    .service-row{
+      display:flex;
+      justify-content:space-between;
+      gap:18px;
+      padding:17px 0;
+      border-bottom:1px solid #edf2f5;
+    }
+
+    .service-row:last-child{
+      border-bottom:0;
+      padding-bottom:2px;
+    }
+
+    .service-left{
+      display:flex;
+      gap:13px;
+      min-width:0;
+    }
+
+    .service-icon{
+      width:42px;
+      height:42px;
+      border-radius:13px;
+      background:#eff7fb;
+      color:var(--blue);
+      display:grid;
+      place-items:center;
+      flex:0 0 auto;
+    }
+
+    .service-info{
+      min-width:0;
+    }
+
+    .service-name{
+      font-size:13px;
+      line-height:1.45;
+      font-weight:800;
+      color:var(--navy);
+    }
+
+    .service-meta{
+      margin-top:4px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:7px;
+      color:var(--muted);
+      font-size:9px;
+    }
+
+    .service-meta span{
+      display:flex;
+      align-items:center;
+      gap:4px;
+    }
+
+    .service-meta .code{
+      color:var(--blue);
+      font-weight:800;
+    }
+
+    .service-price{
+      flex:0 0 auto;
+      align-self:center;
+      font-weight:800;
+      font-size:14px;
+      color:var(--navy);
+    }
+
+    /* ======================================================
+       COLLECTION INFO
+    ====================================================== */
+
+    .collection-card{
+      margin:0 26px 26px;
+      padding:16px;
+      border-radius:17px;
+      border:1px solid var(--line);
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      background:#fcfefe;
+    }
+
+    .collection-item{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+    }
+
+    .collection-item i{
+      color:var(--green);
+      margin-top:1px;
+    }
+
+    .collection-item strong{
+      display:block;
+      font-size:10px;
+      color:var(--navy);
+    }
+
+    .collection-item span{
+      display:block;
+      margin-top:3px;
+      font-size:9px;
+      color:var(--muted);
+      line-height:1.45;
+    }
+
+    /* ======================================================
+       SUMMARY
+    ====================================================== */
+
+    .summary{
+      padding:24px 26px;
+    }
+
+    .summary-title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:18px;
+    }
+
+    .summary-title h2{
+      font-family:"Plus Jakarta Sans",sans-serif;
+      color:var(--navy);
+      font-size:18px;
+    }
+
+    .currency{
+      color:var(--muted-2);
+      font-size:9px;
+      font-weight:800;
+      letter-spacing:1px;
+    }
+
+    .money-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:15px;
+      margin:12px 0;
+      color:#526473;
+      font-size:11px;
+    }
+
+    .money-row strong{
+      color:var(--navy);
+      font-size:12px;
+    }
+
+    .money-row.discount{
+      color:var(--green-dark);
+    }
+
+    .money-row.discount strong{
+      color:var(--green-dark);
+    }
+
+    .total-box{
+      margin-top:17px;
+      padding:17px;
+      border-radius:17px;
+      background:
+        linear-gradient(
+          135deg,
+          #effaf5,
+          #f4fbf8
+        );
+      border:1px solid #d7eee1;
+    }
+
+    .total-top{
+      display:flex;
+      justify-content:space-between;
+      color:var(--green-dark);
+      font-size:10px;
+      font-weight:800;
+    }
+
+    .total-value{
+      margin-top:5px;
+      color:var(--navy);
+      font-family:"Plus Jakarta Sans",sans-serif;
+      font-size:29px;
+      letter-spacing:-1.2px;
+    }
+
+    /* ======================================================
+       PAYMENT OPTIONS
+    ====================================================== */
+
+    .payment-heading{
+      margin-top:25px;
+      margin-bottom:11px;
+      font-size:11px;
+      color:var(--navy);
+      font-weight:800;
+    }
+
+    .payment-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:9px;
+    }
+
+    .payment-option{
+      position:relative;
+      text-align:left;
+      padding:13px;
+      border-radius:15px;
+      border:1px solid var(--line);
+      background:white;
+      transition:.25s var(--ease);
+      overflow:hidden;
+    }
+
+    .payment-option::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(
+        135deg,
+        rgba(22,167,101,.07),
+        transparent
+      );
+      opacity:0;
+      transition:.25s;
+      pointer-events:none;
+    }
+
+    .payment-option:hover{
+      transform:translateY(-2px);
+      border-color:#a3d8bc;
+    }
+
+    .payment-option.active{
+      border-color:#62c292;
+      background:#f7fcf9;
+      box-shadow:0 8px 24px rgba(22,167,101,.10);
+    }
+
+    .payment-option.active::after{
+      opacity:1;
+    }
+
+    .payment-icon{
+      width:32px;
+      height:32px;
+      border-radius:10px;
+      background:#eff7fb;
+      color:var(--blue);
+      display:grid;
+      place-items:center;
+      font-size:12px;
+      margin-bottom:9px;
+    }
+
+    .payment-option.active .payment-icon{
+      background:var(--green-soft);
+      color:var(--green-dark);
+    }
+
+    .payment-option strong{
+      display:block;
+      color:var(--navy);
+      font-size:10px;
+    }
+
+    .payment-option span{
+      display:block;
+      margin-top:4px;
+      color:var(--muted);
+      line-height:1.4;
+      font-size:8px;
+    }
+
+    .selected-mark{
+      position:absolute;
+      right:9px;
+      top:9px;
+      width:19px;
+      height:19px;
+      border-radius:50%;
+      background:var(--green);
+      color:white;
+      display:none;
+      place-items:center;
+      font-size:8px;
+      z-index:2;
+    }
+
+    .payment-option.active .selected-mark{
+      display:grid;
+    }
+
+    /* ======================================================
+       PAYMENT DETAIL
+    ====================================================== */
+
+    .payment-detail{
+      margin-top:12px;
+      padding:14px;
+      border:1px solid var(--line);
+      border-radius:15px;
+      background:#fbfdfe;
+    }
+
+    .payment-detail-label{
+      color:var(--muted);
+      font-size:9px;
+      font-weight:800;
+      margin-bottom:6px;
+    }
+
+    .amount-input{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      height:46px;
+      padding:0 12px;
+      border:1px solid var(--line-2);
+      background:white;
+      border-radius:11px;
+      transition:.2s;
+    }
+
+    .amount-input:focus-within{
+      border-color:#68c49a;
+      box-shadow:0 0 0 4px rgba(22,167,101,.08);
+    }
+
+    .amount-input span{
+      font-size:13px;
+      color:var(--muted);
+      font-weight:800;
+    }
+
+    .amount-input input{
+      flex:1;
+      min-width:0;
+      border:0;
+      outline:0;
+      font-size:17px;
+      color:var(--navy);
+      font-weight:800;
+    }
+
+    .balance-mini{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px;
+      margin-top:9px;
+    }
+
+    .mini-box{
+      padding:10px;
+      border-radius:11px;
+      background:#f6fafc;
+      border:1px solid #e7eff3;
+    }
+
+    .mini-box span{
+      display:block;
+      color:var(--muted);
+      font-size:8px;
+      font-weight:700;
+    }
+
+    .mini-box strong{
+      display:block;
+      margin-top:3px;
+      color:var(--navy);
+      font-size:13px;
+    }
+
+    /* ======================================================
+       INFO BANNER
+    ====================================================== */
+
+    .secure-info{
+      display:flex;
+      align-items:flex-start;
+      gap:9px;
+      margin-top:14px;
+      padding:12px;
+      background:#f4f8fb;
+      border:1px solid #e6eef3;
+      color:#5d7280;
+      border-radius:12px;
+      font-size:9px;
+      line-height:1.55;
+    }
+
+    .secure-info i{
+      color:var(--green);
+      margin-top:1px;
+    }
+
+    /* ======================================================
+       ACTIONS
+    ====================================================== */
+
+    .actions{
+      display:grid;
+      gap:9px;
+      margin-top:18px;
+    }
+
+    .btn{
+      min-height:49px;
+      padding:0 16px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:9px;
+      border-radius:13px;
+      font-weight:800;
+      font-size:11px;
+      transition:.25s var(--ease);
+    }
+
+    .btn-primary{
+      color:white;
+      background:
+        linear-gradient(
+          135deg,
+          var(--green),
+          #098b54
+        );
+      box-shadow:
+        0 12px 30px rgba(22,167,101,.21);
+    }
+
+    .btn-primary:hover{
+      transform:translateY(-2px);
+      box-shadow:
+        0 17px 38px rgba(22,167,101,.28);
+    }
+
+    .btn-primary:active{
+      transform:translateY(0) scale(.99);
+    }
+
+    .btn-primary:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+      transform:none;
+      box-shadow:none;
+    }
+
+    .btn-outline{
+      color:var(--blue);
+      background:#fff;
+      border:1px solid var(--line-2);
+    }
+
+    .btn-outline:hover{
+      border-color:#a6d8bf;
+      color:var(--green-dark);
+      background:#fbfefd;
+    }
+
+    /* ======================================================
+       SUCCESS
+    ====================================================== */
+
+    .success-panel{
+      display:none;
+      text-align:center;
+      padding:55px 25px;
+    }
+
+    .success-panel.show{
+      display:block;
+      animation:fadeUp .5s var(--ease);
+    }
+
+    .success-icon{
+      width:76px;
+      height:76px;
+      border-radius:25px;
+      display:grid;
+      place-items:center;
+      margin:0 auto 19px;
+      color:white;
+      background:linear-gradient(135deg,var(--green),#07884f);
+      box-shadow:0 20px 45px rgba(22,167,101,.25);
+      font-size:29px;
+      animation:pop .55s var(--ease);
+    }
+
+    .success-panel h2{
+      font-family:"Plus Jakarta Sans",sans-serif;
+      color:var(--navy);
+      font-size:27px;
+      letter-spacing:-1px;
+    }
+
+    .success-panel p{
+      max-width:480px;
+      margin:8px auto 0;
+      color:var(--muted);
+      font-size:11px;
+      line-height:1.7;
+    }
+
+    .success-reference{
+      display:inline-flex;
+      flex-direction:column;
+      gap:4px;
+      margin-top:20px;
+      padding:13px 16px;
+      border-radius:13px;
+      background:#f7fafc;
+      border:1px solid var(--line);
+    }
+
+    .success-reference span{
+      color:var(--muted);
+      font-size:8px;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      font-weight:800;
+    }
+
+    .success-reference strong{
+      color:var(--navy);
+      font-size:13px;
+    }
+
+    .success-actions{
+      display:flex;
+      justify-content:center;
+      flex-wrap:wrap;
+      gap:9px;
+      margin-top:22px;
+    }
+
+    /* ======================================================
+       LOADER
+    ====================================================== */
+
+    .loader{
+      position:fixed;
+      inset:0;
+      z-index:3000;
+      display:none;
+      place-items:center;
+      background:rgba(3,28,42,.52);
+      backdrop-filter:blur(8px);
+    }
+
+    .loader.show{
+      display:grid;
+    }
+
+    .loader-card{
+      width:min(340px,calc(100% - 32px));
+      background:#fff;
+      border-radius:20px;
+      padding:26px;
+      text-align:center;
+      box-shadow:var(--shadow-lg);
+    }
+
+    .spinner{
+      width:36px;
+      height:36px;
+      border-radius:50%;
+      border:3px solid #dcefe5;
+      border-top-color:var(--green);
+      animation:spin .8s linear infinite;
+      margin:0 auto 13px;
+    }
+
+    .loader-card strong{
+      display:block;
+      color:var(--navy);
+      font-size:12px;
+    }
+
+    .loader-card span{
+      display:block;
+      margin-top:5px;
+      color:var(--muted);
+      font-size:9px;
+    }
+
+    /* ======================================================
+       TOAST
+    ====================================================== */
+
+    .toast{
+      position:fixed;
+      top:20px;
+      right:20px;
+      z-index:3500;
+      max-width:360px;
+      padding:13px 15px;
+      border-radius:13px;
+      color:white;
+      background:var(--navy);
+      box-shadow:var(--shadow-lg);
+      font-size:10px;
+      line-height:1.5;
+      opacity:0;
+      transform:translateY(-10px);
+      pointer-events:none;
+      transition:.3s var(--ease);
+    }
+
+    .toast.show{
+      opacity:1;
+      transform:translateY(0);
+    }
+
+    .toast.error{
+      background:#7f1d1d;
+    }
+
+    /* ======================================================
+       ERROR STATE
+    ====================================================== */
+
+    .error-state{
+      display:none;
+      margin-top:18px;
+      padding:15px;
+      border-radius:14px;
+      background:var(--danger-soft);
+      border:1px solid #fecaca;
+      color:#991b1b;
+      font-size:10px;
+      line-height:1.55;
+    }
+
+    .error-state.show{
+      display:block;
+    }
+
+    /* ======================================================
+       ANIMATIONS
+    ====================================================== */
+
+    @keyframes spin{
+      to{transform:rotate(360deg)}
+    }
+
+    @keyframes fadeUp{
+      from{
+        opacity:0;
+        transform:translateY(16px);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
+    }
+
+    @keyframes pop{
+      0%{
+        transform:scale(.65);
+        opacity:0;
+      }
+      70%{
+        transform:scale(1.08);
+      }
+      100%{
+        transform:scale(1);
+        opacity:1;
+      }
+    }
+
+    /* ======================================================
+       RESPONSIVE
+    ====================================================== */
+
+    @media(max-width:900px){
+
+      .checkout-grid{
+        grid-template-columns:1fr;
+      }
+
+      .summary-panel{
+        position:static !important;
+      }
+
+    }
+
+    @media(max-width:650px){
+
+      .topbar-right,
+      .nav-security{
+        display:none;
+      }
+
+      .topbar-inner,
+      .nav-inner,
+      .page{
+        width:min(100% - 20px,1240px);
+      }
+
+      .nav-inner{
+        min-height:68px;
+      }
+
+      .brand img{
+        width:42px;
+        height:42px;
+      }
+
+      .brand-name{
+        font-size:20px;
+      }
+
+      .page{
+        padding-top:24px;
+      }
+
+      .step{
+        gap:6px;
+        font-size:9px;
+      }
+
+      .step-circle{
+        width:29px;
+        height:29px;
+        font-size:9px;
+      }
+
+      .step-line{
+        min-width:14px;
+        margin:0 5px;
+      }
+
+      .panel-head,
+      .patient,
+      .services,
+      .summary{
+        padding-left:18px;
+        padding-right:18px;
+      }
+
+      .collection-card{
+        margin-left:18px;
+        margin-right:18px;
+        grid-template-columns:1fr;
+      }
+
+      .payment-grid{
+        grid-template-columns:1fr;
+      }
+
+      .panel{
+        border-radius:21px;
+      }
+
+      .patient-card{
+        padding:13px;
+      }
+
+      .total-value{
+        font-size:25px;
+      }
+
+    }
+
+    @media(max-width:430px){
+
+      .step:not(.active):not(.done) span.step-label{
+        display:none;
+      }
+
+      .stepper{
+        width:100%;
+      }
+
+      .service-row{
+        gap:10px;
+      }
+
+      .service-price{
+        font-size:12px;
+      }
+
+      .success-actions{
+        flex-direction:column;
+      }
+
+      .success-actions .btn{
+        width:100%;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div class="shell">
+
+  <!-- ====================================================
+       TOP BAR
+  ===================================================== -->
+
+  <div class="topbar">
+
+    <div class="topbar-inner">
+
+      <div class="secure-label">
+        <i class="fa-solid fa-shield-halved"></i>
+        Secure LifeSure Checkout
+      </div>
+
+      <div class="topbar-right">
+        <span>Diagnostics</span>
+        <span>•</span>
+        <strong>Mumbai</strong>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ====================================================
+       NAVBAR
+  ===================================================== -->
+
+  <header class="navbar">
+
+    <div class="nav-inner">
+
+      <a class="brand" href="index.html">
+
+        <img
+          src="logo.png"
+          alt="LifeSure Diagnostics"
+          onerror="this.style.display='none'"
+        >
+
+        <div>
+
+          <div class="brand-name">
+            Life<span>Sure</span>
+          </div>
+
+          <span class="brand-sub">
+            Diagnostics Hub
+          </span>
+
+        </div>
+
+      </a>
+
+
+      <div class="nav-security">
+
+        <span class="dot"></span>
+
+        Secure billing session
+
+        <i class="fa-solid fa-lock"></i>
+
+      </div>
+
+    </div>
+
+  </header>
+
+
+  <!-- ====================================================
+       MAIN
+  ===================================================== -->
+
+  <main class="page">
+
+
+    <!-- STEPPER -->
+
+    <div class="stepper-wrap">
+
+      <div class="stepper">
+
+        <div class="step done">
+
+          <div class="step-circle">
+            <i class="fa-solid fa-check"></i>
+          </div>
+
+          <span class="step-label">
+            Booking
+          </span>
+
+        </div>
+
+
+        <div class="step-line active"></div>
+
+
+        <div class="step active">
+
+          <div class="step-circle">
+            2
+          </div>
+
+          <span class="step-label">
+            Billing
+          </span>
+
+        </div>
+
+
+        <div class="step-line"></div>
+
+
+        <div class="step">
+
+          <div class="step-circle">
+            3
+          </div>
+
+          <span class="step-label">
+            Payment
+          </span>
+
+        </div>
+
+
+        <div class="step-line"></div>
+
+
+        <div class="step">
+
+          <div class="step-circle">
+            4
+          </div>
+
+          <span class="step-label">
+            Confirmation
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- PAGE HEADER -->
+
+    <section class="page-heading">
+
+      <div class="kicker">
+        <i class="fa-solid fa-receipt"></i>
+        Secure billing
+      </div>
+
+      <h1>
+        Review & Complete Your Booking
+      </h1>
+
+      <p>
+        Review your diagnostic service, discount and payment preference.
+        Your final payable amount is calculated from the LifeSure billing system.
+      </p>
+
+    </section>
+
+
+    <!-- CHECKOUT -->
+
+    <div class="checkout-grid">
+
+
+      <!-- =================================================
+           LEFT PANEL
+      ================================================== -->
+
+      <section class="panel">
+
+        <div class="panel-head">
+
+          <div>
+
+            <div class="panel-title">
+              Booking Summary
+            </div>
+
+            <div class="panel-subtitle">
+              Verify your details before continuing.
+            </div>
+
+          </div>
+
+          <div class="reference-chip" id="bookingReference">
+            Booking —
+          </div>
+
+        </div>
+
+
+        <!-- PATIENT -->
+
+        <div class="patient">
+
+          <div class="patient-card">
+
+            <div class="patient-avatar">
+              <i class="fa-solid fa-user"></i>
+            </div>
+
+            <div class="patient-main">
+
+              <div
+                class="patient-name"
+                id="patientName"
+              >
+                Loading patient...
+              </div>
+
+              <div class="patient-meta">
+
+                <span>
+                  <i class="fa-solid fa-phone"></i>
+                  <span id="patientPhone">—</span>
+                </span>
+
+                <span>
+                  <i class="fa-solid fa-file-invoice"></i>
+                  <span id="invoiceNumber">Invoice —</span>
+                </span>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- SERVICES -->
+
+        <div class="services">
+
+          <div
+            class="service-row"
+            id="serviceRow"
+          >
+
+            <div class="service-left">
+
+              <div class="service-icon">
+                <i class="fa-solid fa-vial"></i>
+              </div>
+
+              <div class="service-info">
+
+                <div
+                  class="service-name"
+                  id="serviceName"
+                >
+                  Loading test...
+                </div>
+
+                <div class="service-meta">
+
+                  <span class="code">
+                    <i class="fa-solid fa-barcode"></i>
+                    <span id="testCode">—</span>
+                  </span>
+
+                  <span>
+                    <i class="fa-solid fa-flask"></i>
+                    <span id="sampleType">Diagnostic test</span>
+                  </span>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <div
+              class="service-price"
+              id="servicePrice"
+            >
+              ₹0
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- COLLECTION -->
+
+        <div class="collection-card">
+
+          <div class="collection-item">
+
+            <i class="fa-solid fa-location-dot"></i>
+
+            <div>
+
+              <strong>
+                Collection
+              </strong>
+
+              <span id="collectionType">
+                Loading...
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div class="collection-item">
+
+            <i class="fa-solid fa-calendar-day"></i>
+
+            <div>
+
+              <strong>
+                Preferred Date
+              </strong>
+
+              <span id="collectionDate">
+                —
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           RIGHT PANEL
+      ================================================== -->
+
+      <aside class="panel summary-panel">
+
+        <!-- MAIN SUMMARY -->
+
+        <div
+          class="summary"
+          id="summaryView"
+        >
+
+          <div class="summary-title">
+
+            <h2>
+              Payment Summary
+            </h2>
+
+            <span class="currency">
+              INR
+            </span>
+
+          </div>
+
+
+          <div class="money-row">
+
+            <span>
+              Subtotal
+            </span>
+
+            <strong id="subtotal">
+              ₹0
+            </strong>
+
+          </div>
+
+
+          <div class="money-row discount">
+
+            <span>
+              Discount
+            </span>
+
+            <strong id="discount">
+              −₹0
+            </strong>
+
+          </div>
+
+
+          <div class="total-box">
+
+            <div class="total-top">
+
+              <span>
+                FINAL PAYABLE
+              </span>
+
+              <i class="fa-solid fa-shield-check"></i>
+
+            </div>
+
+            <div
+              class="total-value"
+              id="netAmount"
+            >
+              ₹0
+            </div>
+
+          </div>
+
+
+          <!-- PAYMENT -->
+
+          <div class="payment-heading">
+            Payment Preference
+          </div>
+
+
+          <div class="payment-grid">
+
+
+            <button
+              type="button"
+              class="payment-option active"
+              data-method="pay_at_centre"
+            >
+
+              <div class="selected-mark">
+                <i class="fa-solid fa-check"></i>
+              </div>
+
+              <div class="payment-icon">
+                <i class="fa-solid fa-building"></i>
+              </div>
+
+              <strong>
+                Pay at Centre
+              </strong>
+
+              <span>
+                Pay when you visit LifeSure.
+              </span>
+
+            </button>
+
+
+            <button
+              type="button"
+              class="payment-option"
+              data-method="online"
+            >
+
+              <div class="selected-mark">
+                <i class="fa-solid fa-check"></i>
+              </div>
+
+              <div class="payment-icon">
+                <i class="fa-solid fa-credit-card"></i>
+              </div>
+
+              <strong>
+                Online Payment
+              </strong>
+
+              <span>
+                Secure gateway integration.
+              </span>
+
+            </button>
+
+
+          </div>
+
+
+          <!-- PAYMENT DETAIL -->
+
+          <div class="payment-detail">
+
+            <div class="payment-detail-label">
+              Amount to be recorded now
+            </div>
+
+            <div class="amount-input">
+
+              <span>
+                ₹
+              </span>
+
+              <input
+                id="paidAmount"
+                type="number"
+                min="0"
+                step="0.01"
+                inputmode="decimal"
+                value="0"
+                placeholder="0.00"
+              >
+
+            </div>
+
+
+            <div class="balance-mini">
+
+              <div class="mini-box">
+
+                <span>
+                  Paid
+                </span>
+
+                <strong id="paidDisplay">
+                  ₹0
+                </strong>
+
+              </div>
+
+
+              <div class="mini-box">
+
+                <span>
+                  Balance
+                </span>
+
+                <strong id="balanceDisplay">
+                  ₹0
+                </strong>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- SECURITY -->
+
+          <div class="secure-info">
+
+            <i class="fa-solid fa-lock"></i>
+
+            <span id="paymentInfo">
+              Pay at Centre keeps the booking payment-pending
+              until an authorized LifeSure team member records the
+              actual payment.
+            </span>
+
+          </div>
+
+
+          <!-- ERROR -->
+
+          <div
+            class="error-state"
+            id="errorState"
+          ></div>
+
+
+          <!-- ACTIONS -->
+
+          <div class="actions">
+
+            <button
+              type="button"
+              class="btn btn-primary"
+              id="continueButton"
+            >
+              Continue
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+
+
+            <button
+              type="button"
+              class="btn btn-outline"
+              onclick="history.back()"
+            >
+              <i class="fa-solid fa-arrow-left"></i>
+              Back to Booking
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- SUCCESS -->
+
+        <div
+          class="success-panel"
+          id="successPanel"
+        >
+
+          <div class="success-icon">
+            <i class="fa-solid fa-check"></i>
+          </div>
+
+          <h2>
+            Booking Ready
+          </h2>
+
+          <p id="successMessage">
+            Your booking and invoice have been created successfully.
+            Payment remains subject to verification.
+          </p>
+
+
+          <div class="success-reference">
+
+            <span>
+              Booking Reference
+            </span>
+
+            <strong id="successBooking">
+              —
+            </strong>
+
+          </div>
+
+
+          <div class="success-reference">
+
+            <span>
+              Invoice
+            </span>
+
+            <strong id="successInvoice">
+              —
+            </strong>
+
+          </div>
+
+
+          <div class="success-actions">
+
+            <button
+              type="button"
+              class="btn btn-primary"
+              id="whatsappButton"
+            >
+              <i class="fa-brands fa-whatsapp"></i>
+              Send WhatsApp Confirmation
+            </button>
+
+
+            <button
+              type="button"
+              class="btn btn-outline"
+              id="invoiceButton"
+            >
+              <i class="fa-solid fa-file-invoice"></i>
+              View Invoice
+            </button>
+
+          </div>
+
+        </div>
+
+      </aside>
+
+    </div>
+
+  </main>
+
+</div>
+
+
+<!-- ======================================================
+     LOADER
+======================================================= -->
+
+<div
+  class="loader"
+  id="loader"
+>
+
+  <div class="loader-card">
+
+    <div class="spinner"></div>
+
+    <strong id="loaderTitle">
+      Preparing secure billing...
+    </strong>
+
+    <span id="loaderSubtitle">
+      Please wait while LifeSure verifies your booking.
+    </span>
+
+  </div>
+
+</div>
+
+
+<!-- TOAST -->
+
+<div
+  class="toast"
+  id="toast"
+></div>
+
+
+<script>
+
+  /* ======================================================
+     CONFIG
+  ====================================================== */
+
+  const SUPABASE_URL =
+    "https://evzgfprzxsgxsymvwsip.supabase.co";
+
+  const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_IJC51IW4TePmMzCsbJ7Vyw_6fkqqV67";
+
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY,
+      {
+        auth:{
+          persistSession:true,
+          autoRefreshToken:true,
+          detectSessionInUrl:true
+        }
+      }
+    );
+
+
+  /* ======================================================
+     STATE
+  ====================================================== */
+
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
+
+  const bookingId =
+    params.get("booking");
+
+  let bookingData = null;
+
+  let selectedPaymentMethod =
+    "pay_at_centre";
+
+
+  /* ======================================================
+     HELPERS
+  ====================================================== */
+
+  function $(id){
+    return document.getElementById(id);
+  }
+
+
+  function money(value){
+
+    return Number(value || 0)
+      .toLocaleString(
+        "en-IN",
+        {
+          minimumFractionDigits:2,
+          maximumFractionDigits:2
+        }
+      );
+
+  }
+
+
+  function showToast(
+    message,
+    isError = false
+  ){
+
+    const toast =
+      $("toast");
+
+    toast.textContent =
+      message;
+
+    toast.classList.toggle(
+      "error",
+      isError
+    );
+
+    toast.classList.add(
+      "show"
+    );
+
+    clearTimeout(
+      window.__toastTimer
+    );
+
+    window.__toastTimer =
+      setTimeout(
+        () => {
+          toast.classList.remove(
+            "show"
+          );
+        },
+        3000
+      );
+
+  }
+
+
+  function setLoader(
+    show,
+    title = "Preparing secure billing...",
+    subtitle = "Please wait while LifeSure verifies your booking."
+  ){
+
+    $("loaderTitle").textContent =
+      title;
+
+    $("loaderSubtitle").textContent =
+      subtitle;
+
+    $("loader").classList.toggle(
+      "show",
+      show
+    );
+
+  }
+
+
+  function showError(
+    message
+  ){
+
+    const box =
+      $("errorState");
+
+    box.textContent =
+      message;
+
+    box.classList.add(
+      "show"
+    );
+
+  }
+
+
+  function clearError(){
+
+    $("errorState")
+      .classList.remove(
+        "show"
+      );
+
+    $("errorState")
+      .textContent = "";
+
+  }
+
+
+  /* ======================================================
+     LOAD CHECKOUT
+     
+     IMPORTANT:
+     This function expects a future secure RPC:
+     
+       get_public_booking_checkout(p_booking_id)
+     
+     We intentionally do NOT directly select patient/booking
+     tables from a public page.
+  ====================================================== */
+
+  async function loadCheckout(){
+
+    clearError();
+
+    if(!bookingId){
+
+      showError(
+        "This billing session is missing a booking reference."
+      );
+
+      return;
+    }
+
+
+    setLoader(
+      true,
+      "Loading secure billing...",
+      "Verifying the booking and preparing your invoice."
+    );
+
+
+    try{
+
+      /*
+       * Production-safe architecture:
+       *
+       * The RPC should return only the minimum
+       * checkout information required by the customer.
+       *
+       * We will create this RPC in the next backend step.
+       */
+
+      const {data,error} =
+        await supabaseClient.rpc(
+          "get_public_booking_checkout",
+          {
+            p_booking_id: bookingId
+          }
+        );
+
+
+      if(error){
+
+        console.error(
+          "Checkout loading error:",
+          error
+        );
+
+        throw error;
+      }
+
+
+      if(!data){
+
+        throw new Error(
+          "Booking checkout information was not returned."
+        );
+
+      }
+
+
+      bookingData =
+        data;
+
+
+      renderCheckout(
+        data
+      );
+
+
+    }catch(error){
+
+      console.error(
+        "CHECKOUT ERROR:",
+        error
+      );
+
+
+      showError(
+        "Unable to load this secure billing session. Please return to the booking page or contact LifeSure support."
+      );
+
+
+      showToast(
+        "Billing session could not be loaded.",
+        true
+      );
+
+
+    }finally{
+
+      setLoader(
+        false
+      );
+
+    }
+
+  }
+
+
+  /* ======================================================
+     RENDER CHECKOUT
+  ====================================================== */
+
+  function renderCheckout(
+    data
+  ){
+
+    const patient =
+      data.patient || {};
+
+
+    $("bookingReference")
+      .textContent =
+      "Booking " +
+      (
+        data.booking_code ||
+        "—"
+      );
+
+
+    $("patientName")
+      .textContent =
+      patient.name ||
+      data.patient_name ||
+      "Patient";
+
+
+    $("patientPhone")
+      .textContent =
+      patient.phone ||
+      data.phone ||
+      "—";
+
+
+    $("invoiceNumber")
+      .textContent =
+      "Invoice " +
+      (
+        data.invoice_number ||
+        "—"
+      );
+
+
+    $("serviceName")
+      .textContent =
+      data.test_name ||
+      data.test ||
+      "Diagnostic Service";
+
+
+    $("testCode")
+      .textContent =
+      data.test_code ||
+      "—";
+
+
+    $("sampleType")
+      .textContent =
+      data.sample_type ||
+      "Diagnostic test";
+
+
+    $("servicePrice")
+      .textContent =
+      "₹" +
+      money(
+        data.subtotal
+      );
+
+
+    $("collectionType")
+      .textContent =
+      normalizeCollection(
+        data.collection_type ||
+        data.collection
+      );
+
+
+    $("collectionDate")
+      .textContent =
+      formatDate(
+        data.collection_date ||
+        data.date
+      );
+
+
+    $("subtotal")
+      .textContent =
+      "₹" +
+      money(
+        data.subtotal
+      );
+
+
+    $("discount")
+      .textContent =
+      "−₹" +
+      money(
+        data.discount
+      );
+
+
+    $("netAmount")
+      .textContent =
+      "₹" +
+      money(
+        data.net_amount ??
+        data.net_charge ??
+        data.amount
+      );
+
+
+    const payable =
+      Number(
+        data.net_amount ??
+        data.net_charge ??
+        data.amount ??
+        0
+      );
+
+
+    $("paidAmount").value =
+      "0";
+
+
+    updatePaymentPreview(
+      payable
+    );
+
+  }
+
+
+  /* ======================================================
+     NORMALIZERS
+  ====================================================== */
+
+  function normalizeCollection(
+    value
+  ){
+
+    if(
+      String(value || "")
+        .toLowerCase()
+        .includes("home")
+    ){
+
+      return "Home sample collection";
+
+    }
+
+    return "LifeSure laboratory visit";
+
+  }
+
+
+  function formatDate(
+    value
+  ){
+
+    if(!value)
+      return "Not specified";
+
+
+    const d =
+      new Date(
+        value
+      );
+
+
+    if(
+      Number.isNaN(
+        d.getTime()
+      )
+    ){
+
+      return String(
+        value
+      );
+
+    }
+
+
+    return d.toLocaleDateString(
+      "en-IN",
+      {
+        day:"2-digit",
+        month:"short",
+        year:"numeric"
+      }
+    );
+
+  }
+
+
+  /* ======================================================
+     PAYMENT METHOD
+  ====================================================== */
+
+  document
+    .querySelectorAll(
+      ".payment-option"
+    )
+    .forEach(
+      button => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            document
+              .querySelectorAll(
+                ".payment-option"
+              )
+              .forEach(
+                item =>
+                  item.classList.remove(
+                    "active"
+                  )
+              );
+
+
+            button.classList.add(
+              "active"
+            );
+
+
+            selectedPaymentMethod =
+              button.dataset.method ||
+              "pay_at_centre";
+
+
+            updatePaymentInfo();
+
+          }
+        );
+
+      }
+    );
+
+
+  function updatePaymentInfo(){
+
+    const info =
+      $("paymentInfo");
+
+
+    if(
+      selectedPaymentMethod ===
+      "online"
+    ){
+
+      info.textContent =
+        "Online payment processing will only be treated as successful after the configured payment gateway confirms the transaction on the server.";
+
+    }else{
+
+      info.textContent =
+        "Pay at Centre keeps the booking payment-pending until an authorized LifeSure team member records the actual payment.";
+
+    }
+
+  }
+
+
+  /* ======================================================
+     LIVE AMOUNT PREVIEW
+  ====================================================== */
+
+  $("paidAmount")
+    .addEventListener(
+      "input",
+      () => {
+
+        const payable =
+          Number(
+            bookingData?.net_amount ??
+            bookingData?.net_charge ??
+            bookingData?.amount ??
+            0
+          );
+
+
+        updatePaymentPreview(
+          payable
+        );
+
+      }
+    );
+
+
+  function updatePaymentPreview(
+    payable
+  ){
+
+    const input =
+      $("paidAmount");
+
+
+    let paid =
+      Number(
+        input.value ||
+        0
+      );
+
+
+    if(
+      Number.isNaN(paid) ||
+      paid < 0
+    ){
+
+      paid = 0;
+
+    }
+
+
+    if(
+      paid > payable
+    ){
+
+      paid = payable;
+
+      input.value =
+        payable.toFixed(2);
+
+    }
+
+
+    const balance =
+      Math.max(
+        0,
+        payable - paid
+      );
+
+
+    $("paidDisplay")
+      .textContent =
+      "₹" +
+      money(
+        paid
+      );
+
+
+    $("balanceDisplay")
+      .textContent =
+      "₹" +
+      money(
+        balance
+      );
+
+  }
+
+
+  /* ======================================================
+     CONTINUE
+     
+     IMPORTANT:
+     Public users should NOT call
+     record_booking_payment().
+     
+     That operation belongs to authorized
+     Accounts / Management / Super Admin workflows.
+  ====================================================== */
+
+  $("continueButton")
+    .addEventListener(
+      "click",
+      async () => {
+
+        clearError();
+
+
+        if(!bookingData){
+
+          showToast(
+            "Booking information is not ready.",
+            true
+          );
+
+          return;
+        }
+
+
+        const payable =
+          Number(
+            bookingData.net_amount ??
+            bookingData.net_charge ??
+            bookingData.amount ??
+            0
+          );
+
+
+        const requestedPaid =
+          Number(
+            $("paidAmount").value ||
+            0
+          );
+
+
+        if(
+          requestedPaid < 0 ||
+          requestedPaid > payable
+        ){
+
+          showError(
+            "The amount entered is outside the valid payable range."
+          );
+
+          return;
+
+        }
+
+
+        /*
+         * Pay at Centre:
+         * No payment is recorded here.
+         * Booking remains pending.
+         *
+         * Online:
+         * Gateway integration will be connected later.
+         *
+         * This screen therefore confirms the checkout state,
+         * not a fabricated successful payment.
+         */
+
+
+        setLoader(
+          true,
+          "Finalizing checkout...",
+          "Saving your confirmed booking state."
+        );
+
+
+        try{
+
+          /*
+           * For now we only move to the confirmation state.
+           *
+           * The actual authorized payment recording will happen
+           * through the Accounts/Admin payment workflow.
+           */
+
+          await new Promise(
+            resolve =>
+              setTimeout(
+                resolve,
+                650
+              )
+          );
+
+
+          showSuccess();
+
+        }catch(error){
+
+          console.error(
+            error
+          );
+
+          showError(
+            "We couldn't complete this step. Please try again."
+          );
+
+        }finally{
+
+          setLoader(
+            false
+          );
+
+        }
+
+      }
+    );
+
+
+  /* ======================================================
+     SUCCESS
+  ====================================================== */
+
+  function showSuccess(){
+
+    $("summaryView")
+      .style.display =
+      "none";
+
+
+    $("successPanel")
+      .classList.add(
+        "show"
+      );
+
+
+    $("successBooking")
+      .textContent =
+      bookingData?.booking_code ||
+      "—";
+
+
+    $("successInvoice")
+      .textContent =
+      bookingData?.invoice_number ||
+      "—";
+
+
+    const paymentStatus =
+      bookingData?.payment_status ||
+      "pending";
+
+
+    $("successMessage")
+      .textContent =
+      paymentStatus === "paid"
+        ? "Your booking has been confirmed and the payment has been recorded."
+        : "Your booking and invoice have been created. Payment remains pending until it is verified by LifeSure.";
+
+  }
+
+
+  /* ======================================================
+     WHATSAPP
+  ====================================================== */
+
+  $("whatsappButton")
+    .addEventListener(
+      "click",
+      () => {
+
+        if(!bookingData)
+          return;
+
+
+        const patient =
+          bookingData.patient || {};
+
+
+        const payable =
+          Number(
+            bookingData.net_amount ??
+            bookingData.net_charge ??
+            bookingData.amount ??
+            0
+          );
+
+
+        const discount =
+          Number(
+            bookingData.discount ||
+            0
+          );
+
+
+        const subtotal =
+          Number(
+            bookingData.subtotal ||
+            0
+          );
+
+
+        const message =
+`🧪 LifeSure Diagnostics — Booking Confirmation
+
+Booking ID: ${bookingData.booking_code || "—"}
+Invoice: ${bookingData.invoice_number || "—"}
+
+Patient
+Name: ${patient.name || bookingData.patient_name || "—"}
+Mobile: ${patient.phone || bookingData.phone || "—"}
+
+Test / Package
+${bookingData.test_name || bookingData.test || "Diagnostic Service"}
+
+Collection: ${normalizeCollection(bookingData.collection_type || bookingData.collection)}
+Preferred Date: ${formatDate(bookingData.collection_date || bookingData.date)}
+
+Billing
+Subtotal: ₹${money(subtotal)}
+Discount: ₹${money(discount)}
+Final Payable: ₹${money(payable)}
+
+Payment Status: ${bookingData.payment_status || "pending"}
+
+Thank you for choosing LifeSure Diagnostics.`;
+
+
+        window.open(
+          "https://wa.me/917266925657?text=" +
+          encodeURIComponent(
+            message
+          ),
+          "_blank",
+          "noopener"
+        );
+
+      }
+    );
+
+
+  /* ======================================================
+     INVOICE
+  ====================================================== */
+
+  $("invoiceButton")
+    .addEventListener(
+      "click",
+      () => {
+
+        showToast(
+          "Secure invoice viewer will be connected to the PDF engine next."
+        );
+
+      }
+    );
+
+
+  /* ======================================================
+     INITIAL LOAD
+  ====================================================== */
+
+  loadCheckout();
+
+</script>
+
+</body>
+</html>
