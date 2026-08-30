@@ -960,7 +960,7 @@ const supabaseClient =
     }
   );
     
-  $("bookingForm").addEventListener("submit", async (e) => {
+$("bookingForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const name = $("name").value.trim();
@@ -969,6 +969,9 @@ const supabaseClient =
   const collection = $("collection").value;
   const date = $("date").value || "Not specified";
   const address = $("address").value.trim() || "Not provided";
+  const couponCode = $("couponCode")
+    ? $("couponCode").value.trim().toUpperCase()
+    : "";
 
   if (!name || phone.length !== 10) {
     showToast("Please enter a valid name and 10-digit mobile number.");
@@ -980,25 +983,23 @@ const supabaseClient =
 
   if (submitButton) {
     submitButton.disabled = true;
-    submitButton.dataset.oldText = submitButton.textContent;
-    submitButton.textContent = "Creating booking...";
+    submitButton.dataset.oldText = submitButton.innerHTML;
+    submitButton.innerHTML =
+      '<i class="fa-solid fa-spinner fa-spin"></i> Creating booking...';
   }
 
   try {
-    const { data: booking, error } =
-     const couponCode =
-  $("couponCode").value.trim().toUpperCase();
 
-const { data: booking, error } =
-  await supabaseClient.rpc("create_public_booking", {
-    p_name: name,
-    p_phone: phone,
-    p_test: test,
-    p_collection: collection,
-    p_date: date,
-    p_address: address,
-    p_coupon_code: couponCode || null
-  });
+    const { data: booking, error } =
+      await supabaseClient.rpc("create_public_booking", {
+        p_name: name,
+        p_phone: phone,
+        p_test: test,
+        p_collection: collection,
+        p_date: date,
+        p_address: address,
+        p_coupon_code: couponCode || null
+      });
 
     if (error) {
       console.error("Booking creation error:", error);
@@ -1009,28 +1010,39 @@ const { data: booking, error } =
       throw new Error("Booking was not returned by the server.");
     }
 
+    const subtotal =
+      Number(booking.subtotal || 0);
+
+    const discount =
+      Number(booking.discount || 0);
+
+    const finalAmount =
+      Number(booking.amount || booking.net_charge || 0);
+
     const msg =
 `🧪 LifeSure Diagnostics — Booking Request
 
-Booking ID: ${booking.booking_code}
+Booking ID: ${booking.booking_code || "Pending"}
 
 Patient
-Name: ${booking.patient_name}
-Mobile: ${booking.phone}
+Name: ${booking.patient_name || name}
+Mobile: ${booking.phone || phone}
 
-Test / Package: ${booking.test || "General Test Enquiry"}
-Collection: ${booking.collection}
-Preferred Date: ${booking.date}
-Address / Notes: ${booking.address}
+Test / Package: ${booking.test || test}
+Collection: ${booking.collection || collection}
+Preferred Date: ${booking.date || date}
+Address / Notes: ${booking.address || address}
 
 Billing
-Subtotal: ₹${Number(booking.subtotal || 0).toLocaleString("en-IN")}
-Discount: ₹${Number(booking.discount || 0).toLocaleString("en-IN")}
-Final Payable: ₹${Number(booking.amount || 0).toLocaleString("en-IN")}
+Subtotal: ₹${subtotal.toLocaleString("en-IN")}
+Discount: ₹${discount.toLocaleString("en-IN")}
+Final Payable: ₹${finalAmount.toLocaleString("en-IN")}
 
-Coupon: ${booking.coupon_code || "None"}
+Coupon: ${booking.coupon_code || couponCode || "None"}
 Payment Status: ${booking.payment_status || "pending"}
-Booking Status: Pending
+Booking Status: ${booking.booking_status || "pending"}
+
+Invoice: ${booking.invoice_number || "Generated"}
 
 Please confirm availability and booking details.`;
 
@@ -1042,6 +1054,7 @@ Please confirm availability and booking details.`;
     }, 300);
 
   } catch (error) {
+
     console.error("BOOKING ERROR:", error);
 
     showToast(
@@ -1050,12 +1063,14 @@ Please confirm availability and booking details.`;
     );
 
   } finally {
+
     if (submitButton) {
       submitButton.disabled = false;
-      submitButton.textContent =
+      submitButton.innerHTML =
         submitButton.dataset.oldText ||
         "Confirm & WhatsApp";
     }
+
   }
 });
     // HERO CAROUSEL
