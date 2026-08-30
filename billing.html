@@ -2857,17 +2857,38 @@ Thank you for choosing LifeSure Diagnostics.`;
      INVOICE
   ====================================================== */
 
-  $("invoiceButton")
-    .addEventListener(
-      "click",
-      () => {
+$("invoiceButton")
+  .addEventListener(
+    "click",
+    () => {
 
+      if (!bookingData) {
         showToast(
-          "Secure invoice viewer will be connected to the PDF engine next."
+          "Invoice information is not ready.",
+          true
         );
-
+        return;
       }
-    );
+
+      const token =
+        bookingData.invoice_access_token;
+
+      if (!token) {
+        showToast(
+          "Secure invoice access is unavailable.",
+          true
+        );
+        return;
+      }
+
+      window.location.href =
+        "invoice.html?token=" +
+        encodeURIComponent(token);
+
+    }
+  );
+
+    
 
 
   /* ======================================================
