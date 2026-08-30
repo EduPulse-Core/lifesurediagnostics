@@ -598,20 +598,75 @@
   <script>
     const WHATSAPP = "917266925657";
 
-    const tests = [
-      {id:1,name:"Complete Blood Count (CBC)",dept:"BLOOD TEST",price:300,old:399,desc:"Complete blood count",img:"https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=900&q=82"},
-      {id:2,name:"Blood Sugar Fasting",dept:"BLOOD TEST",price:150,old:199,desc:"Fasting glucose test",img:"https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=900&q=82"},
-      {id:3,name:"HbA1c Diabetes Test",dept:"BIOCHEMISTRY",price:599,old:699,desc:"Average blood sugar marker",img:"https://images.unsplash.com/photo-1576671081837-49000212a370?auto=format&fit=crop&w=900&q=82"},
-      {id:4,name:"Lipid Profile",dept:"BIOCHEMISTRY",price:799,old:899,desc:"Cholesterol & lipid screening",img:"https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=900&q=82"},
-      {id:5,name:"Liver Function Test (LFT)",dept:"BIOCHEMISTRY",price:850,old:999,desc:"Routine liver assessment",img:"https://images.unsplash.com/photo-1530026405186-ed1f139313f8?auto=format&fit=crop&w=900&q=82"},
-      {id:6,name:"Kidney Function Test (KFT)",dept:"BIOCHEMISTRY",price:850,old:999,desc:"Routine kidney assessment",img:"https://images.unsplash.com/photo-1559757175-0eb30cd8c063?auto=format&fit=crop&w=900&q=82"},
-      {id:7,name:"Thyroid Profile (T3,T4,TSH)",dept:"IMMUNOLOGY",price:699,old:799,desc:"T3, T4 & TSH profile",img:"https://images.unsplash.com/photo-1584362917165-526a968579e8?auto=format&fit=crop&w=900&q=82"},
-      {id:8,name:"Vitamin D Test",dept:"BIOCHEMISTRY",price:900,old:1099,desc:"Vitamin D screening",img:"https://images.unsplash.com/photo-1616671276441-2f7c7c1e8d6c?auto=format&fit=crop&w=900&q=82"},
-      {id:9,name:"Vitamin B12 Test",dept:"BIOCHEMISTRY",price:800,old:950,desc:"Vitamin B12 screening",img:"https://images.unsplash.com/photo-1603398938378-e54eab446dde?auto=format&fit=crop&w=900&q=82"},
-      {id:10,name:"Malaria Test",dept:"PATHOLOGY",price:350,old:450,desc:"Malaria screening",img:"https://images.unsplash.com/photo-1581595219315-a187dd40c322?auto=format&fit=crop&w=900&q=82"},
-      {id:11,name:"Dengue Test",dept:"PATHOLOGY",price:700,old:850,desc:"Dengue screening",img:"https://images.unsplash.com/photo-1583912267550-d3c4d1fbb7d6?auto=format&fit=crop&w=900&q=82"},
-      {id:12,name:"Urine Routine Test",dept:"PATHOLOGY",price:150,old:199,desc:"Routine urine analysis",img:"https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=900&q=82"}
-    ];
+    let tests = [];
+    async function loadLifeSureTests() {
+
+  const { data, error } = await supabaseClient
+    .from("tests")
+    .select(`
+      id,
+      code,
+      name,
+      department,
+      sample_type,
+      report_tat_hours,
+      patient_price,
+      actual_test_cost,
+      home_collection_available,
+      active
+    `)
+    .eq("active", true)
+    .gt("patient_price", 0)
+    .order("name");
+
+  if (error) {
+    console.error("LifeSure Test Master Error:", error);
+    showToast("Unable to load test catalogue.");
+    return;
+  }
+
+  tests = (data || []).map(t => ({
+    id: t.id,
+    code: t.code,
+    name: t.name,
+    dept: t.department || "DIAGNOSTICS",
+    price: Number(t.patient_price || 0),
+    old: 0,
+    desc: buildTestDescription(t),
+    sampleType: t.sample_type || "",
+    tat: t.report_tat_hours || null,
+    homeCollection: !!t.home_collection_available
+  }));
+
+  console.log(
+    "LifeSure Test Master loaded:",
+    tests.length
+  );
+
+  renderCategories();
+  renderTests();
+  updateSuggestions();
+}
+    function buildTestDescription(test) {
+
+  const parts = [];
+
+  if (test.sample_type) {
+    parts.push(test.sample_type);
+  }
+
+  if (test.report_tat_hours) {
+    parts.push(`Report TAT: ${test.report_tat_hours} hrs`);
+  }
+
+  if (test.home_collection_available) {
+    parts.push("Home collection");
+  }
+
+  return parts.length
+    ? parts.join(" • ")
+    : "Diagnostic laboratory test";
+}
 
     const categories = [
       ["ALL TESTS","fa-stethoscope"],["BLOOD TEST","fa-droplet"],["PATHOLOGY","fa-microscope"],
@@ -656,8 +711,13 @@
       $("testGrid").innerHTML = filtered.length ? filtered.map(t => `
         <article class="test-card">
           <div class="test-image">
-            <img src="${t.img}" alt="${t.name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1530026405186-ed1f139313f8?auto=format&fit=crop&w=900&q=80'">
-            <span class="badge">${t.dept}</span>
+           <img
+  src="https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=900&q=82"
+  alt="${t.name}"
+  loading="lazy"
+  onerror="this.style.display='none'"
+>
+<span class="badge">${t.dept}</span>
           </div>
           <div class="test-body">
             <h3>${t.name}</h3>
@@ -891,10 +951,11 @@ Please confirm availability and booking details.`;
     });
 
     // Init
-    buildDots();
-    renderCategories();
-    renderTests();
-    resetHeroTimer();
+   buildDots();
+renderCategories();
+resetHeroTimer();
+
+loadLifeSureTests();
   </script>
 </body>
 </html>
