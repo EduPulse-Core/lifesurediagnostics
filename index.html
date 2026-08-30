@@ -591,10 +591,43 @@
   <label>Patient Price</label>
   <input id="selectedPrice" readonly value="₹0">
 </div>
-        <div class="field"><label>Collection</label><select id="collection"><option>Lab Visit</option><option>Home Sample Collection</option></select></div>
+
+<div class="field">
+  <label>Discount / Coupon</label>
+  <div style="display:flex;gap:8px">
+    <input
+      id="couponCode"
+      placeholder="Coupon code"
+      autocomplete="off"
+    >
+    <button
+      type="button"
+      class="btn btn-outline"
+      onclick="applyCoupon()"
+    >
+      Apply
+    </button>
+  </div>
+</div>
+
+<div class="field">
+  <label>Final Payable</label>
+  <input id="finalAmount" readonly value="₹0">
+</div>
+
+<div class="field">
+  <label>Collection</label>
+  <select id="collection">
+    <option>Lab Visit</option>
+    <option>Home Sample Collection</option>
+  </select>
+</div>
         <div class="field"><label>Preferred Date</label><input id="date" type="date"></div>
         <div class="field full"><label>Address / Notes</label><textarea id="address" rows="3" placeholder="Address for home collection or any note"></textarea></div>
-        <div class="form-note"><i class="fa-solid fa-lock"></i> Your booking request is stored locally in this browser and a WhatsApp message is prepared for the LifeSure team.</div>
+        <div class="form-note">
+  <i class="fa-solid fa-shield-halved"></i>
+  Your booking request is securely recorded with LifeSure and a WhatsApp confirmation is prepared for the team.
+</div>
         <div class="form-actions"><button type="button" class="btn btn-outline" onclick="closeBooking()">Cancel</button><button class="btn btn-primary" type="submit">Confirm & WhatsApp <i class="fa-brands fa-whatsapp"></i></button></div>
       </form>
 
@@ -815,6 +848,11 @@ function renderTests(){
     selected
       ? `₹${Number(selected.price).toLocaleString("en-IN")}`
       : "Price on request";
+      $("couponCode").value = "";
+$("finalAmount").value =
+  selected
+    ? `₹${Number(selected.price).toLocaleString("en-IN")}`
+    : "₹0";
 
   $("date").min =
     new Date().toISOString().split("T")[0];
@@ -823,7 +861,75 @@ function renderTests(){
 
   document.body.style.overflow = "hidden";
 }
+function applyCoupon() {
 
+  const testName =
+    $("selectedTest").value.trim();
+
+  const selected = tests.find(
+    t =>
+      String(t.name).toLowerCase() ===
+      testName.toLowerCase()
+  );
+
+  if (!selected) {
+    showToast("Please select a valid test.");
+    return;
+  }
+
+  const price = Number(selected.price || 0);
+
+  if (!price) {
+    showToast("Price is not available.");
+    return;
+  }
+
+  const code =
+    $("couponCode").value.trim().toUpperCase();
+
+  let discount = 0;
+  let message = "";
+
+  if (!code) {
+
+    $("finalAmount").value =
+      `₹${price.toLocaleString("en-IN")}`;
+
+    showToast("Enter a coupon code.");
+
+    return;
+  }
+
+  if (code === "LIFESURE10") {
+
+    discount = Math.round(price * 0.10);
+    message = "10% discount applied";
+
+  } else if (code === "WELCOME100") {
+
+    discount = Math.min(100, price);
+    message = "₹100 discount applied";
+
+  } else {
+
+    $("finalAmount").value =
+      `₹${price.toLocaleString("en-IN")}`;
+
+    showToast("Invalid coupon code.");
+
+    return;
+  }
+
+  const finalAmount =
+    Math.max(0, price - discount);
+
+  $("finalAmount").value =
+    `₹${finalAmount.toLocaleString("en-IN")}`;
+
+  showToast(
+    `${message}. You save ₹${discount.toLocaleString("en-IN")}.`
+  );
+}
     function closeBooking(){
       $("bookingModal").classList.remove("show");
       document.body.style.overflow="";
