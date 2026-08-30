@@ -986,14 +986,19 @@ const supabaseClient =
 
   try {
     const { data: booking, error } =
-      await supabaseClient.rpc("create_public_booking", {
-        p_name: name,
-        p_phone: phone,
-        p_test: test,
-        p_collection: collection,
-        p_date: date,
-        p_address: address
-      });
+     const couponCode =
+  $("couponCode").value.trim().toUpperCase();
+
+const { data: booking, error } =
+  await supabaseClient.rpc("create_public_booking", {
+    p_name: name,
+    p_phone: phone,
+    p_test: test,
+    p_collection: collection,
+    p_date: date,
+    p_address: address,
+    p_coupon_code: couponCode || null
+  });
 
     if (error) {
       console.error("Booking creation error:", error);
@@ -1008,14 +1013,24 @@ const supabaseClient =
 `🧪 LifeSure Diagnostics — Booking Request
 
 Booking ID: ${booking.booking_code}
+
+Patient
 Name: ${booking.patient_name}
 Mobile: ${booking.phone}
+
 Test / Package: ${booking.test || "General Test Enquiry"}
 Collection: ${booking.collection}
 Preferred Date: ${booking.date}
 Address / Notes: ${booking.address}
 
-Status: Pending
+Billing
+Subtotal: ₹${Number(booking.subtotal || 0).toLocaleString("en-IN")}
+Discount: ₹${Number(booking.discount || 0).toLocaleString("en-IN")}
+Final Payable: ₹${Number(booking.amount || 0).toLocaleString("en-IN")}
+
+Coupon: ${booking.coupon_code || "None"}
+Payment Status: ${booking.payment_status || "pending"}
+Booking Status: Pending
 
 Please confirm availability and booking details.`;
 
