@@ -1019,39 +1019,11 @@ $("bookingForm").addEventListener("submit", async (e) => {
     const finalAmount =
       Number(booking.amount || booking.net_charge || 0);
 
-    const msg =
-`🧪 LifeSure Diagnostics — Booking Request
+    
 
-Booking ID: ${booking.booking_code || "Pending"}
-
-Patient
-Name: ${booking.patient_name || name}
-Mobile: ${booking.phone || phone}
-
-Test / Package: ${booking.test || test}
-Collection: ${booking.collection || collection}
-Preferred Date: ${booking.date || date}
-Address / Notes: ${booking.address || address}
-
-Billing
-Subtotal: ₹${subtotal.toLocaleString("en-IN")}
-Discount: ₹${discount.toLocaleString("en-IN")}
-Final Payable: ₹${finalAmount.toLocaleString("en-IN")}
-
-Coupon: ${booking.coupon_code || couponCode || "None"}
-Payment Status: ${booking.payment_status || "pending"}
-Booking Status: ${booking.booking_status || "pending"}
-
-Invoice: ${booking.invoice_number || "Generated"}
-
-Please confirm availability and booking details.`;
-
-    $("bookingForm").style.display = "none";
-    $("success").classList.add("show");
-
-    setTimeout(() => {
-      openWhatsApp(msg);
-    }, 300);
+  window.location.href =
+  "billing.html?booking=" +
+  encodeURIComponent(booking.id);
 
   } catch (error) {
 
