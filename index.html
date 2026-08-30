@@ -582,7 +582,15 @@
       <form class="form" id="bookingForm">
         <div class="field"><label>Full Name *</label><input id="name" required placeholder="Enter your name"></div>
         <div class="field"><label>Mobile Number *</label><input id="phone" required inputmode="numeric" maxlength="10" placeholder="10-digit mobile number"></div>
-        <div class="field full"><label>Test / Package</label><input id="selectedTest" readonly></div>
+        <div class="field full">
+  <label>Test / Package</label>
+  <input id="selectedTest" readonly>
+</div>
+
+<div class="field">
+  <label>Patient Price</label>
+  <input id="selectedPrice" readonly value="₹0">
+</div>
         <div class="field"><label>Collection</label><select id="collection"><option>Lab Visit</option><option>Home Sample Collection</option></select></div>
         <div class="field"><label>Preferred Date</label><input id="date" type="date"></div>
         <div class="field full"><label>Address / Notes</label><textarea id="address" rows="3" placeholder="Address for home collection or any note"></textarea></div>
@@ -789,14 +797,32 @@ function renderTests(){
     }
 
     function openBooking(testName){
-      $("bookingModal").classList.add("show");
-      $("success").classList.remove("show");
-      $("bookingForm").style.display = "grid";
-      $("selectedTest").value = testName || "General Test Enquiry";
-      $("date").min = new Date().toISOString().split("T")[0];
-      setTimeout(()=>$("name").focus(),80);
-      document.body.style.overflow="hidden";
-    }
+
+  $("bookingModal").classList.add("show");
+  $("success").classList.remove("show");
+  $("bookingForm").style.display = "grid";
+
+  const selected =
+    tests.find(
+      t => String(t.name).toLowerCase() ===
+           String(testName || "").toLowerCase()
+    );
+
+  $("selectedTest").value =
+    selected?.name || testName || "General Test Enquiry";
+
+  $("selectedPrice").value =
+    selected
+      ? `₹${Number(selected.price).toLocaleString("en-IN")}`
+      : "Price on request";
+
+  $("date").min =
+    new Date().toISOString().split("T")[0];
+
+  setTimeout(() => $("name").focus(), 80);
+
+  document.body.style.overflow = "hidden";
+}
 
     function closeBooking(){
       $("bookingModal").classList.remove("show");
