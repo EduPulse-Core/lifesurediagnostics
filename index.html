@@ -1270,7 +1270,87 @@
       }
     }
 
-  </style>
+  
+/* =========================================================
+   FINAL PRODUCTION CART NAVIGATION + PRICE HYDRATION
+========================================================= */
+
+.cart-head{
+  position:relative;
+}
+
+.cart-head-content{
+  flex:1;
+  min-width:0;
+}
+
+.cart-back{
+  width:36px;
+  height:36px;
+  flex:0 0 auto;
+  display:grid;
+  place-items:center;
+  border:1px solid var(--line);
+  border-radius:11px;
+  background:#fff;
+  color:var(--blue);
+  cursor:pointer;
+  transition:transform .22s ease,background .22s ease,border-color .22s ease;
+}
+
+.cart-back:hover{
+  transform:translateX(-2px);
+  background:var(--mint);
+  border-color:#9bdabb;
+  color:var(--green-dark);
+}
+
+.booking-back{
+  width:36px;
+  height:36px;
+  flex:0 0 auto;
+  display:grid;
+  place-items:center;
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:11px;
+  background:rgba(255,255,255,.09);
+  color:#fff;
+  cursor:pointer;
+  transition:transform .22s ease,background .22s ease;
+}
+
+.booking-back:hover{
+  transform:translateX(-2px);
+  background:rgba(255,255,255,.17);
+}
+
+.modal-head-copy{
+  flex:1;
+  min-width:0;
+}
+
+.cart-item-unavailable{
+  opacity:.72;
+}
+
+.cart-item-unavailable .cart-item-price{
+  color:#b45353;
+}
+
+.cart-price-loading{
+  color:#8798a2 !important;
+}
+
+@media(max-width:700px){
+  .cart-back,
+  .cart-close,
+  .booking-back{
+    width:36px;
+    height:36px;
+  }
+}
+
+</style>
 </head>
 
 <body>
@@ -1586,8 +1666,32 @@
   <div class="modal-backdrop" id="bookingModal">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="bookingTitle">
       <div class="modal-head">
-        <div><h3 id="bookingTitle">Book Your Test</h3><p>Send your request directly to LifeSure on WhatsApp.</p></div>
-        <button class="close" onclick="closeBooking()" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+
+        <button
+          type="button"
+          class="booking-back"
+          onclick="backToBookingCart()"
+          aria-label="Back to selected tests"
+          title="Back to selected tests"
+        >
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
+
+        <div class="modal-head-copy">
+          <h3 id="bookingTitle">Book Your Tests</h3>
+          <p>Review patient, collection and billing details.</p>
+        </div>
+
+        <button
+          class="close"
+          type="button"
+          onclick="closeBooking()"
+          aria-label="Close"
+          title="Close"
+        >
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+
       </div>
 
       <form class="form" id="bookingForm">
@@ -1697,7 +1801,17 @@
 
   <div class="cart-head">
 
-    <div>
+    <button
+      type="button"
+      class="cart-back"
+      onclick="backToTestsFromCart()"
+      aria-label="Back to tests"
+      title="Back to tests"
+    >
+      <i class="fa-solid fa-arrow-left"></i>
+    </button>
+
+    <div class="cart-head-content">
       <span class="cart-eyebrow">
         LifeSure Booking
       </span>
@@ -1716,6 +1830,7 @@
       class="cart-close"
       onclick="closeBookingCart()"
       aria-label="Close cart"
+      title="Close"
     >
       <i class="fa-solid fa-xmark"></i>
     </button>
@@ -1918,7 +2033,15 @@
       renderCategories();
       renderTests();
       updateSuggestions();
-      renderBookingCart();
+
+      /*
+       * CRITICAL:
+       * The persistent cart stores only test_code/name/quantity.
+       * Rehydrate its display metadata AFTER the authoritative
+       * Test Master has loaded so prices never remain ₹0 after refresh.
+       */
+      loadBookingCart();
+
       renderBookingSelection();
     }
 
@@ -2480,13 +2603,58 @@
       );
     }
 
+    function getAuthoritativeCartTest(item){
+
+      if(!item)
+        return null;
+
+      const code =
+        String(
+          item.test_code || ""
+        ).trim().toLowerCase();
+
+      return tests.find(
+        t =>
+          String(
+            t.code || ""
+          ).trim().toLowerCase() === code
+      ) || null;
+    }
+
+
+    function getCartItemPrice(item){
+
+      const authoritative =
+        getAuthoritativeCartTest(item);
+
+      return Number(
+        authoritative?.price ??
+        item?.price ??
+        0
+      );
+    }
+
+
+    function getCartItemName(item){
+
+      const authoritative =
+        getAuthoritativeCartTest(item);
+
+      return String(
+        authoritative?.name ??
+        item?.name ??
+        "Diagnostic test"
+      );
+    }
+
+
     function cartTotal(){
 
       return bookingCart.reduce(
         (sum,item) =>
           sum +
           (
-            Number(item.price || 0) *
+            getCartItemPrice(item) *
             Number(item.quantity || 1)
           ),
         0
@@ -2781,15 +2949,26 @@
                 item.quantity || 1
               );
 
+            const authoritative =
+              getAuthoritativeCartTest(item);
+
+            const itemName =
+              getCartItemName(item);
+
+            const itemPrice =
+              getCartItemPrice(item);
+
             const lineTotal =
-              Number(
-                item.price || 0
-              ) *
+              itemPrice *
               quantity;
+
+            const unavailable =
+              tests.length > 0 &&
+              !authoritative;
 
             return `
 
-              <div class="cart-item">
+              <div class="cart-item ${unavailable ? "cart-item-unavailable" : ""}">
 
                 <div class="cart-item-main">
 
@@ -2818,8 +2997,12 @@
                     )}
                   </strong>
 
-                  <div class="cart-item-price">
-                    ₹${money(lineTotal)}
+                  <div class="cart-item-price ${unavailable ? "cart-price-loading" : ""}">
+                    ${
+                      unavailable
+                        ? "Currently unavailable"
+                        : `₹${money(lineTotal)}`
+                    }
                   </div>
 
                 </div>
@@ -2857,6 +3040,35 @@
           }
         ).join("");
     }
+
+    function backToTestsFromCart(){
+
+      closeBookingCart();
+
+      document
+        .querySelector("#tests")
+        ?.scrollIntoView({
+          behavior:"smooth",
+          block:"start"
+        });
+    }
+
+
+    function backToBookingCart(){
+
+      closeBooking();
+
+      if(bookingCart.length){
+
+        openBookingCart();
+
+      }else{
+
+        backToTestsFromCart();
+
+      }
+    }
+
 
     function openBookingCart(){
 
@@ -3024,7 +3236,7 @@
 
                     <span>
                       ${escapeHtml(
-                        item.name
+                        getCartItemName(item)
                       )}
 
                       ${
@@ -3037,7 +3249,7 @@
 
                     <strong>
                       ₹${money(
-                        Number(item.price || 0) *
+                        getCartItemPrice(item) *
                         Number(item.quantity || 1)
                       )}
                     </strong>
@@ -3396,6 +3608,26 @@
           }
 
 
+          const unavailableItems =
+            bookingCart.filter(
+              item =>
+                !getAuthoritativeCartTest(item)
+            );
+
+          if(unavailableItems.length){
+
+            showToast(
+              "One or more selected tests are no longer available. Please review your selection.",
+              true
+            );
+
+            closeBooking();
+            openBookingCart();
+
+            return;
+          }
+
+
           const items =
             bookingCart.map(
               item => ({
@@ -3554,6 +3786,37 @@
     ========================================================= */
 
     document.addEventListener(
+      "keydown",
+      e => {
+
+        if(e.key !== "Escape")
+          return;
+
+        if(
+          $("bookingCartDrawer")
+            ?.classList
+            .contains("show")
+        ){
+
+          closeBookingCart();
+
+          return;
+        }
+
+        if(
+          $("bookingModal")
+            ?.classList
+            .contains("show")
+        ){
+
+          closeBooking();
+
+        }
+
+      }
+    );
+
+    document.addEventListener(
       "click",
       e => {
 
@@ -3620,8 +3883,6 @@
     /* =========================================================
        INIT — TEST CATALOGUE
     ========================================================= */
-
-    loadBookingCart();
 
     renderCategories();
     renderTests();
