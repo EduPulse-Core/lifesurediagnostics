@@ -1279,6 +1279,12 @@
       }
     }
 
+      @media(max-width:760px){
+      .balance-mini{
+        grid-template-columns:1fr;
+      }
+    }
+
   </style>
 </head>
 
@@ -1648,7 +1654,7 @@
             </h2>
 
             <span class="currency">
-              INR
+              ₹ INR
             </span>
 
           </div>
@@ -1770,15 +1776,11 @@
           <div class="payment-detail">
 
             <div class="payment-detail-label">
-              Amount to be recorded now
+              Payment amount for this checkout (preview only)
             </div>
 
             <div class="amount-input">
-
-              <span>
-                ₹
-              </span>
-
+              <span>₹</span>
               <input
                 id="paidAmount"
                 type="number"
@@ -1787,42 +1789,45 @@
                 inputmode="decimal"
                 value="0"
                 placeholder="0.00"
+                autocomplete="off"
               >
-
             </div>
-
 
             <div class="balance-mini">
 
               <div class="mini-box">
-
-                <span>
-                  Paid
-                </span>
-
-                <strong id="paidDisplay">
-                  ₹0
-                </strong>
-
+                <span>Invoice Total</span>
+                <strong id="invoiceTotalDisplay">₹0.00</strong>
               </div>
 
+              <div class="mini-box">
+                <span>Already Paid</span>
+                <strong id="alreadyPaidDisplay">₹0.00</strong>
+              </div>
 
               <div class="mini-box">
+                <span>Outstanding Before</span>
+                <strong id="balanceBeforeDisplay">₹0.00</strong>
+              </div>
 
-                <span>
-                  Balance
-                </span>
+              <div class="mini-box">
+                <span>Payment Now</span>
+                <strong id="paidDisplay">₹0.00</strong>
+              </div>
 
-                <strong id="balanceDisplay">
-                  ₹0
-                </strong>
-
+              <div class="mini-box">
+                <span>Outstanding After</span>
+                <strong id="balanceDisplay">₹0.00</strong>
               </div>
 
             </div>
 
-          </div>
+            <div class="payment-math-note">
+              Outstanding after this payment = Invoice Total − Already Paid − Payment Now.
+              The amount shown here is a preview only. The official payment ledger changes only after verified online payment or an authorized LifeSure staff entry.
+            </div>
 
+          </div>
 
           <!-- SECURITY -->
 
@@ -1894,6 +1899,11 @@
             Your booking and invoice have been created successfully.
             Payment remains subject to verification.
           </p>
+
+          <div class="success-reference" style="margin-top:10px">
+            <span>Checkout financial preview</span>
+            <strong id="successPaymentPreview">—</strong>
+          </div>
 
 
           <div class="success-reference">
@@ -2020,18 +2030,17 @@
      STATE
   ====================================================== */
 
-  const params =
-    new URLSearchParams(
-      window.location.search
-    );
-
-  const bookingId =
-    params.get("booking");
+  const params = new URLSearchParams(window.location.search);
+  const bookingId = params.get("booking");
 
   let bookingData = null;
+  let selectedPaymentMethod = "pay_at_centre";
 
-  let selectedPaymentMethod =
-    "pay_at_centre";
+  let totals = {
+    payable: 0,
+    alreadyPaid: 0,
+    outstandingBefore: 0
+  };
 
 
   /* ======================================================
@@ -2042,118 +2051,63 @@
     return document.getElementById(id);
   }
 
-
   function money(value){
-
-    return Number(value || 0)
-      .toLocaleString(
-        "en-IN",
-        {
+    const n = Number(value);
+    return Number.isFinite(n)
+      ? n.toLocaleString("en-IN", {
           minimumFractionDigits:2,
           maximumFractionDigits:2
-        }
-      );
-
+        })
+      : "0.00";
   }
 
-
-  function showToast(
-    message,
-    isError = false
-  ){
-
-    const toast =
-      $("toast");
-
-    toast.textContent =
-      message;
-
-    toast.classList.toggle(
-      "error",
-      isError
+  function showToast(message,isError=false){
+    const toast = $("toast");
+    if(!toast) return;
+    toast.textContent = message;
+    toast.classList.toggle("error",isError);
+    toast.classList.add("show");
+    clearTimeout(window.__toastTimer);
+    window.__toastTimer = setTimeout(
+      () => toast.classList.remove("show"),
+      3500
     );
-
-    toast.classList.add(
-      "show"
-    );
-
-    clearTimeout(
-      window.__toastTimer
-    );
-
-    window.__toastTimer =
-      setTimeout(
-        () => {
-          toast.classList.remove(
-            "show"
-          );
-        },
-        3000
-      );
-
   }
 
-
-  function setLoader(
-    show,
-    title = "Preparing secure billing...",
-    subtitle = "Please wait while LifeSure verifies your booking."
-  ){
-
-    $("loaderTitle").textContent =
-      title;
-
-    $("loaderSubtitle").textContent =
-      subtitle;
-
-    $("loader").classList.toggle(
-      "show",
-      show
-    );
-
+  function setLoader(show,title="Preparing secure billing...",subtitle="Please wait while LifeSure verifies your booking."){
+    $("loaderTitle").textContent = title;
+    $("loaderSubtitle").textContent = subtitle;
+    $("loader").classList.toggle("show",show);
   }
 
-
-  function showError(
-    message
-  ){
-
-    const box =
-      $("errorState");
-
-    box.textContent =
-      message;
-
-    box.classList.add(
-      "show"
-    );
-
+  function showError(message){
+    $("errorState").textContent = message;
+    $("errorState").classList.add("show");
   }
-
 
   function clearError(){
+    $("errorState").textContent = "";
+    $("errorState").classList.remove("show");
+  }
 
-    $("errorState")
-      .classList.remove(
-        "show"
-      );
+  function getPayable(data){
+    const n = Number(
+      data?.net_amount ??
+      data?.net_charge ??
+      data?.amount ??
+      0
+    );
+    return Number.isFinite(n) && n >= 0 ? n : 0;
+  }
 
-    $("errorState")
-      .textContent = "";
-
+  function getAlreadyPaid(data){
+    const n = Number(data?.paid_amount ?? 0);
+    return Number.isFinite(n) && n >= 0 ? n : 0;
   }
 
 
   /* ======================================================
      LOAD CHECKOUT
-     
-     IMPORTANT:
-     This function expects a future secure RPC:
-     
-       get_public_booking_checkout(p_booking_id)
-     
-     We intentionally do NOT directly select patient/booking
-     tables from a public page.
   ====================================================== */
 
   async function loadCheckout(){
@@ -2161,14 +2115,9 @@
     clearError();
 
     if(!bookingId){
-
-      showError(
-        "This billing session is missing a booking reference."
-      );
-
+      showError("This billing session is missing a booking reference.");
       return;
     }
-
 
     setLoader(
       true,
@@ -2176,83 +2125,41 @@
       "Verifying the booking and preparing your invoice."
     );
 
-
     try{
-
-      /*
-       * Production-safe architecture:
-       *
-       * The RPC should return only the minimum
-       * checkout information required by the customer.
-       *
-       * We will create this RPC in the next backend step.
-       */
 
       const {data,error} =
         await supabaseClient.rpc(
           "get_public_booking_checkout",
-          {
-            p_booking_id: bookingId
-          }
+          { p_booking_id: bookingId }
         );
 
-
-      if(error){
-
-        console.error(
-          "Checkout loading error:",
-          error
-        );
-
-        throw error;
-      }
-
+      if(error) throw error;
 
       if(!data){
-
         throw new Error(
           "Booking checkout information was not returned."
         );
-
       }
 
-
-      bookingData =
-        data;
-
-
-      renderCheckout(
-        data
-      );
-
+      bookingData = data;
+      renderCheckout(data);
 
     }catch(error){
 
-      console.error(
-        "CHECKOUT ERROR:",
-        error
-      );
-
+      console.error("CHECKOUT ERROR:",error);
 
       showError(
         "Unable to load this secure billing session. Please return to the booking page or contact LifeSure support."
       );
-
 
       showToast(
         "Billing session could not be loaded.",
         true
       );
 
-
     }finally{
-
-      setLoader(
-        false
-      );
-
+      setLoader(false);
     }
-
   }
 
 
@@ -2260,132 +2167,75 @@
      RENDER CHECKOUT
   ====================================================== */
 
-  function renderCheckout(
-    data
-  ){
+  function renderCheckout(data){
 
-    const patient =
-      data.patient || {};
+    const patient = data.patient || {};
 
+    const payable = getPayable(data);
 
-    $("bookingReference")
-      .textContent =
-      "Booking " +
-      (
-        data.booking_code ||
-        "—"
-      );
-
-
-    $("patientName")
-      .textContent =
-      patient.name ||
-      data.patient_name ||
-      "Patient";
-
-
-    $("patientPhone")
-      .textContent =
-      patient.phone ||
-      data.phone ||
-      "—";
-
-
-    $("invoiceNumber")
-      .textContent =
-      "Invoice " +
-      (
-        data.invoice_number ||
-        "—"
-      );
-
-
-    $("serviceName")
-      .textContent =
-      data.test_name ||
-      data.test ||
-      "Diagnostic Service";
-
-
-    $("testCode")
-      .textContent =
-      data.test_code ||
-      "—";
-
-
-    $("sampleType")
-      .textContent =
-      data.sample_type ||
-      "Diagnostic test";
-
-
-    $("servicePrice")
-      .textContent =
-      "₹" +
-      money(
-        data.subtotal
-      );
-
-
-    $("collectionType")
-      .textContent =
-      normalizeCollection(
-        data.collection_type ||
-        data.collection
-      );
-
-
-    $("collectionDate")
-      .textContent =
-      formatDate(
-        data.collection_date ||
-        data.date
-      );
-
-
-    $("subtotal")
-      .textContent =
-      "₹" +
-      money(
-        data.subtotal
-      );
-
-
-    $("discount")
-      .textContent =
-      "−₹" +
-      money(
-        data.discount
-      );
-
-
-    $("netAmount")
-      .textContent =
-      "₹" +
-      money(
-        data.net_amount ??
-        data.net_charge ??
-        data.amount
-      );
-
-
-    const payable =
-      Number(
-        data.net_amount ??
-        data.net_charge ??
-        data.amount ??
-        0
-      );
-
-
-    $("paidAmount").value =
-      "0";
-
-
-    updatePaymentPreview(
+    const alreadyPaid = Math.min(
+      getAlreadyPaid(data),
       payable
     );
 
+    const outstandingBefore = Math.max(
+      0,
+      payable - alreadyPaid
+    );
+
+    totals = {
+      payable,
+      alreadyPaid,
+      outstandingBefore
+    };
+
+    $("bookingReference").textContent =
+      "Booking " + (data.booking_code || "—");
+
+    $("patientName").textContent =
+      patient.name || data.patient_name || "Patient";
+
+    $("patientPhone").textContent =
+      patient.phone || data.phone || "—";
+
+    $("invoiceNumber").textContent =
+      "Invoice " + (data.invoice_number || "—");
+
+    $("serviceName").textContent =
+      data.test_name || data.test || "Diagnostic Service";
+
+    $("testCode").textContent =
+      data.test_code || "—";
+
+    $("sampleType").textContent =
+      data.sample_type || "Diagnostic test";
+
+    $("servicePrice").textContent =
+      "₹" + money(data.subtotal);
+
+    $("collectionType").textContent =
+      normalizeCollection(
+        data.collection_type || data.collection
+      );
+
+    $("collectionDate").textContent =
+      formatDate(
+        data.collection_date || data.date
+      );
+
+    $("subtotal").textContent =
+      "₹" + money(data.subtotal);
+
+    $("discount").textContent =
+      "−₹" + money(data.discount);
+
+    $("netAmount").textContent =
+      "₹" + money(payable);
+
+    $("paidAmount").value = "0";
+
+    updatePaymentPreview();
+    updatePaymentInfo();
   }
 
 
@@ -2393,61 +2243,22 @@
      NORMALIZERS
   ====================================================== */
 
-  function normalizeCollection(
-    value
-  ){
-
-    if(
-      String(value || "")
-        .toLowerCase()
-        .includes("home")
-    ){
-
+  function normalizeCollection(value){
+    if(String(value || "").toLowerCase().includes("home")){
       return "Home sample collection";
-
     }
-
     return "LifeSure laboratory visit";
-
   }
 
-
-  function formatDate(
-    value
-  ){
-
-    if(!value)
-      return "Not specified";
-
-
-    const d =
-      new Date(
-        value
-      );
-
-
-    if(
-      Number.isNaN(
-        d.getTime()
-      )
-    ){
-
-      return String(
-        value
-      );
-
-    }
-
-
-    return d.toLocaleDateString(
-      "en-IN",
-      {
-        day:"2-digit",
-        month:"short",
-        year:"numeric"
-      }
-    );
-
+  function formatDate(value){
+    if(!value) return "Not specified";
+    const d = new Date(value);
+    if(Number.isNaN(d.getTime())) return String(value);
+    return d.toLocaleDateString("en-IN",{
+      day:"2-digit",
+      month:"short",
+      year:"numeric"
+    });
   }
 
 
@@ -2456,168 +2267,93 @@
   ====================================================== */
 
   document
-    .querySelectorAll(
-      ".payment-option"
-    )
-    .forEach(
-      button => {
+    .querySelectorAll(".payment-option")
+    .forEach(button => {
+      button.addEventListener("click",()=>{
+        document
+          .querySelectorAll(".payment-option")
+          .forEach(item => item.classList.remove("active"));
 
-        button.addEventListener(
-          "click",
-          () => {
+        button.classList.add("active");
 
-            document
-              .querySelectorAll(
-                ".payment-option"
-              )
-              .forEach(
-                item =>
-                  item.classList.remove(
-                    "active"
-                  )
-              );
+        selectedPaymentMethod =
+          button.dataset.method || "pay_at_centre";
 
-
-            button.classList.add(
-              "active"
-            );
-
-
-            selectedPaymentMethod =
-              button.dataset.method ||
-              "pay_at_centre";
-
-
-            updatePaymentInfo();
-
-          }
-        );
-
-      }
-    );
-
+        updatePaymentInfo();
+      });
+    });
 
   function updatePaymentInfo(){
+    const info = $("paymentInfo");
 
-    const info =
-      $("paymentInfo");
-
-
-    if(
-      selectedPaymentMethod ===
-      "online"
-    ){
-
+    if(selectedPaymentMethod === "online"){
       info.textContent =
-        "Online payment processing will only be treated as successful after the configured payment gateway confirms the transaction on the server.";
-
-    }else{
-
-      info.textContent =
-        "Pay at Centre keeps the booking payment-pending until an authorized LifeSure team member records the actual payment.";
-
+        "Online payment will only become PAID after the configured payment gateway confirms the transaction on the server.";
+      return;
     }
 
+    info.textContent =
+      "Pay at Centre keeps the invoice payment-pending until an authorized LifeSure team member records the actual receipt.";
   }
 
 
   /* ======================================================
-     LIVE AMOUNT PREVIEW
+     FINANCIAL PREVIEW
   ====================================================== */
 
   $("paidAmount")
     .addEventListener(
       "input",
-      () => {
-
-        const payable =
-          Number(
-            bookingData?.net_amount ??
-            bookingData?.net_charge ??
-            bookingData?.amount ??
-            0
-          );
-
-
-        updatePaymentPreview(
-          payable
-        );
-
-      }
+      updatePaymentPreview
     );
 
+  function updatePaymentPreview(){
 
-  function updatePaymentPreview(
-    payable
-  ){
+    const input = $("paidAmount");
 
-    const input =
-      $("paidAmount");
+    let paymentNow = Number(
+      input.value || 0
+    );
 
-
-    let paid =
-      Number(
-        input.value ||
-        0
-      );
-
-
-    if(
-      Number.isNaN(paid) ||
-      paid < 0
-    ){
-
-      paid = 0;
-
+    if(!Number.isFinite(paymentNow) || paymentNow < 0){
+      paymentNow = 0;
+      input.value = "";
     }
 
-
-    if(
-      paid > payable
-    ){
-
-      paid = payable;
-
-      input.value =
-        payable.toFixed(2);
-
+    if(paymentNow > totals.outstandingBefore){
+      paymentNow = totals.outstandingBefore;
+      input.value = totals.outstandingBefore.toFixed(2);
     }
 
+    const paidAfter = Math.min(
+      totals.payable,
+      totals.alreadyPaid + paymentNow
+    );
 
-    const balance =
-      Math.max(
-        0,
-        payable - paid
-      );
+    const outstandingAfter = Math.max(
+      0,
+      totals.payable - paidAfter
+    );
 
+    $("invoiceTotalDisplay").textContent =
+      "₹" + money(totals.payable);
 
-    $("paidDisplay")
-      .textContent =
-      "₹" +
-      money(
-        paid
-      );
+    $("alreadyPaidDisplay").textContent =
+      "₹" + money(totals.alreadyPaid);
 
+    $("balanceBeforeDisplay").textContent =
+      "₹" + money(totals.outstandingBefore);
 
-    $("balanceDisplay")
-      .textContent =
-      "₹" +
-      money(
-        balance
-      );
+    $("paidDisplay").textContent =
+      "₹" + money(paymentNow);
 
+    $("balanceDisplay").textContent =
+      "₹" + money(outstandingAfter);
   }
 
 
   /* ======================================================
-     CONTINUE
-     
-     IMPORTANT:
-     Public users should NOT call
-     record_booking_payment().
-     
-     That operation belongs to authorized
-     Accounts / Management / Super Admin workflows.
+     CHECKOUT CONFIRMATION
   ====================================================== */
 
   $("continueButton")
@@ -2627,106 +2363,57 @@
 
         clearError();
 
-
         if(!bookingData){
-
           showToast(
             "Booking information is not ready.",
             true
           );
-
           return;
         }
 
-
-        const payable =
-          Number(
-            bookingData.net_amount ??
-            bookingData.net_charge ??
-            bookingData.amount ??
-            0
-          );
-
-
-        const requestedPaid =
-          Number(
-            $("paidAmount").value ||
-            0
-          );
-
+        const paymentNow = Number(
+          $("paidAmount").value || 0
+        );
 
         if(
-          requestedPaid < 0 ||
-          requestedPaid > payable
+          !Number.isFinite(paymentNow) ||
+          paymentNow < 0 ||
+          paymentNow > totals.outstandingBefore
         ){
 
           showError(
-            "The amount entered is outside the valid payable range."
+            `Payment amount must be between ₹0.00 and ₹${money(totals.outstandingBefore)}.`
           );
 
+          updatePaymentPreview();
           return;
-
         }
-
-
-        /*
-         * Pay at Centre:
-         * No payment is recorded here.
-         * Booking remains pending.
-         *
-         * Online:
-         * Gateway integration will be connected later.
-         *
-         * This screen therefore confirms the checkout state,
-         * not a fabricated successful payment.
-         */
-
 
         setLoader(
           true,
-          "Finalizing checkout...",
-          "Saving your confirmed booking state."
+          "Finalizing secure checkout...",
+          "Your booking and invoice are being prepared."
         );
-
 
         try{
 
-          /*
-           * For now we only move to the confirmation state.
-           *
-           * The actual authorized payment recording will happen
-           * through the Accounts/Admin payment workflow.
-           */
-
           await new Promise(
-            resolve =>
-              setTimeout(
-                resolve,
-                650
-              )
+            resolve => setTimeout(resolve,450)
           );
-
 
           showSuccess();
 
         }catch(error){
 
-          console.error(
-            error
-          );
+          console.error(error);
 
           showError(
-            "We couldn't complete this step. Please try again."
+            "We could not complete this checkout step. Please try again."
           );
 
         }finally{
-
-          setLoader(
-            false
-          );
-
+          setLoader(false);
         }
-
       }
     );
 
@@ -2737,42 +2424,38 @@
 
   function showSuccess(){
 
-    $("summaryView")
-      .style.display =
-      "none";
+    $("summaryView").style.display = "none";
+    $("successPanel").classList.add("show");
 
+    $("successBooking").textContent =
+      bookingData?.booking_code || "—";
 
-    $("successPanel")
-      .classList.add(
-        "show"
+    $("successInvoice").textContent =
+      bookingData?.invoice_number || "—";
+
+    const paymentNow = Number(
+      $("paidAmount").value || 0
+    );
+
+    const projectedPaid =
+      totals.alreadyPaid + paymentNow;
+
+    const projectedBalance =
+      Math.max(
+        0,
+        totals.payable - projectedPaid
       );
 
+    $("successMessage").textContent =
+      paymentNow > 0
+        ? `Your booking and invoice are ready. The ₹${money(paymentNow)} shown here is a checkout preview; the official ledger changes only after verified payment.`
+        : "Your booking and invoice are ready. Payment remains pending until LifeSure receives and verifies the payment.";
 
-    $("successBooking")
-      .textContent =
-      bookingData?.booking_code ||
-      "—";
-
-
-    $("successInvoice")
-      .textContent =
-      bookingData?.invoice_number ||
-      "—";
-
-
-    const paymentStatus =
-      bookingData?.payment_status ||
-      "pending";
-
-
-    $("successMessage")
-      .textContent =
-      paymentStatus === "paid"
-        ? "Your booking has been confirmed and the payment has been recorded."
-        : "Your booking and invoice have been created. Payment remains pending until it is verified by LifeSure.";
-
+    if($("successPaymentPreview")){
+      $("successPaymentPreview").textContent =
+        `Total ₹${money(totals.payable)} • Paid ₹${money(projectedPaid)} • Outstanding ₹${money(projectedBalance)}`;
+    }
   }
-
 
   /* ======================================================
      WHATSAPP
