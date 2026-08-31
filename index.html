@@ -5,7 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#075985">
-  <meta name="description" content="LifeSure Diagnostics Mumbai — blood tests, pathology, health packages and home sample collection.">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="LifeSure Diagnostics Mumbai — diagnostic tests, health packages, secure multi-test booking and home sample collection.">
   <title>LifeSure Diagnostics | Mumbai</title>
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1271,85 +1272,35 @@
     }
 
   
-/* =========================================================
-   FINAL PRODUCTION CART NAVIGATION + PRICE HYDRATION
-========================================================= */
+    /* =========================================================
+       FINAL PRODUCTION POLISH
+    ========================================================= */
+    .modal-head-main{display:flex;align-items:center;gap:10px;min-width:0}
+    .modal-back{width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.12);color:#fff;display:grid;place-items:center;flex:0 0 auto;transition:.2s ease}
+    .modal-back:hover{background:rgba(255,255,255,.18);transform:translateX(-1px)}
+    .cart-back-link{display:inline-flex;align-items:center;gap:6px;background:transparent;color:var(--blue);font-size:8px;font-weight:800;padding:0;margin-bottom:7px}
+    .cart-back-link:hover{color:var(--green-dark);transform:translateX(-2px)}
+    .booking-cart-drawer::before{content:"";position:absolute;inset:0 0 auto 0;height:2px;background:linear-gradient(90deg,var(--green),#59d6a0,var(--blue));z-index:2}
+    .booking-cart-fab::after{content:"";position:absolute;inset:-2px;border-radius:18px;border:1px solid rgba(255,255,255,.14);pointer-events:none}
+    .test-card{transition:transform .28s ease,box-shadow .28s ease,border-color .28s ease}
+    .test-card:hover{transform:translateY(-4px)}
+    .test-add-btn{transition:transform .18s ease,box-shadow .18s ease,background .18s ease}
+    .test-add-btn:active{transform:scale(.97)}
+    .selected-tests-summary{box-shadow:0 10px 25px rgba(8,47,73,.04)}
+    #bookingModal .form-note{position:relative;overflow:hidden}
+    #bookingModal .form-note::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 0%,rgba(255,255,255,.38) 45%,transparent 70%);transform:translateX(-120%);animation:noteSweep 5s ease-in-out infinite}
+    @keyframes noteSweep{55%,100%{transform:translateX(120%)}}
+    @media(prefers-reduced-motion:reduce){#bookingModal .form-note::after{animation:none}}
 
-.cart-head{
-  position:relative;
-}
-
-.cart-head-content{
-  flex:1;
-  min-width:0;
-}
-
-.cart-back{
-  width:36px;
-  height:36px;
-  flex:0 0 auto;
-  display:grid;
-  place-items:center;
-  border:1px solid var(--line);
-  border-radius:11px;
-  background:#fff;
-  color:var(--blue);
-  cursor:pointer;
-  transition:transform .22s ease,background .22s ease,border-color .22s ease;
-}
-
-.cart-back:hover{
-  transform:translateX(-2px);
-  background:var(--mint);
-  border-color:#9bdabb;
-  color:var(--green-dark);
-}
-
-.booking-back{
-  width:36px;
-  height:36px;
-  flex:0 0 auto;
-  display:grid;
-  place-items:center;
-  border:1px solid rgba(255,255,255,.18);
-  border-radius:11px;
-  background:rgba(255,255,255,.09);
-  color:#fff;
-  cursor:pointer;
-  transition:transform .22s ease,background .22s ease;
-}
-
-.booking-back:hover{
-  transform:translateX(-2px);
-  background:rgba(255,255,255,.17);
-}
-
-.modal-head-copy{
-  flex:1;
-  min-width:0;
-}
-
-.cart-item-unavailable{
-  opacity:.72;
-}
-
-.cart-item-unavailable .cart-item-price{
-  color:#b45353;
-}
-
-.cart-price-loading{
-  color:#8798a2 !important;
-}
-
-@media(max-width:700px){
-  .cart-back,
-  .cart-close,
-  .booking-back{
-    width:36px;
-    height:36px;
-  }
-}
-
+    /* Viewport-safe booking modal: content scrolls, actions remain reachable */
+    #bookingModal{align-items:center;justify-content:center;overflow:hidden;padding:12px}
+    #bookingModal .modal{width:min(760px,100%);max-height:calc(100dvh - 24px);height:min(900px,calc(100dvh - 24px));display:flex;flex-direction:column;overflow:hidden}
+    #bookingModal .modal-head{flex:0 0 auto}
+    #bookingModal #bookingForm{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;padding:20px 22px 104px;position:relative;align-content:start}
+    #bookingModal #bookingForm .form-actions{position:absolute;left:0;right:0;bottom:0;z-index:40;margin:0;padding:12px 22px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(to bottom,rgba(255,255,255,0),rgba(255,255,255,.94) 24%,#fff 48%);border-top:1px solid rgba(220,231,236,.9);box-shadow:0 -12px 28px rgba(6,29,45,.06)}
+    #bookingModal #bookingForm .form-actions .btn{min-height:46px;white-space:nowrap}
+    #bookingModal #confirmBookingButton{min-width:205px}
+    @media(max-width:760px){#bookingModal{padding:8px}#bookingModal .modal{width:100%;height:94dvh;max-height:94dvh;border-radius:20px}#bookingModal #bookingForm{grid-template-columns:1fr;padding:18px 16px 112px}.field.full,.form-note{grid-column:1}.modal-head-main{gap:8px}.modal-back{width:34px;height:34px}.modal-head h3{font-size:17px}#bookingModal #bookingForm .form-actions{grid-column:1;flex-direction:column-reverse;align-items:stretch;padding:11px 16px calc(11px + env(safe-area-inset-bottom))}#bookingModal #bookingForm .form-actions .btn{width:100%}#bookingModal #confirmBookingButton{min-width:0}}
 </style>
 </head>
 
@@ -1666,32 +1617,25 @@
   <div class="modal-backdrop" id="bookingModal">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="bookingTitle">
       <div class="modal-head">
+        <div class="modal-head-main">
+          <button
+            type="button"
+            class="modal-back"
+            onclick="backToBookingCart()"
+            aria-label="Back to selected tests"
+          >
+            <i class="fa-solid fa-arrow-left"></i>
+          </button>
 
-        <button
-          type="button"
-          class="booking-back"
-          onclick="backToBookingCart()"
-          aria-label="Back to selected tests"
-          title="Back to selected tests"
-        >
-          <i class="fa-solid fa-arrow-left"></i>
-        </button>
-
-        <div class="modal-head-copy">
-          <h3 id="bookingTitle">Book Your Tests</h3>
-          <p>Review patient, collection and billing details.</p>
+          <div>
+            <h3 id="bookingTitle">Book Your Tests</h3>
+            <p>Review patient, collection and billing details.</p>
+          </div>
         </div>
 
-        <button
-          class="close"
-          type="button"
-          onclick="closeBooking()"
-          aria-label="Close"
-          title="Close"
-        >
+        <button class="close" onclick="closeBooking()" aria-label="Close">
           <i class="fa-solid fa-xmark"></i>
         </button>
-
       </div>
 
       <form class="form" id="bookingForm">
@@ -1745,15 +1689,15 @@
         <div class="field full"><label>Address / Notes</label><textarea id="address" rows="3" placeholder="Address for home collection or any note"></textarea></div>
         <div class="form-note">
   <i class="fa-solid fa-shield-halved"></i>
-  Your booking request is securely recorded with LifeSure and a WhatsApp confirmation is prepared for the team.
+  Your booking is securely created in LifeSure. You will continue to billing and payment after confirmation.
 </div>
-        <div class="form-actions"><button type="button" class="btn btn-outline" onclick="closeBooking()">Cancel</button><button class="btn btn-primary" type="submit">Confirm & WhatsApp <i class="fa-brands fa-whatsapp"></i></button></div>
+        <div class="form-actions"><button type="button" class="btn btn-outline" onclick="closeBooking()">Cancel</button><button class="btn btn-primary" type="submit" id="confirmBookingButton">Continue to Billing <i class="fa-solid fa-arrow-right"></i></button></div>
       </form>
 
       <div class="success" id="success">
         <i class="fa-solid fa-circle-check"></i>
-        <h3>Booking Request Saved</h3>
-        <p>Your booking details have been saved in this browser. WhatsApp has been opened with the request summary.</p>
+        <h3>Booking Created</h3>
+        <p>Your booking and invoice have been created. Continue to billing to review payment options.</p>
         <button class="btn btn-primary" style="margin-top:18px" onclick="closeBooking()">Done</button>
       </div>
     </div>
@@ -1801,17 +1745,16 @@
 
   <div class="cart-head">
 
-    <button
-      type="button"
-      class="cart-back"
-      onclick="backToTestsFromCart()"
-      aria-label="Back to tests"
-      title="Back to tests"
-    >
-      <i class="fa-solid fa-arrow-left"></i>
-    </button>
+    <div>
+      <button
+        type="button"
+        class="cart-back-link"
+        onclick="backToTestCatalogue()"
+      >
+        <i class="fa-solid fa-arrow-left"></i>
+        Back to Tests
+      </button>
 
-    <div class="cart-head-content">
       <span class="cart-eyebrow">
         LifeSure Booking
       </span>
@@ -1830,7 +1773,6 @@
       class="cart-close"
       onclick="closeBookingCart()"
       aria-label="Close cart"
-      title="Close"
     >
       <i class="fa-solid fa-xmark"></i>
     </button>
@@ -2032,16 +1974,13 @@
 
       renderCategories();
       renderTests();
-      updateSuggestions();
 
-      /*
-       * CRITICAL:
-       * The persistent cart stores only test_code/name/quantity.
-       * Rehydrate its display metadata AFTER the authoritative
-       * Test Master has loaded so prices never remain ₹0 after refresh.
-       */
+      /* Rehydrate persisted selections only after the authoritative
+         Test Master has loaded, so saved prices never fall back to ₹0. */
       loadBookingCart();
 
+      updateSuggestions();
+      renderBookingCart();
       renderBookingSelection();
     }
 
@@ -2603,58 +2542,13 @@
       );
     }
 
-    function getAuthoritativeCartTest(item){
-
-      if(!item)
-        return null;
-
-      const code =
-        String(
-          item.test_code || ""
-        ).trim().toLowerCase();
-
-      return tests.find(
-        t =>
-          String(
-            t.code || ""
-          ).trim().toLowerCase() === code
-      ) || null;
-    }
-
-
-    function getCartItemPrice(item){
-
-      const authoritative =
-        getAuthoritativeCartTest(item);
-
-      return Number(
-        authoritative?.price ??
-        item?.price ??
-        0
-      );
-    }
-
-
-    function getCartItemName(item){
-
-      const authoritative =
-        getAuthoritativeCartTest(item);
-
-      return String(
-        authoritative?.name ??
-        item?.name ??
-        "Diagnostic test"
-      );
-    }
-
-
     function cartTotal(){
 
       return bookingCart.reduce(
         (sum,item) =>
           sum +
           (
-            getCartItemPrice(item) *
+            Number(item.price || 0) *
             Number(item.quantity || 1)
           ),
         0
@@ -2949,26 +2843,15 @@
                 item.quantity || 1
               );
 
-            const authoritative =
-              getAuthoritativeCartTest(item);
-
-            const itemName =
-              getCartItemName(item);
-
-            const itemPrice =
-              getCartItemPrice(item);
-
             const lineTotal =
-              itemPrice *
+              Number(
+                item.price || 0
+              ) *
               quantity;
-
-            const unavailable =
-              tests.length > 0 &&
-              !authoritative;
 
             return `
 
-              <div class="cart-item ${unavailable ? "cart-item-unavailable" : ""}">
+              <div class="cart-item">
 
                 <div class="cart-item-main">
 
@@ -2997,12 +2880,8 @@
                     )}
                   </strong>
 
-                  <div class="cart-item-price ${unavailable ? "cart-price-loading" : ""}">
-                    ${
-                      unavailable
-                        ? "Currently unavailable"
-                        : `₹${money(lineTotal)}`
-                    }
+                  <div class="cart-item-price">
+                    ₹${money(lineTotal)}
                   </div>
 
                 </div>
@@ -3041,35 +2920,6 @@
         ).join("");
     }
 
-    function backToTestsFromCart(){
-
-      closeBookingCart();
-
-      document
-        .querySelector("#tests")
-        ?.scrollIntoView({
-          behavior:"smooth",
-          block:"start"
-        });
-    }
-
-
-    function backToBookingCart(){
-
-      closeBooking();
-
-      if(bookingCart.length){
-
-        openBookingCart();
-
-      }else{
-
-        backToTestsFromCart();
-
-      }
-    }
-
-
     function openBookingCart(){
 
       renderBookingCart();
@@ -3107,6 +2957,19 @@
       document.body.style.overflow = "";
     }
 
+    function backToTestCatalogue(){
+      closeBookingCart();
+      document.querySelector("#tests")?.scrollIntoView({
+        behavior:"smooth",
+        block:"start"
+      });
+    }
+
+    function backToBookingCart(){
+      closeBooking();
+      openBookingCart();
+    }
+
     function continueFromCart(){
 
       if(!bookingCart.length){
@@ -3123,6 +2986,11 @@
 
       openBooking();
     }
+
+    $("phone")?.addEventListener("input",()=>{
+      const digits = $("phone").value.replace(/\D/g,"").slice(0,10);
+      $("phone").value = digits;
+    });
 
     /* =========================================================
        BOOKING MODAL
@@ -3236,7 +3104,7 @@
 
                     <span>
                       ${escapeHtml(
-                        getCartItemName(item)
+                        item.name
                       )}
 
                       ${
@@ -3249,7 +3117,7 @@
 
                     <strong>
                       ₹${money(
-                        getCartItemPrice(item) *
+                        Number(item.price || 0) *
                         Number(item.quantity || 1)
                       )}
                     </strong>
@@ -3608,26 +3476,6 @@
           }
 
 
-          const unavailableItems =
-            bookingCart.filter(
-              item =>
-                !getAuthoritativeCartTest(item)
-            );
-
-          if(unavailableItems.length){
-
-            showToast(
-              "One or more selected tests are no longer available. Please review your selection.",
-              true
-            );
-
-            closeBooking();
-            openBookingCart();
-
-            return;
-          }
-
-
           const items =
             bookingCart.map(
               item => ({
@@ -3757,9 +3605,14 @@
               error
             );
 
+            const rawMessage =
+              String(error?.message || "");
+
             showToast(
-              error?.message ||
-              "Unable to create booking. Please try again.",
+              rawMessage.includes("permission denied")
+                ? "Booking service is temporarily unavailable. Please refresh once and try again."
+                : rawMessage ||
+                  "Unable to create booking. Please try again.",
               true
             );
 
@@ -3784,37 +3637,6 @@
     /* =========================================================
        CART KEYBOARD / OUTSIDE CLICK
     ========================================================= */
-
-    document.addEventListener(
-      "keydown",
-      e => {
-
-        if(e.key !== "Escape")
-          return;
-
-        if(
-          $("bookingCartDrawer")
-            ?.classList
-            .contains("show")
-        ){
-
-          closeBookingCart();
-
-          return;
-        }
-
-        if(
-          $("bookingModal")
-            ?.classList
-            .contains("show")
-        ){
-
-          closeBooking();
-
-        }
-
-      }
-    );
 
     document.addEventListener(
       "click",
@@ -3971,7 +3793,6 @@
 renderCategories();
 resetHeroTimer();
 
-loadLifeSureTests();
   </script>
 </body>
 </html>
