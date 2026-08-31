@@ -864,6 +864,412 @@
   }
 
 }
+
+
+    /* =========================================================
+       LIFESURE PRODUCTION UI ENHANCEMENTS
+    ========================================================= */
+
+    :root{
+      --ease:cubic-bezier(.22,1,.36,1);
+      --navy:#062b3f;
+      --navy-2:#0b3d54;
+      --green-2:#087443;
+    }
+
+    body{
+      background:
+        radial-gradient(circle at 8% 0%,rgba(22,167,101,.055),transparent 26%),
+        radial-gradient(circle at 92% 2%,rgba(7,89,133,.055),transparent 28%),
+        var(--bg);
+    }
+
+    .header{
+      box-shadow:0 8px 30px rgba(6,29,45,.025);
+    }
+
+    .search{
+      transition:
+        transform .25s var(--ease),
+        border-color .25s ease,
+        box-shadow .25s ease,
+        background .25s ease;
+    }
+
+    .search:hover{
+      border-color:#b9ccd6;
+    }
+
+    .search:focus{
+      transform:translateY(-1px);
+    }
+
+    .suggestions{
+      animation:catalogDrop .24s var(--ease);
+    }
+
+    @keyframes catalogDrop{
+      from{
+        opacity:0;
+        transform:translateY(-5px) scale(.99);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0) scale(1);
+      }
+    }
+
+    .premium-suggestion{
+      padding:0;
+      display:flex;
+      align-items:stretch;
+      background:#fff;
+      border-bottom:1px solid #edf2f5;
+    }
+
+    .suggestion-main{
+      min-width:0;
+      flex:1;
+      padding:12px 13px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      text-align:left;
+      background:transparent;
+      color:var(--ink);
+    }
+
+    .suggestion-main:hover{
+      background:#f8fbfc;
+    }
+
+    .suggestion-main strong{
+      display:block;
+      font-size:10px;
+      line-height:1.45;
+    }
+
+    .suggestion-main small{
+      display:block;
+      margin-top:3px;
+      color:var(--muted);
+      font-size:8px;
+    }
+
+    .suggestion-main b{
+      white-space:nowrap;
+      color:var(--green-dark);
+      font-size:10px;
+    }
+
+    .suggestion-add{
+      width:38px;
+      margin:6px;
+      border-radius:9px;
+      background:#eff8f3;
+      color:var(--green-dark);
+      transition:.2s ease;
+    }
+
+    .suggestion-add:hover{
+      transform:scale(1.04);
+      background:var(--green);
+      color:#fff;
+    }
+
+    .suggestion-add.added{
+      background:var(--green);
+      color:#fff;
+    }
+
+    .suggestion.empty{
+      display:block;
+      padding:14px;
+    }
+
+    .test-card{
+      position:relative;
+      isolation:isolate;
+      transform:translateZ(0);
+    }
+
+    .test-card::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius:inherit;
+      pointer-events:none;
+      opacity:0;
+      background:
+        linear-gradient(
+          125deg,
+          rgba(255,255,255,.55),
+          transparent 35%
+        );
+      transition:opacity .35s ease;
+      z-index:-1;
+    }
+
+    .test-card:hover::after{
+      opacity:1;
+    }
+
+    .test-card-cart-added{
+      border-color:#76cfa0 !important;
+      box-shadow:
+        0 18px 42px rgba(22,167,101,.12) !important;
+    }
+
+    .test-code{
+      margin-bottom:5px;
+      color:#8ca0ad;
+      font-size:7px;
+      font-weight:800;
+      letter-spacing:1.1px;
+      text-transform:uppercase;
+    }
+
+    .test-home-pill{
+      position:absolute;
+      right:10px;
+      bottom:10px;
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+      padding:5px 7px;
+      border-radius:999px;
+      background:rgba(6,43,63,.72);
+      backdrop-filter:blur(8px);
+      color:#fff;
+      font-size:7px;
+      font-weight:800;
+    }
+
+    .test-add-btn{
+      min-width:108px;
+      white-space:nowrap;
+    }
+
+    .btn-added{
+      background:
+        linear-gradient(
+          135deg,
+          var(--green),
+          var(--green-2)
+        ) !important;
+      color:#fff !important;
+      box-shadow:
+        0 9px 22px rgba(22,167,101,.18);
+    }
+
+    .btn-added:hover{
+      transform:translateY(-2px);
+    }
+
+    .catalog-empty{
+      grid-column:1/-1;
+      min-height:280px;
+      display:grid;
+      place-items:center;
+      text-align:center;
+      padding:35px;
+      border:1px dashed #cfdde4;
+      border-radius:22px;
+      background:
+        linear-gradient(
+          135deg,
+          rgba(255,255,255,.82),
+          rgba(245,250,248,.88)
+        );
+    }
+
+    .catalog-empty-icon{
+      width:58px;
+      height:58px;
+      margin:0 auto 10px;
+      display:grid;
+      place-items:center;
+      border-radius:18px;
+      background:var(--mint);
+      color:var(--green);
+      font-size:20px;
+    }
+
+    .catalog-empty strong{
+      display:block;
+      color:var(--navy);
+      font-size:13px;
+    }
+
+    .catalog-empty span{
+      display:block;
+      margin:5px 0 13px;
+      max-width:290px;
+      color:var(--muted);
+      font-size:9px;
+      line-height:1.6;
+    }
+
+    .booking-cart-fab{
+      min-width:232px;
+      border:1px solid rgba(255,255,255,.08);
+      background:
+        linear-gradient(
+          135deg,
+          #052639 0%,
+          #075985 100%
+        );
+      backdrop-filter:blur(16px);
+      box-shadow:
+        0 20px 55px rgba(2,24,36,.28);
+    }
+
+    .booking-cart-fab.show{
+      animation:cartFabIn .4s var(--ease);
+    }
+
+    @keyframes cartFabIn{
+      from{
+        opacity:0;
+        transform:translateY(22px) scale(.96);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0) scale(1);
+      }
+    }
+
+    .booking-cart-drawer{
+      border-left:1px solid #dce7ec;
+    }
+
+    .cart-head{
+      position:relative;
+      overflow:hidden;
+    }
+
+    .cart-head::after{
+      content:"";
+      position:absolute;
+      width:180px;
+      height:180px;
+      right:-70px;
+      top:-90px;
+      border-radius:50%;
+      background:rgba(22,167,101,.10);
+      pointer-events:none;
+    }
+
+    .cart-empty-btn{
+      margin-top:14px;
+    }
+
+    .cart-item{
+      transition:
+        background .2s ease,
+        transform .2s var(--ease);
+    }
+
+    .cart-item:hover{
+      background:#fbfdfd;
+      transform:translateX(2px);
+    }
+
+    .cart-item-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      margin-bottom:4px;
+    }
+
+    .cart-item-code{
+      color:#91a2ad;
+      font-size:7px;
+      letter-spacing:1px;
+      font-weight:800;
+      text-transform:uppercase;
+    }
+
+    .cart-remove{
+      background:#fff3f3;
+      color:#bd4545;
+      transition:.2s ease;
+    }
+
+    .cart-remove:hover{
+      transform:scale(1.05);
+      background:#ffe7e7;
+    }
+
+    .selected-tests-summary{
+      position:relative;
+      overflow:hidden;
+      box-shadow:0 8px 20px rgba(22,167,101,.045);
+    }
+
+    .selected-tests-summary::before{
+      content:"";
+      position:absolute;
+      left:0;
+      top:0;
+      bottom:0;
+      width:3px;
+      background:linear-gradient(
+        180deg,
+        var(--green),
+        #4cc58b
+      );
+    }
+
+    .form-note{
+      border:1px solid #d8eee2;
+    }
+
+    .form-note i{
+      margin-right:4px;
+    }
+
+    .modal{
+      animation:modalIn .35s var(--ease);
+    }
+
+    @keyframes modalIn{
+      from{
+        opacity:0;
+        transform:translateY(10px) scale(.985);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0) scale(1);
+      }
+    }
+
+    @media(max-width:700px){
+
+      .test-add-btn{
+        min-width:0;
+        padding-left:9px;
+        padding-right:9px;
+      }
+
+      .booking-cart-fab{
+        bottom:72px;
+        right:11px;
+        width:calc(100% - 22px);
+      }
+
+      .booking-cart-drawer{
+        width:100%;
+      }
+
+      .test-home-pill{
+        right:7px;
+        bottom:7px;
+      }
+    }
+
   </style>
 </head>
 
@@ -1361,718 +1767,999 @@
 
 </aside>
   <script>
+
+    /* =========================================================
+       LIFESURE — PRODUCTION BOOKING / CATALOGUE ENGINE
+       Multi-test booking foundation
+    ========================================================= */
+
     const WHATSAPP = "917266925657";
 
+    const SUPABASE_URL =
+      "https://evzgfprzxsgxsymvwsip.supabase.co";
+
+    const SUPABASE_PUBLISHABLE_KEY =
+      "sb_publishable_IJC51IW4TePmMzCsbJ7Vyw_6fkqqV67";
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY,
+        {
+          auth:{
+            persistSession:true,
+            autoRefreshToken:true,
+            detectSessionInUrl:true
+          }
+        }
+      );
+
     let tests = [];
-    async function loadLifeSureTests() {
-
-  const { data, error } = await supabaseClient
-    .from("tests")
-    .select(`
-      id,
-      code,
-      name,
-      department,
-      sample_type,
-      report_tat_hours,
-      patient_price,
-      actual_test_cost,
-      home_collection_available,
-      active
-    `)
-    .eq("active", true)
-    .gt("patient_price", 0)
-    .order("name");
-
-  if (error) {
-    console.error("LifeSure Test Master Error:", error);
-    showToast("Unable to load test catalogue.");
-    return;
-  }
-
-  tests = (data || []).map(t => ({
-    id: t.id,
-    code: t.code,
-    name: t.name,
-    dept: t.department && t.department !== "Needs Configuration"
-  ? t.department
-  : "DIAGNOSTICS",
-    price: Number(t.patient_price || 0),
-    old: 0,
-    desc: buildTestDescription(t),
-    sampleType: t.sample_type || "",
-    tat: t.report_tat_hours || null,
-    homeCollection: !!t.home_collection_available
-  }));
-
-  console.log(
-    "LifeSure Test Master loaded:",
-    tests.length
-  );
-
-  renderCategories();
-  renderTests();
-  updateSuggestions();
-}
-    function buildTestDescription(test) {
-
-  const parts = [];
-
-  if (test.sample_type) {
-    parts.push(test.sample_type);
-  }
-
-  if (test.report_tat_hours) {
-    parts.push(`Report TAT: ${test.report_tat_hours} hrs`);
-  }
-
-  if (test.home_collection_available) {
-    parts.push("Home collection");
-  }
-
-  return parts.length
-    ? parts.join(" • ")
-    : "Diagnostic laboratory test";
-}
+    let activeDept = "ALL TESTS";
 
     const categories = [
-      ["ALL TESTS","fa-stethoscope"],["BLOOD TEST","fa-droplet"],["PATHOLOGY","fa-microscope"],
-      ["BIOCHEMISTRY","fa-vial"],["HAEMATOLOGY","fa-syringe"],["IMMUNOLOGY","fa-shield-virus"]
+      ["ALL TESTS","fa-stethoscope"],
+      ["BLOOD TEST","fa-droplet"],
+      ["PATHOLOGY","fa-microscope"],
+      ["BIOCHEMISTRY","fa-vial"],
+      ["HAEMATOLOGY","fa-syringe"],
+      ["IMMUNOLOGY","fa-shield-virus"]
     ];
 
-    let activeDept = "ALL TESTS";
-    let slideIndex = 0;
-    let autoTimer;
-    let progressTimer;
+    const BOOKING_CART_KEY =
+      "lifesure_booking_cart_v2";
 
-    const $ = id => document.getElementById(id);
+    let bookingCart = [];
 
-    function showToast(message){
+    const $ = id =>
+      document.getElementById(id);
+
+    /* =========================================================
+       SAFE UTILITIES
+    ========================================================= */
+
+    function escapeHtml(value){
+      return String(value ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function money(value){
+      return Number(value || 0)
+        .toLocaleString("en-IN",{
+          minimumFractionDigits:0,
+          maximumFractionDigits:2
+        });
+    }
+
+    function showToast(message,isError=false){
       const t = $("toast");
+      if(!t) return;
+
       t.textContent = message;
+      t.classList.toggle("error",!!isError);
       t.classList.add("show");
-      setTimeout(()=>t.classList.remove("show"),2600);
+
+      clearTimeout(window.__lifeSureToastTimer);
+
+      window.__lifeSureToastTimer =
+        setTimeout(
+          () => t.classList.remove("show"),
+          2800
+        );
+    }
+
+    /* =========================================================
+       CATALOGUE
+    ========================================================= */
+
+    async function loadLifeSureTests(){
+
+      const { data,error } =
+        await supabaseClient
+          .from("tests")
+          .select(`
+            id,
+            code,
+            name,
+            department,
+            sample_type,
+            report_tat_hours,
+            patient_price,
+            actual_test_cost,
+            home_collection_available,
+            active
+          `)
+          .eq("active",true)
+          .gt("patient_price",0)
+          .order("name");
+
+      if(error){
+
+        console.error(
+          "LifeSure Test Master Error:",
+          error
+        );
+
+        showToast(
+          "Unable to load the test catalogue.",
+          true
+        );
+
+        return;
+      }
+
+      tests =
+        (data || []).map(t => ({
+          id:t.id,
+          code:String(t.code || "").trim(),
+          name:String(t.name || "").trim(),
+          dept:
+            t.department &&
+            t.department !== "Needs Configuration"
+              ? t.department
+              : "DIAGNOSTICS",
+          price:Number(t.patient_price || 0),
+          old:0,
+          desc:buildTestDescription(t),
+          sampleType:t.sample_type || "",
+          tat:t.report_tat_hours || null,
+          homeCollection:!!t.home_collection_available
+        }));
+
+      console.log(
+        "LifeSure Test Master loaded:",
+        tests.length
+      );
+
+      renderCategories();
+      renderTests();
+      updateSuggestions();
+      renderBookingCart();
+      renderBookingSelection();
+    }
+
+    function buildTestDescription(test){
+
+      const parts = [];
+
+      if(test.sample_type){
+        parts.push(test.sample_type);
+      }
+
+      if(test.report_tat_hours){
+        parts.push(
+          `Report TAT: ${test.report_tat_hours} hrs`
+        );
+      }
+
+      if(test.home_collection_available){
+        parts.push("Home collection");
+      }
+
+      return parts.length
+        ? parts.join(" • ")
+        : "Diagnostic laboratory test";
+    }
+
+    function departmentLabel(name){
+
+      return String(name || "")
+        .replace("BLOOD TEST","Blood Tests")
+        .replace("ALL TESTS","All Tests")
+        .replace("HAEMATOLOGY","Haematology")
+        .replace("BIOCHEMISTRY","Biochemistry")
+        .replace("IMMUNOLOGY","Immunology")
+        .replace("PATHOLOGY","Pathology");
     }
 
     function renderCategories(){
-      $("categoryRow").innerHTML = categories.map(([name,icon]) => `
-        <button class="category ${activeDept===name?"active":""}" onclick="setDepartment('${name}')">
-          <div class="category-icon"><i class="fa-solid ${icon}"></i></div>
-          <strong>${name.replace("BLOOD TEST","Blood Tests").replace("ALL TESTS","All Tests").replace("HAEMATOLOGY","Haematology").replace("BIOCHEMISTRY","Biochemistry").replace("IMMUNOLOGY","Immunology").replace("PATHOLOGY","Pathology")}</strong>
-        </button>`).join("");
+
+      const row =
+        $("categoryRow");
+
+      if(!row) return;
+
+      row.innerHTML =
+        categories.map(
+          ([name,icon]) => `
+            <button
+              class="category ${
+                activeDept === name ? "active" : ""
+              }"
+              type="button"
+              onclick="setDepartment('${name}')"
+            >
+              <div class="category-icon">
+                <i class="fa-solid ${icon}"></i>
+              </div>
+
+              <strong>
+                ${departmentLabel(name)}
+              </strong>
+            </button>
+          `
+        ).join("");
     }
 
-   function setDepartment(dept){
-  activeDept = dept;
-  renderCategories();
-  renderTests();
-  document.querySelector("#tests").scrollIntoView({
-    behavior:"smooth",
-    block:"start"
-  });
-}
+    function setDepartment(dept){
 
-function showAllTests() {
+      activeDept = dept;
 
-  activeDept = "ALL TESTS";
+      $("search").value = "";
 
-  $("search").value = "";
+      renderCategories();
+      renderTests();
 
-  renderCategories();
-  renderTests();
+      document
+        .querySelector("#tests")
+        ?.scrollIntoView({
+          behavior:"smooth",
+          block:"start"
+        });
+    }
 
-  document
-    .querySelector("#tests")
-    .scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-}
+    function showAllTests(){
 
-function renderTests(){
-  // ...
-}
+      activeDept = "ALL TESTS";
+      $("search").value = "";
+
+      renderCategories();
+      renderTests();
+
+      document
+        .querySelector("#tests")
+        ?.scrollIntoView({
+          behavior:"smooth",
+          block:"start"
+        });
+    }
+
     function renderTests(){
-      const query = $("search").value.trim().toLowerCase();
-      const filtered = tests.filter(t =>
-        (activeDept==="ALL TESTS" || t.dept===activeDept) &&
-        (!query || t.name.toLowerCase().includes(query) || t.dept.toLowerCase().includes(query))
-      );
-      $("testGrid").innerHTML = filtered.length ? filtered.map(t => `
-        <article class="test-card">
-          <div class="test-image">
-           <img
-  src="https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=900&q=82"
-  alt="${t.name}"
-  loading="lazy"
-  onerror="this.style.display='none'"
->
-<span class="badge">${t.dept}</span>
-          </div>
-          <div class="test-body">
-            <h3>${t.name}</h3>
-            <p>${t.desc}</p>
-            <div class="test-bottom">
-             <div>
-  <span class="price">₹${t.price}</span>
-  ${
-    t.old && Number(t.old) > Number(t.price)
-      ? `<span class="old">₹${t.old}</span>`
-      : ""
-  }
-</div>
-              <button class="btn btn-primary small-btn" onclick="openBooking('${t.name.replace(/'/g,"\\'")}')">Book</button>
+
+      const query =
+        $("search").value
+          .trim()
+          .toLowerCase();
+
+      const filtered =
+        tests.filter(t => {
+
+          const deptMatch =
+            activeDept === "ALL TESTS" ||
+            String(t.dept)
+              .toLowerCase() ===
+            String(activeDept)
+              .toLowerCase();
+
+          const qMatch =
+            !query ||
+            t.name.toLowerCase().includes(query) ||
+            t.code.toLowerCase().includes(query) ||
+            t.dept.toLowerCase().includes(query);
+
+          return deptMatch && qMatch;
+        });
+
+
+      const grid =
+        $("testGrid");
+
+      if(!grid) return;
+
+
+      if(!filtered.length){
+
+        grid.innerHTML = `
+          <div class="catalog-empty">
+
+            <div class="catalog-empty-icon">
+              <i class="fa-solid fa-microscope"></i>
             </div>
+
+            <strong>
+              No matching tests found
+            </strong>
+
+            <span>
+              Try another search or contact LifeSure for assistance.
+            </span>
+
+            <button
+              type="button"
+              class="btn btn-outline"
+              onclick="openBooking('Test Enquiry')"
+            >
+              Ask LifeSure
+            </button>
+
           </div>
-        </article>`).join("") :
-        `<div style="grid-column:1/-1;text-align:center;padding:40px;color:#64748b">No matching tests found. Try another search or <button class="view-all" onclick="openBooking('Test Enquiry')">ask LifeSure</button>.</div>`;
+        `;
+
+        return;
+      }
+
+
+      grid.innerHTML =
+        filtered.map(
+          t => {
+
+            const added =
+              bookingCart.some(
+                item =>
+                  item.test_code === t.code
+              );
+
+            return `
+              <article
+                class="test-card ${
+                  added
+                    ? "test-card-cart-added"
+                    : ""
+                }"
+              >
+
+                <div class="test-image">
+
+                  <img
+                    src="https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=900&q=82"
+                    alt="${escapeHtml(t.name)}"
+                    loading="lazy"
+                    onerror="this.style.display='none'"
+                  >
+
+                  <span class="badge">
+                    ${escapeHtml(t.dept)}
+                  </span>
+
+                  ${
+                    t.homeCollection
+                      ? `
+                        <span class="test-home-pill">
+                          <i class="fa-solid fa-house-medical"></i>
+                          Home Collection
+                        </span>
+                      `
+                      : ""
+                  }
+
+                </div>
+
+
+                <div class="test-body">
+
+                  <div class="test-code">
+                    ${escapeHtml(t.code)}
+                  </div>
+
+                  <h3>
+                    ${escapeHtml(t.name)}
+                  </h3>
+
+                  <p>
+                    ${escapeHtml(t.desc)}
+                  </p>
+
+
+                  <div class="test-bottom">
+
+                    <div>
+
+                      <span class="price">
+                        ₹${money(t.price)}
+                      </span>
+
+                      ${
+                        t.old &&
+                        Number(t.old) >
+                        Number(t.price)
+                          ? `
+                            <span class="old">
+                              ₹${money(t.old)}
+                            </span>
+                          `
+                          : ""
+                      }
+
+                    </div>
+
+
+                    <button
+                      type="button"
+                      class="btn ${
+                        added
+                          ? "btn-added"
+                          : "btn-primary"
+                      } small-btn test-add-btn"
+                      onclick="addTestByCode('${escapeHtml(t.code)}')"
+                    >
+
+                      <i class="fa-solid ${
+                        added
+                          ? "fa-check"
+                          : "fa-plus"
+                      }"></i>
+
+                      ${
+                        added
+                          ? "Added"
+                          : "Add to Booking"
+                      }
+
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </article>
+            `;
+          }
+        ).join("");
     }
 
     function updateSuggestions(){
-      const q = $("search").value.trim().toLowerCase();
-      const box = $("suggestions");
-      if(!q){box.classList.remove("show");box.innerHTML="";return;}
-      const matches = tests.filter(t=>t.name.toLowerCase().includes(q) || t.dept.toLowerCase().includes(q)).slice(0,6);
-      box.innerHTML = matches.map(t=>`<button class="suggestion" onclick="chooseSuggestion('${t.name.replace(/'/g,"\\'")}')"><span><strong>${t.name}</strong><br><small>${t.dept}</small></span><small>₹${t.price}</small></button>`).join("") ||
-        `<div class="suggestion"><span>No exact match</span><small>Ask LifeSure</small></div>`;
+
+      const q =
+        $("search").value
+          .trim()
+          .toLowerCase();
+
+      const box =
+        $("suggestions");
+
+      if(!q){
+
+        box.classList.remove("show");
+        box.innerHTML = "";
+
+        return;
+      }
+
+      const matches =
+        tests
+          .filter(
+            t =>
+              t.name.toLowerCase().includes(q) ||
+              t.code.toLowerCase().includes(q) ||
+              t.dept.toLowerCase().includes(q)
+          )
+          .slice(0,7);
+
+
+      if(!matches.length){
+
+        box.innerHTML = `
+          <div class="suggestion empty">
+            <span>
+              <strong>No exact match</strong>
+              <br>
+              <small>Need help? Ask LifeSure.</small>
+            </span>
+          </div>
+        `;
+
+      }else{
+
+        box.innerHTML =
+          matches.map(
+            t => {
+
+              const added =
+                bookingCart.some(
+                  item =>
+                    item.test_code ===
+                    t.code
+                );
+
+              return `
+                <div class="suggestion premium-suggestion">
+
+                  <button
+                    type="button"
+                    class="suggestion-main"
+                    onclick="chooseSuggestionByCode('${escapeHtml(t.code)}')"
+                  >
+
+                    <span>
+
+                      <strong>
+                        ${escapeHtml(t.name)}
+                      </strong>
+
+                      <small>
+                        ${escapeHtml(t.dept)}
+                        •
+                        ${escapeHtml(t.code)}
+                      </small>
+
+                    </span>
+
+                    <b>
+                      ₹${money(t.price)}
+                    </b>
+
+                  </button>
+
+
+                  <button
+                    type="button"
+                    class="suggestion-add ${
+                      added ? "added" : ""
+                    }"
+                    onclick="addTestByCode('${escapeHtml(t.code)}')"
+                    aria-label="${
+                      added
+                        ? "Test already added"
+                        : "Add test"
+                    }"
+                  >
+                    <i class="fa-solid ${
+                      added
+                        ? "fa-check"
+                        : "fa-plus"
+                    }"></i>
+                  </button>
+
+                </div>
+              `;
+            }
+          ).join("");
+      }
+
       box.classList.add("show");
     }
 
-    function chooseSuggestion(name){
-      $("search").value = name;
-      $("suggestions").classList.remove("show");
-      activeDept = "ALL TESTS";
-      renderCategories();
-      renderTests();
-      document.querySelector("#tests").scrollIntoView({behavior:"smooth"});
-    }
-/* =========================================================
-   MULTI-TEST BOOKING CART
-========================================================= */
+    function chooseSuggestionByCode(code){
 
-let bookingCart = [];
-
-const BOOKING_CART_KEY =
-  "lifesure_booking_cart_v1";
-
-
-function loadBookingCart(){
-
-  try{
-
-    const saved =
-      localStorage.getItem(
-        BOOKING_CART_KEY
-      );
-
-    const parsed =
-      saved
-        ? JSON.parse(saved)
-        : [];
-
-    if(
-      Array.isArray(parsed)
-    ){
-
-      bookingCart =
-        parsed.filter(
-          item =>
-            item &&
-            item.test_code &&
-            item.name
+      const test =
+        tests.find(
+          t =>
+            t.code === code
         );
 
+      if(!test) return;
+
+      $("search").value =
+        test.name;
+
+      $("suggestions")
+        .classList
+        .remove("show");
+
+      activeDept = "ALL TESTS";
+
+      renderCategories();
+      renderTests();
+
+      document
+        .querySelector("#tests")
+        ?.scrollIntoView({
+          behavior:"smooth",
+          block:"start"
+        });
     }
 
-  }catch(error){
+    /* =========================================================
+       CART
+    ========================================================= */
 
-    console.error(
-      "CART LOAD ERROR:",
-      error
-    );
+    function loadBookingCart(){
 
-    bookingCart = [];
+      try{
 
-  }
+        const saved =
+          localStorage.getItem(
+            BOOKING_CART_KEY
+          );
 
+        const parsed =
+          saved
+            ? JSON.parse(saved)
+            : [];
 
-  renderBookingCart();
+        if(!Array.isArray(parsed)){
 
-}
+          bookingCart = [];
 
+        }else{
 
-function saveBookingCart(){
+          bookingCart =
+            parsed
+              .filter(
+                item =>
+                  item &&
+                  item.test_code
+              )
+              .map(
+                item => {
 
-  try{
+                  const authoritative =
+                    tests.find(
+                      t =>
+                        t.code ===
+                        item.test_code
+                    );
 
-    localStorage.setItem(
-      BOOKING_CART_KEY,
-      JSON.stringify(
-        bookingCart
-      )
-    );
+                  return {
 
-  }catch(error){
+                    test_code:
+                      item.test_code,
 
-    console.error(
-      "CART SAVE ERROR:",
-      error
-    );
+                    name:
+                      authoritative?.name ||
+                      item.name ||
+                      "Diagnostic test",
 
-  }
+                    /*
+                     * Cart price is for UX only.
+                     * Final price is ALWAYS recalculated
+                     * by create_public_multi_booking().
+                     */
+                    price:
+                      Number(
+                        authoritative?.price ??
+                        item.price ??
+                        0
+                      ),
 
-}
+                    quantity:
+                      Math.min(
+                        20,
+                        Math.max(
+                          1,
+                          Number(
+                            item.quantity || 1
+                          )
+                        )
+                      )
 
+                  };
 
-function cartTotal(){
+                }
+              );
 
-  return bookingCart.reduce(
-    (
-      total,
-      item
-    ) => {
+        }
 
-      return total +
-        (
-          Number(
-            item.price || 0
-          ) *
-          Number(
-            item.quantity || 1
+      }catch(error){
+
+        console.error(
+          "CART LOAD ERROR:",
+          error
+        );
+
+        bookingCart = [];
+      }
+
+      renderBookingCart();
+    }
+
+    function saveBookingCart(){
+
+      try{
+
+        localStorage.setItem(
+          BOOKING_CART_KEY,
+          JSON.stringify(
+            bookingCart.map(
+              item => ({
+                test_code:
+                  item.test_code,
+
+                name:
+                  item.name,
+
+                quantity:
+                  item.quantity
+              })
+            )
           )
         );
 
-    },
-    0
-  );
-
-}
-
-
-function cartCount(){
-
-  return bookingCart.reduce(
-    (
-      total,
-      item
-    ) =>
-      total +
-      Number(
-        item.quantity || 1
-      ),
-    0
-  );
-
-}
-
-
-function formatCartMoney(
-  value
-){
-
-  return Number(
-    value || 0
-  ).toLocaleString(
-    "en-IN"
-  );
-
-}
-
-
-function addTestToBooking(
-  test
-){
-
-  if(
-    !test ||
-    !test.code ||
-    !test.name
-  ){
-
-    showToast(
-      "This test cannot be added right now.",
-      true
-    );
-
-    return;
-
-  }
-
-
-  const code =
-    String(
-      test.code
-    ).trim();
-
-
-  const existingIndex =
-    bookingCart.findIndex(
-      item =>
-        item.test_code === code
-    );
-
-
-  if(
-    existingIndex >= 0
-  ){
-
-    showToast(
-      "Test is already in your booking."
-    );
-
-    openBookingCart();
-
-    return;
-
-  }
-
-
-  bookingCart.push({
-
-    test_code:
-      code,
-
-    name:
-      String(
-        test.name
-      ),
-
-    price:
-      Number(
-        test.price || 0
-      ),
-
-    quantity:
-      1
-
-  });
-
-
-  saveBookingCart();
-
-  renderBookingCart();
-
-  showToast(
-    `${test.name} added to your booking.`
-  );
-
-}
-
-
-function removeTestFromBooking(
-  code
-){
-
-  bookingCart =
-    bookingCart.filter(
-      item =>
-        item.test_code !==
-        code
-    );
-
-
-  saveBookingCart();
-
-  renderBookingCart();
-
-}
-
-
-function changeCartQuantity(
-  code,
-  delta
-){
-
-  const item =
-    bookingCart.find(
-      x =>
-        x.test_code ===
-        code
-    );
-
-
-  if(!item)
-    return;
-
-
-  const next =
-    Number(
-      item.quantity || 1
-    ) +
-    Number(delta);
-
-
-  if(next <= 0){
-
-    removeTestFromBooking(
-      code
-    );
-
-    return;
-
-  }
-
-
-  if(next > 20){
-
-    showToast(
-      "Maximum quantity reached."
-    );
-
-    return;
-
-  }
-
-
-  item.quantity =
-    next;
-
-
-  saveBookingCart();
-
-  renderBookingCart();
-
-}
-
-
-function clearBookingCart(){
-
-  if(
-    bookingCart.length === 0
-  )
-    return;
-
-
-  bookingCart = [];
-
-  saveBookingCart();
-
-  renderBookingCart();
-
-  closeBookingCart();
-
-}
-
-
-function renderBookingCart(){
-
-  const count =
-    cartCount();
-
-  const total =
-    cartTotal();
-
-
-  const fab =
-    document.getElementById(
-      "bookingCartFab"
-    );
-
-  const countEl =
-    document.getElementById(
-      "cartFabCount"
-    );
-
-  const totalEl =
-    document.getElementById(
-      "cartFabTotal"
-    );
-
-  const drawerTotal =
-    document.getElementById(
-      "cartDrawerTotal"
-    );
-
-  const body =
-    document.getElementById(
-      "bookingCartBody"
-    );
-
-  const continueBtn =
-    document.getElementById(
-      "cartContinueButton"
-    );
-
-
-  if(countEl){
-
-    countEl.textContent =
-      `${count} ${
-        count === 1
-          ? "Test"
-          : "Tests"
-      }`;
-
-  }
-
-
-  if(totalEl){
-
-    totalEl.textContent =
-      `₹${formatCartMoney(total)}`;
-
-  }
-
-
-  if(drawerTotal){
-
-    drawerTotal.textContent =
-      `₹${formatCartMoney(total)}`;
-
-  }
-
-
-  if(fab){
-
-    fab.classList.toggle(
-      "show",
-      count > 0
-    );
-
-  }
-
-
-  if(continueBtn){
-
-    continueBtn.disabled =
-      count === 0;
-
-  }
-
-
-  if(!body)
-    return;
-
-
-  if(
-    bookingCart.length === 0
-  ){
-
-    body.innerHTML = `
-
-      <div class="cart-empty">
-
-        <div>
-
-          <div class="cart-empty-icon">
-
-            <i class="fa-solid fa-flask-vial"></i>
-
-          </div>
-
-          <strong>
-            Your booking is empty
-          </strong>
-
-          <p>
-            Search the LifeSure test catalogue and
-            add the investigations you need.
-          </p>
-
-        </div>
-
-      </div>
-
-    `;
-
-    return;
-
-  }
-
-
-  body.innerHTML =
-
-    bookingCart.map(
-      item => {
-
-        const quantity =
+      }catch(error){
+
+        console.error(
+          "CART SAVE ERROR:",
+          error
+        );
+      }
+    }
+
+    function cartCount(){
+
+      return bookingCart.reduce(
+        (sum,item) =>
+          sum +
           Number(
             item.quantity || 1
-          );
+          ),
+        0
+      );
+    }
+
+    function cartTotal(){
+
+      return bookingCart.reduce(
+        (sum,item) =>
+          sum +
+          (
+            Number(item.price || 0) *
+            Number(item.quantity || 1)
+          ),
+        0
+      );
+    }
+
+    function addTestByCode(code){
+
+      const test =
+        tests.find(
+          t =>
+            t.code === code
+        );
+
+      if(!test){
+
+        showToast(
+          "This test is not available right now.",
+          true
+        );
+
+        return;
+      }
+
+      addTestToBooking(test);
+    }
+
+    function addTestToBooking(test){
+
+      const code =
+        String(
+          test.code || ""
+        ).trim();
+
+      if(!code){
+
+        showToast(
+          "Unable to add this test.",
+          true
+        );
+
+        return;
+      }
 
 
-        const lineTotal =
-          Number(
-            item.price || 0
-          ) *
-          quantity;
+      const existing =
+        bookingCart.find(
+          item =>
+            item.test_code === code
+        );
 
 
-        return `
+      if(existing){
 
-          <div class="cart-item">
+        /*
+         * Deliberately do NOT increase quantity on
+         * repeated clicks. Diagnostic tests are normally
+         * one-per-patient per booking; quantity remains
+         * available for staff workflows later.
+         */
 
-            <div class="cart-item-main">
+        openBookingCart();
+
+        showToast(
+          "This test is already selected."
+        );
+
+        return;
+      }
+
+
+      bookingCart.push({
+
+        test_code:
+          code,
+
+        name:
+          String(test.name || ""),
+
+        price:
+          Number(test.price || 0),
+
+        quantity:
+          1
+
+      });
+
+
+      saveBookingCart();
+      renderBookingCart();
+      renderTests();
+      renderBookingSelection();
+
+
+      showToast(
+        `${test.name} added to your booking.`
+      );
+    }
+
+    function removeTestFromBooking(code){
+
+      bookingCart =
+        bookingCart.filter(
+          item =>
+            item.test_code !==
+            code
+        );
+
+      saveBookingCart();
+
+      renderBookingCart();
+      renderTests();
+      renderBookingSelection();
+
+    }
+
+    function changeCartQuantity(
+      code,
+      delta
+    ){
+
+      const item =
+        bookingCart.find(
+          x =>
+            x.test_code ===
+            code
+        );
+
+      if(!item) return;
+
+      const next =
+        Number(
+          item.quantity || 1
+        ) +
+        Number(delta);
+
+
+      if(next <= 0){
+
+        removeTestFromBooking(code);
+
+        return;
+      }
+
+
+      if(next > 20){
+
+        showToast(
+          "Maximum quantity is 20."
+        );
+
+        return;
+      }
+
+
+      item.quantity =
+        next;
+
+      saveBookingCart();
+
+      renderBookingCart();
+      renderBookingSelection();
+
+    }
+
+    function clearBookingCart(){
+
+      if(!bookingCart.length)
+        return;
+
+      bookingCart = [];
+
+      saveBookingCart();
+
+      renderBookingCart();
+      renderTests();
+      renderBookingSelection();
+
+      closeBookingCart();
+
+    }
+
+    function renderBookingCart(){
+
+      const count =
+        cartCount();
+
+      const total =
+        cartTotal();
+
+
+      const fab =
+        $("bookingCartFab");
+
+      const countEl =
+        $("cartFabCount");
+
+      const totalEl =
+        $("cartFabTotal");
+
+      const drawerTotal =
+        $("cartDrawerTotal");
+
+      const body =
+        $("bookingCartBody");
+
+      const continueBtn =
+        $("cartContinueButton");
+
+
+      if(countEl)
+        countEl.textContent =
+          `${count} ${
+            count === 1
+              ? "Test"
+              : "Tests"
+          }`;
+
+
+      if(totalEl)
+        totalEl.textContent =
+          `₹${money(total)}`;
+
+
+      if(drawerTotal)
+        drawerTotal.textContent =
+          `₹${money(total)}`;
+
+
+      if(fab)
+        fab.classList.toggle(
+          "show",
+          count > 0
+        );
+
+
+      if(continueBtn)
+        continueBtn.disabled =
+          count === 0;
+
+
+      if(!body)
+        return;
+
+
+      if(!bookingCart.length){
+
+        body.innerHTML = `
+
+          <div class="cart-empty">
+
+            <div>
+
+              <div class="cart-empty-icon">
+                <i class="fa-solid fa-flask-vial"></i>
+              </div>
 
               <strong>
-                ${escapeCartHtml(
-                  item.name
-                )}
+                Build your diagnostic booking
               </strong>
 
-              <div class="cart-item-code">
-                ${escapeCartHtml(
-                  item.test_code
-                )}
-              </div>
-
-              <div class="cart-item-price">
-                ₹${formatCartMoney(
-                  lineTotal
-                )}
-              </div>
-
-            </div>
-
-
-            <div class="cart-item-actions">
-
-              <div class="cart-qty">
-
-                <button
-                  type="button"
-                  aria-label="Decrease quantity"
-                  onclick="changeCartQuantity(
-                    '${escapeJs(
-                      item.test_code
-                    )}',
-                    -1
-                  )"
-                >
-                  −
-                </button>
-
-                <span>
-                  ${quantity}
-                </span>
-
-                <button
-                  type="button"
-                  aria-label="Increase quantity"
-                  onclick="changeCartQuantity(
-                    '${escapeJs(
-                      item.test_code
-                    )}',
-                    1
-                  )"
-                >
-                  +
-                </button>
-
-              </div>
-
+              <p>
+                Add one or more tests. Everything will
+                be combined into one booking and one invoice.
+              </p>
 
               <button
                 type="button"
-                class="cart-remove"
-                aria-label="Remove test"
-                onclick="removeTestFromBooking(
-                  '${escapeJs(
-                    item.test_code
-                  )}'
-                )"
+                class="btn btn-outline cart-empty-btn"
+                onclick="closeBookingCart();document.querySelector('#tests')?.scrollIntoView({behavior:'smooth'})"
               >
-                <i class="fa-solid fa-trash"></i>
+                Explore Tests
+                <i class="fa-solid fa-arrow-right"></i>
               </button>
 
             </div>
@@ -2081,603 +2768,866 @@ function renderBookingCart(){
 
         `;
 
+        return;
       }
-    ).join("");
-
-}
 
 
-function openBookingCart(){
+      body.innerHTML =
+        bookingCart.map(
+          item => {
 
-  renderBookingCart();
+            const quantity =
+              Number(
+                item.quantity || 1
+              );
 
-  document
-    .getElementById(
-      "bookingCartDrawer"
-    )
-    .classList.add(
-      "show"
-    );
+            const lineTotal =
+              Number(
+                item.price || 0
+              ) *
+              quantity;
 
+            return `
 
-  document
-    .getElementById(
-      "bookingCartBackdrop"
-    )
-    .classList.add(
-      "show"
-    );
+              <div class="cart-item">
 
+                <div class="cart-item-main">
 
-  document.body.style.overflow =
-    "hidden";
+                  <div class="cart-item-top">
 
-}
+                    <span class="cart-item-code">
+                      ${escapeHtml(
+                        item.test_code
+                      )}
+                    </span>
 
+                    <button
+                      type="button"
+                      class="cart-remove"
+                      onclick="removeTestFromBooking('${escapeHtml(item.test_code)}')"
+                      aria-label="Remove test"
+                    >
+                      <i class="fa-solid fa-trash-can"></i>
+                    </button>
 
-function closeBookingCart(
-  event
-){
+                  </div>
 
-  if(
-    event &&
-    event.target &&
-    event.target.id !==
-      "bookingCartBackdrop"
-  )
-    return;
+                  <strong>
+                    ${escapeHtml(
+                      item.name
+                    )}
+                  </strong>
 
+                  <div class="cart-item-price">
+                    ₹${money(lineTotal)}
+                  </div>
 
-  document
-    .getElementById(
-      "bookingCartDrawer"
-    )
-    .classList.remove(
-      "show"
-    );
-
-
-  document
-    .getElementById(
-      "bookingCartBackdrop"
-    )
-    .classList.remove(
-      "show"
-    );
+                </div>
 
 
-  document.body.style.overflow =
-    "";
+                <div class="cart-item-actions">
 
-}
+                  <div class="cart-qty">
 
+                    <button
+                      type="button"
+                      onclick="changeCartQuantity('${escapeHtml(item.test_code)}',-1)"
+                    >
+                      −
+                    </button>
 
-function continueFromCart(){
+                    <span>
+                      ${quantity}
+                    </span>
 
-  if(
-    bookingCart.length === 0
-  ){
+                    <button
+                      type="button"
+                      onclick="changeCartQuantity('${escapeHtml(item.test_code)}',1)"
+                    >
+                      +
+                    </button>
 
-    showToast(
-      "Add at least one test first.",
-      true
-    );
+                  </div>
 
-    return;
+                </div>
 
-  }
+              </div>
 
-
-  closeBookingCart();
-
-  openBooking();
-
-}
-
-
-function escapeCartHtml(
-  value
-){
-
-  return String(
-    value ?? ""
-  )
-  .replaceAll(
-    "&",
-    "&amp;"
-  )
-  .replaceAll(
-    "<",
-    "&lt;"
-  )
-  .replaceAll(
-    ">",
-    "&gt;"
-  )
-  .replaceAll(
-    '"',
-    "&quot;"
-  )
-  .replaceAll(
-    "'",
-    "&#039;"
-  );
-
-}
-
-
-function escapeJs(
-  value
-){
-
-  return String(
-    value ?? ""
-  )
-  .replaceAll(
-    "\\",
-    "\\\\"
-  )
-  .replaceAll(
-    "'",
-    "\\'"
-  );
-
-}
-
-
-/* =========================================================
-   OPEN BOOKING MODAL
-========================================================= */
-
-function openBooking(
-  testName = null
-){
-
-  /*
-   * Backwards compatibility:
-   *
-   * Existing hero/buttons can still call:
-   *
-   * openBooking("CBC")
-   *
-   * We now add that test to the cart
-   * instead of creating a one-test-only booking.
-   */
-
-  if(
-    testName &&
-    testName !== "General Test Enquiry" &&
-    testName !== "Quick Booking" &&
-    testName !== "Blood Test Enquiry" &&
-    testName !== "Diagnostic Test Enquiry" &&
-    testName !== "Home Sample Collection" &&
-    testName !== "Full Body Checkup Package"
-  ){
-
-    const matched =
-      tests.find(
-        t =>
-          String(t.name)
-            .toLowerCase() ===
-          String(testName)
-            .toLowerCase()
-      );
-
-
-    if(matched){
-
-      addTestToBooking(
-        matched
-      );
-
+            `;
+          }
+        ).join("");
     }
 
-  }
+    function openBookingCart(){
+
+      renderBookingCart();
+
+      $("bookingCartDrawer")
+        ?.classList
+        .add("show");
+
+      $("bookingCartBackdrop")
+        ?.classList
+        .add("show");
+
+      document.body.style.overflow =
+        "hidden";
+    }
+
+    function closeBookingCart(event){
+
+      if(
+        event &&
+        event.target?.id !==
+          "bookingCartBackdrop"
+      ){
+        return;
+      }
+
+      $("bookingCartDrawer")
+        ?.classList
+        .remove("show");
+
+      $("bookingCartBackdrop")
+        ?.classList
+        .remove("show");
+
+      document.body.style.overflow = "";
+    }
+
+    function continueFromCart(){
+
+      if(!bookingCart.length){
+
+        showToast(
+          "Add at least one test first.",
+          true
+        );
+
+        return;
+      }
+
+      closeBookingCart();
+
+      openBooking();
+    }
+
+    /* =========================================================
+       BOOKING MODAL
+    ========================================================= */
+
+    function renderBookingSelection(){
+
+      const field =
+        $("selectedTest");
+
+      if(!field)
+        return;
 
 
-  $("bookingModal")
-    .classList
-    .add("show");
+      if(!bookingCart.length){
 
+        field.value =
+          "No tests selected";
 
-  $("success")
-    .classList
-    .remove("show");
+      }else{
 
-
-  $("bookingForm")
-    .style
-    .display =
-    "grid";
-
-
-  $("date").min =
-    new Date()
-      .toISOString()
-      .split("T")[0];
-
-
-  renderBookingSelection();
-function renderSelectedTestsSummary(){
-
-  const box =
-    document.getElementById(
-      "selectedTestsSummary"
-    );
-
-
-  if(!box)
-    return;
-
-
-  if(
-    bookingCart.length === 0
-  ){
-
-    box.innerHTML = `
-
-      <div class="selected-tests-summary-head">
-
-        <strong>
-          No tests selected
-        </strong>
-
-        <span>
-          Add tests from catalogue
-        </span>
-
-      </div>
-
-    `;
-
-    return;
-
-  }
-renderSelectedTestsSummary();
-
-  const total =
-    cartTotal();
-
-
-  box.innerHTML = `
-
-    <div class="selected-tests-summary-head">
-
-      <strong>
-        Selected Tests
-      </strong>
-
-      <span>
-        ${cartCount()} ${
-          cartCount() === 1
-            ? "Test"
-            : "Tests"
-        }
-      </span>
-
-    </div>
-
-
-    <div class="selected-tests-list">
-
-      ${
-        bookingCart.map(
-          item => `
-
-            <div class="selected-test-line">
-
-              <span>
-                ${escapeCartHtml(
-                  item.name
-                )}
-                ${
+        const names =
+          bookingCart
+            .map(
+              item =>
+                `${item.name}${
                   Number(item.quantity || 1) > 1
                     ? ` × ${item.quantity}`
                     : ""
-                }
-              </span>
+                }`
+            );
 
-              <strong>
-                ₹${formatCartMoney(
-                  Number(item.price || 0) *
-                  Number(item.quantity || 1)
-                )}
-              </strong>
-
-            </div>
-
-          `
-        ).join("")
+        field.value =
+          names.join(" • ");
       }
 
-    </div>
+
+      if($("selectedPrice")){
+
+        $("selectedPrice").value =
+          bookingCart.length
+            ? `₹${money(cartTotal())}`
+            : "₹0";
+
+      }
 
 
-    <div class="selected-tests-total">
+      updateFinalAmountPreview();
 
-      <span>
-        Booking subtotal
-      </span>
+      renderSelectedTestsSummary();
+    }
 
-      <span>
-        ₹${formatCartMoney(total)}
-      </span>
+    function renderSelectedTestsSummary(){
 
-    </div>
+      const box =
+        $("selectedTestsSummary");
 
-  `;
-
-}
-
-  setTimeout(
-    () => $("name").focus(),
-    80
-  );
+      if(!box)
+        return;
 
 
-  document.body.style.overflow =
-    "hidden";
+      if(!bookingCart.length){
 
-}
+        box.innerHTML = `
 
+          <div class="selected-tests-summary-head">
 
-/* =========================================================
-   BOOKING SELECTION SUMMARY
-========================================================= */
+            <strong>
+              No tests selected
+            </strong>
 
-function renderBookingSelection(){
+            <span>
+              Add tests from the catalogue
+            </span>
 
-  const field =
-    document.getElementById(
-      "selectedTest"
-    );
+          </div>
 
+        `;
 
-  if(!field)
-    return;
-
-
-  const count =
-    cartCount();
+        return;
+      }
 
 
-  if(count === 0){
+      box.innerHTML = `
 
-    field.value =
-      "Select tests from the catalogue";
+        <div class="selected-tests-summary-head">
 
-    return;
+          <strong>
+            Booking Selection
+          </strong>
 
-  }
+          <span>
+            ${cartCount()} ${
+              cartCount() === 1
+                ? "test"
+                : "tests"
+            }
+          </span>
+
+        </div>
 
 
-  field.value =
-    bookingCart
-      .map(
-        item =>
-          `${item.name} × ${item.quantity || 1}`
-      )
-      .join(
-        " • "
+        <div class="selected-tests-list">
+
+          ${
+            bookingCart
+              .map(
+                item => `
+
+                  <div class="selected-test-line">
+
+                    <span>
+                      ${escapeHtml(
+                        item.name
+                      )}
+
+                      ${
+                        Number(item.quantity || 1) > 1
+                          ? ` × ${item.quantity}`
+                          : ""
+                      }
+
+                    </span>
+
+                    <strong>
+                      ₹${money(
+                        Number(item.price || 0) *
+                        Number(item.quantity || 1)
+                      )}
+                    </strong>
+
+                  </div>
+
+                `
+              )
+              .join("")
+          }
+
+        </div>
+
+
+        <div class="selected-tests-total">
+
+          <span>
+            Current catalogue total
+          </span>
+
+          <span>
+            ₹${money(cartTotal())}
+          </span>
+
+        </div>
+
+      `;
+    }
+
+    function updateFinalAmountPreview(){
+
+      const subtotal =
+        cartTotal();
+
+      let discount = 0;
+
+      const code =
+        $("couponCode")
+          ?.value
+          .trim()
+          .toUpperCase() || "";
+
+
+      if(code === "LIFESURE10"){
+
+        discount =
+          Math.min(
+            300,
+            Math.round(
+              subtotal * .10
+            )
+          );
+
+      }else if(
+        code === "WELCOME100"
+      ){
+
+        discount =
+          Math.min(
+            100,
+            subtotal
+          );
+      }
+
+
+      const finalAmount =
+        Math.max(
+          0,
+          subtotal - discount
+        );
+
+
+      if($("finalAmount")){
+
+        $("finalAmount").value =
+          `₹${money(finalAmount)}`;
+
+      }
+
+
+      if($("selectedPrice")){
+
+        $("selectedPrice").value =
+          `₹${money(subtotal)}`;
+
+      }
+    }
+
+    function openBooking(testName=null){
+
+      /*
+       * Existing website buttons may still call:
+       * openBooking("CBC")
+       *
+       * Known tests are added to the cart.
+       * Generic enquiry labels continue to open
+       * the enquiry form without inventing a test.
+       */
+
+      if(testName){
+
+        const selected =
+          tests.find(
+            t =>
+              String(t.name)
+                .toLowerCase() ===
+              String(testName)
+                .toLowerCase()
+          );
+
+        if(selected){
+
+          addTestToBooking(
+            selected
+          );
+
+        }
+      }
+
+
+      $("bookingModal")
+        ?.classList
+        .add("show");
+
+      $("success")
+        ?.classList
+        .remove("show");
+
+      $("bookingForm")
+        ?.style
+        && (
+          $("bookingForm").style.display =
+            "grid"
+        );
+
+
+      $("couponCode") &&
+        (
+          $("couponCode").value = ""
+        );
+
+
+      $("date").min =
+        new Date()
+          .toISOString()
+          .split("T")[0];
+
+
+      renderBookingSelection();
+
+      setTimeout(
+        () =>
+          $("name")
+            ?.focus(),
+        80
       );
 
-}
-    function openBooking(testName){
+      document.body.style.overflow =
+        "hidden";
+    }
 
-  $("bookingModal").classList.add("show");
-  $("success").classList.remove("show");
-  $("bookingForm").style.display = "grid";
-
-  const selected =
-    tests.find(
-      t => String(t.name).toLowerCase() ===
-           String(testName || "").toLowerCase()
-    );
-
-  $("selectedTest").value =
-    selected?.name || testName || "General Test Enquiry";
-
-  $("selectedPrice").value =
-    selected
-      ? `₹${Number(selected.price).toLocaleString("en-IN")}`
-      : "Price on request";
-      $("couponCode").value = "";
-$("finalAmount").value =
-  selected
-    ? `₹${Number(selected.price).toLocaleString("en-IN")}`
-    : "₹0";
-
-  $("date").min =
-    new Date().toISOString().split("T")[0];
-
-  setTimeout(() => $("name").focus(), 80);
-
-  document.body.style.overflow = "hidden";
-}
-function applyCoupon() {
-
-  const testName =
-    $("selectedTest").value.trim();
-
-  const selected = tests.find(
-    t =>
-      String(t.name).toLowerCase() ===
-      testName.toLowerCase()
-  );
-
-  if (!selected) {
-    showToast("Please select a valid test.");
-    return;
-  }
-
-  const price = Number(selected.price || 0);
-
-  if (!price) {
-    showToast("Price is not available.");
-    return;
-  }
-
-  const code =
-    $("couponCode").value.trim().toUpperCase();
-
-  let discount = 0;
-  let message = "";
-
-  if (!code) {
-
-    $("finalAmount").value =
-      `₹${price.toLocaleString("en-IN")}`;
-
-    showToast("Enter a coupon code.");
-
-    return;
-  }
-
-  if (code === "LIFESURE10") {
-
-    discount = Math.round(price * 0.10);
-    message = "10% discount applied";
-
-  } else if (code === "WELCOME100") {
-
-    discount = Math.min(100, price);
-    message = "₹100 discount applied";
-
-  } else {
-
-    $("finalAmount").value =
-      `₹${price.toLocaleString("en-IN")}`;
-
-    showToast("Invalid coupon code.");
-
-    return;
-  }
-
-  const finalAmount =
-    Math.max(0, price - discount);
-
-  $("finalAmount").value =
-    `₹${finalAmount.toLocaleString("en-IN")}`;
-
-  showToast(
-    `${message}. You save ₹${discount.toLocaleString("en-IN")}.`
-  );
-}
     function closeBooking(){
-      $("bookingModal").classList.remove("show");
-      document.body.style.overflow="";
-      $("bookingForm").reset();
-      $("bookingForm").style.display="grid";
-      $("success").classList.remove("show");
+
+      $("bookingModal")
+        ?.classList
+        .remove("show");
+
+      document.body.style.overflow = "";
+
+      $("bookingForm")
+        ?.reset();
+
+      if($("bookingForm"))
+        $("bookingForm").style.display =
+          "grid";
+
+      $("success")
+        ?.classList
+        .remove("show");
+
+      renderBookingSelection();
     }
 
-    function openWhatsApp(message){
-      window.open("https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent(message),"_blank","noopener");
-    }
-const SUPABASE_URL =
-  "https://evzgfprzxsgxsymvwsip.supabase.co";
+    /* =========================================================
+       COUPON — UI PREVIEW ONLY
+       Server remains authoritative.
+    ========================================================= */
 
-const SUPABASE_PUBLISHABLE_KEY =
-  "sb_publishable_IJC51IW4TePmMzCsbJ7Vyw_6fkqqV67";
+    function applyCoupon(){
 
-const supabaseClient =
-  window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY,
-    {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-        detectSessionInUrl: true
+      if(!bookingCart.length){
+
+        showToast(
+          "Add at least one test before applying a coupon.",
+          true
+        );
+
+        return;
       }
+
+
+      const code =
+        $("couponCode")
+          .value
+          .trim()
+          .toUpperCase();
+
+
+      if(!code){
+
+        updateFinalAmountPreview();
+
+        showToast(
+          "Enter a coupon code.",
+          true
+        );
+
+        return;
+      }
+
+
+      if(
+        code !== "LIFESURE10" &&
+        code !== "WELCOME100"
+      ){
+
+        $("couponCode").value =
+          "";
+
+        updateFinalAmountPreview();
+
+        showToast(
+          "Coupon code is not recognised.",
+          true
+        );
+
+        return;
+      }
+
+
+      updateFinalAmountPreview();
+
+
+      const subtotal =
+        cartTotal();
+
+      const discount =
+        code === "LIFESURE10"
+          ? Math.min(
+              300,
+              Math.round(
+                subtotal * .10
+              )
+            )
+          : Math.min(
+              100,
+              subtotal
+            );
+
+
+      showToast(
+        `${code} applied for preview. Final discount is verified securely at booking.`
+      );
     }
-  );
-    
-$("bookingForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
 
-  const name = $("name").value.trim();
-  const phone = $("phone").value.replace(/\D/g, "");
-  const test = $("selectedTest").value.trim();
-  const collection = $("collection").value;
-  const date = $("date").value || "Not specified";
-  const address = $("address").value.trim() || "Not provided";
-  const couponCode = $("couponCode")
-    ? $("couponCode").value.trim().toUpperCase()
-    : "";
+    /* =========================================================
+       BOOKING SUBMISSION
+    ========================================================= */
 
-  if (!name || phone.length !== 10) {
-    showToast("Please enter a valid name and 10-digit mobile number.");
-    return;
-  }
+    $("bookingForm")
+      .addEventListener(
+        "submit",
+        async e => {
 
-  const submitButton =
-    $("bookingForm").querySelector('button[type="submit"]');
+          e.preventDefault();
 
-  if (submitButton) {
-    submitButton.disabled = true;
-    submitButton.dataset.oldText = submitButton.innerHTML;
-    submitButton.innerHTML =
-      '<i class="fa-solid fa-spinner fa-spin"></i> Creating booking...';
-  }
 
-  try {
+          const name =
+            $("name")
+              .value
+              .trim();
 
-    const { data: booking, error } =
-      await supabaseClient.rpc("create_public_booking", {
-        p_name: name,
-        p_phone: phone,
-        p_test: test,
-        p_collection: collection,
-        p_date: date,
-        p_address: address,
-        p_coupon_code: couponCode || null
-      });
 
-    if (error) {
-      console.error("Booking creation error:", error);
-      throw error;
-    }
+          const phone =
+            $("phone")
+              .value
+              .replace(/\D/g,"");
 
-    if (!booking) {
-      throw new Error("Booking was not returned by the server.");
-    }
 
-    const subtotal =
-      Number(booking.subtotal || 0);
+          const collection =
+            $("collection")
+              .value;
 
-    const discount =
-      Number(booking.discount || 0);
 
-    const finalAmount =
-      Number(booking.amount || booking.net_charge || 0);
+          const date =
+            $("date")
+              .value ||
+            "Not specified";
 
-    
 
-  window.location.href =
-  "billing.html?booking=" +
-  encodeURIComponent(booking.id);
+          const address =
+            $("address")
+              .value
+              .trim() ||
+            "Not provided";
 
-  } catch (error) {
 
-    console.error("BOOKING ERROR:", error);
+          const couponCode =
+            $("couponCode")
+              ? $("couponCode")
+                  .value
+                  .trim()
+                  .toUpperCase()
+              : "";
 
-    showToast(
-      error?.message ||
-      "Unable to create booking. Please try again."
+
+          if(!name){
+
+            showToast(
+              "Please enter the patient's full name.",
+              true
+            );
+
+            $("name")
+              .focus();
+
+            return;
+          }
+
+
+          if(phone.length !== 10){
+
+            showToast(
+              "Please enter a valid 10-digit mobile number.",
+              true
+            );
+
+            $("phone")
+              .focus();
+
+            return;
+          }
+
+
+          if(!bookingCart.length){
+
+            showToast(
+              "Please add at least one diagnostic test.",
+              true
+            );
+
+            closeBooking();
+            openBookingCart();
+
+            return;
+          }
+
+
+          const items =
+            bookingCart.map(
+              item => ({
+                test_code:
+                  item.test_code,
+
+                quantity:
+                  Number(
+                    item.quantity || 1
+                  )
+              })
+            );
+
+
+          const submitButton =
+            $("bookingForm")
+              .querySelector(
+                'button[type="submit"]'
+              );
+
+
+          const originalHtml =
+            submitButton?.innerHTML;
+
+
+          if(submitButton){
+
+            submitButton.disabled =
+              true;
+
+            submitButton.innerHTML = `
+              <i class="fa-solid fa-circle-notch fa-spin"></i>
+              Securing Booking...
+            `;
+          }
+
+
+          try{
+
+            /*
+             * IMPORTANT:
+             * We send only test codes + quantity.
+             * Prices are never trusted from the browser.
+             */
+
+            const {
+              data:booking,
+              error
+            } =
+              await supabaseClient.rpc(
+                "create_public_multi_booking",
+                {
+
+                  p_name:
+                    name,
+
+                  p_phone:
+                    phone,
+
+                  p_items:
+                    items,
+
+                  p_collection:
+                    collection,
+
+                  p_date:
+                    date,
+
+                  p_address:
+                    address,
+
+                  p_coupon_code:
+                    couponCode ||
+                    null
+
+                }
+              );
+
+
+            if(error){
+
+              console.error(
+                "MULTI BOOKING ERROR:",
+                error
+              );
+
+              throw error;
+            }
+
+
+            if(!booking){
+
+              throw new Error(
+                "Booking was not returned by the server."
+              );
+            }
+
+
+            /*
+             * Clear only after server success.
+             */
+
+            bookingCart = [];
+
+            saveBookingCart();
+
+            renderBookingCart();
+            renderTests();
+            renderBookingSelection();
+
+
+            /*
+             * Existing billing flow remains intact.
+             */
+
+            window.location.href =
+              "billing.html?booking=" +
+              encodeURIComponent(
+                booking.id
+              );
+
+
+          }catch(error){
+
+            console.error(
+              "BOOKING ERROR:",
+              error
+            );
+
+            showToast(
+              error?.message ||
+              "Unable to create booking. Please try again.",
+              true
+            );
+
+
+          }finally{
+
+            if(submitButton){
+
+              submitButton.disabled =
+                false;
+
+              submitButton.innerHTML =
+                originalHtml ||
+                'Confirm Booking';
+
+            }
+          }
+
+        }
+      );
+
+    /* =========================================================
+       CART KEYBOARD / OUTSIDE CLICK
+    ========================================================= */
+
+    document.addEventListener(
+      "click",
+      e => {
+
+        if(
+          $("search") &&
+          $("suggestions") &&
+          !$("search").contains(e.target) &&
+          !$("suggestions").contains(e.target)
+        ){
+
+          $("suggestions")
+            .classList
+            .remove("show");
+
+        }
+
+        if(
+          e.target ===
+          $("bookingModal")
+        ){
+
+          closeBooking();
+
+        }
+      }
     );
 
-  } finally {
+    /* =========================================================
+       SEARCH
+    ========================================================= */
 
-    if (submitButton) {
-      submitButton.disabled = false;
-      submitButton.innerHTML =
-        submitButton.dataset.oldText ||
-        "Confirm & WhatsApp";
-    }
+    $("search")
+      .addEventListener(
+        "input",
+        () => {
 
-  }
-});
+          updateSuggestions();
+          renderTests();
+
+        }
+      );
+
+    $("searchBtn")
+      .addEventListener(
+        "click",
+        () => {
+
+          $("suggestions")
+            .classList
+            .remove("show");
+
+          document
+            .querySelector("#tests")
+            ?.scrollIntoView({
+              behavior:"smooth",
+              block:"start"
+            });
+
+          renderTests();
+
+        }
+      );
+
+    /* =========================================================
+       INIT — TEST CATALOGUE
+    ========================================================= */
+
+    loadBookingCart();
+
+    renderCategories();
+    renderTests();
+
+    loadLifeSureTests();
+
     // HERO CAROUSEL
     const slides=[...document.querySelectorAll(".slide")];
     function buildDots(){
