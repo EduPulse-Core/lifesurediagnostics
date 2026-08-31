@@ -1301,6 +1301,34 @@
     #bookingModal #bookingForm .form-actions .btn{min-height:46px;white-space:nowrap}
     #bookingModal #confirmBookingButton{min-width:205px}
     @media(max-width:760px){#bookingModal{padding:8px}#bookingModal .modal{width:100%;height:94dvh;max-height:94dvh;border-radius:20px}#bookingModal #bookingForm{grid-template-columns:1fr;padding:18px 16px 112px}.field.full,.form-note{grid-column:1}.modal-head-main{gap:8px}.modal-back{width:34px;height:34px}.modal-head h3{font-size:17px}#bookingModal #bookingForm .form-actions{grid-column:1;flex-direction:column-reverse;align-items:stretch;padding:11px 16px calc(11px + env(safe-area-inset-bottom))}#bookingModal #bookingForm .form-actions .btn{width:100%}#bookingModal #confirmBookingButton{min-width:0}}
+
+
+/* =========================================================
+   BOOKING SUCCESS / THANK-YOU PANEL
+========================================================= */
+.success-reference{
+  margin-top:12px;
+  padding:9px 12px;
+  border-radius:10px;
+  background:#f3f9f6;
+  border:1px solid #dbeee4;
+  color:#176d49;
+  font-size:8px;
+  font-weight:800;
+}
+
+.success-actions .btn{
+  min-height:44px;
+}
+
+@media(max-width:600px){
+  .success-actions{
+    flex-direction:column;
+  }
+  .success-actions .btn{
+    width:100%;
+  }
+}
 </style>
 </head>
 
@@ -1685,20 +1713,54 @@
     <option>Home Sample Collection</option>
   </select>
 </div>
-        <div class="field"><label>Preferred Date</label><input id="date" type="date"></div>
+        <div class="field"><label>Preferred Date *</label><input id="date" type="date" required autocomplete="off"></div>
         <div class="field full"><label>Address / Notes</label><textarea id="address" rows="3" placeholder="Address for home collection or any note"></textarea></div>
         <div class="form-note">
   <i class="fa-solid fa-shield-halved"></i>
   Your booking is securely created in LifeSure. You will continue to billing and payment after confirmation.
 </div>
-        <div class="form-actions"><button type="button" class="btn btn-outline" onclick="closeBooking()">Cancel</button><button class="btn btn-primary" type="submit" id="confirmBookingButton">Continue to Billing <i class="fa-solid fa-arrow-right"></i></button></div>
+        <div class="form-actions"><button type="button" class="btn btn-outline" onclick="closeBooking()">Cancel</button><button class="btn btn-primary" type="submit" id="confirmBookingButton" disabled>Continue to Billing <i class="fa-solid fa-arrow-right"></i></button></div>
       </form>
 
       <div class="success" id="success">
         <i class="fa-solid fa-circle-check"></i>
-        <h3>Booking Created</h3>
-        <p>Your booking and invoice have been created. Continue to billing to review payment options.</p>
-        <button class="btn btn-primary" style="margin-top:18px" onclick="closeBooking()">Done</button>
+        <h3>Thank You for Choosing LifeSure</h3>
+        <p id="successMessage">Your booking has been created successfully. We have prepared your confirmation message and billing session.</p>
+
+        <div class="success-reference" id="successReference" style="display:none"></div>
+
+        <div class="success-actions" style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:18px">
+          <button
+            type="button"
+            class="btn btn-primary"
+            id="successWhatsAppButton"
+          >
+            <i class="fa-brands fa-whatsapp"></i>
+            WhatsApp Confirmation
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-outline"
+            id="successSmsButton"
+          >
+            <i class="fa-solid fa-message"></i>
+            SMS Confirmation
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-outline"
+            id="successBillingButton"
+          >
+            Continue to Billing
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+
+        <p class="success-note" style="margin-top:12px;font-size:9px;color:#7b8c96">
+          WhatsApp opens automatically when your browser allows it. SMS opens your device messaging app for confirmation.
+        </p>
       </div>
     </div>
   </div>
@@ -1831,6 +1893,10 @@
     ========================================================= */
 
     const WHATSAPP = "917266925657";
+
+    let lastCreatedBooking = null;
+    let lastBookingMessage = "";
+    let lastBookingPhone = "";
 
     const SUPABASE_URL =
       "https://evzgfprzxsgxsymvwsip.supabase.co";
@@ -2403,6 +2469,246 @@
           behavior:"smooth",
           block:"start"
         });
+    }
+
+    /* =========================================================
+       CUSTOMER COMMUNICATION
+    ========================================================= */
+
+    function openWhatsApp(message){
+
+      if(!message){
+        showToast(
+          "No booking confirmation is available.",
+          true
+        );
+        return;
+      }
+
+      const url =
+        "https://wa.me/" +
+        WHATSAPP +
+        "?text=" +
+        encodeURIComponent(message);
+
+      const popup =
+        window.open(
+          url,
+          "_blank",
+          "noopener,noreferrer"
+        );
+
+      if(!popup){
+        showToast(
+          "WhatsApp was blocked by the browser. Use the WhatsApp button again.",
+          true
+        );
+      }
+    }
+
+    function openSms(message){
+
+      if(!message || !lastBookingPhone){
+        showToast(
+          "SMS confirmation is not available.",
+          true
+        );
+        return;
+      }
+
+      const smsNumber =
+        "+91" +
+        lastBookingPhone;
+
+      const smsUrl =
+        "sms:" +
+        smsNumber +
+        "?body=" +
+        encodeURIComponent(message);
+
+      window.location.href = smsUrl;
+    }
+
+    function buildBookingMessage(
+      booking,
+      items,
+      name,
+      phone,
+      collection,
+      date,
+      address
+    ){
+
+      const subtotal =
+        Number(
+          booking?.subtotal ||
+          0
+        );
+
+      const discount =
+        Number(
+          booking?.discount ||
+          0
+        );
+
+      const payable =
+        Number(
+          booking?.amount ??
+          booking?.net_amount ??
+          booking?.net_charge ??
+          0
+        );
+
+      const itemLines =
+        (items || [])
+          .map(
+            item =>
+              `• ${item.name || item.test_code}${Number(item.quantity || 1) > 1 ? ` × ${item.quantity}` : ""}`
+          )
+          .join("\n");
+
+      return `🧪 LifeSure Diagnostics — Booking Confirmation
+
+Booking ID: ${booking?.booking_code || booking?.id || "Pending"}
+Invoice: ${booking?.invoice_number || "Generated"}
+
+Patient
+Name: ${name}
+Mobile: ${phone}
+
+Tests / Package
+${itemLines || "• Diagnostic Service"}
+
+Collection: ${collection || "—"}
+Preferred Date: ${date || "—"}
+Address / Notes: ${address || "—"}
+
+Billing
+Subtotal: ₹${subtotal.toLocaleString("en-IN")}
+Discount: ₹${discount.toLocaleString("en-IN")}
+Final Payable: ₹${payable.toLocaleString("en-IN")}
+
+Payment Status: Pending
+Booking Status: Pending
+
+Thank you for choosing LifeSure Diagnostics. Our team will confirm the collection / appointment details.
+
+LifeSure Diagnostics
+Mumbai
+7266925657`;
+    }
+
+    function showBookingSuccess(
+      booking,
+      message,
+      phone
+    ){
+
+      lastCreatedBooking =
+        booking;
+
+      lastBookingMessage =
+        message;
+
+      lastBookingPhone =
+        phone;
+
+      const form =
+        $("bookingForm");
+
+      const success =
+        $("success");
+
+      const ref =
+        $("successReference");
+
+      const successMessage =
+        $("successMessage");
+
+      if(form){
+        form.style.display =
+          "none";
+      }
+
+      if(success){
+        success.classList.add(
+          "show"
+        );
+      }
+
+      if(ref){
+        ref.textContent =
+          `Booking ${booking?.booking_code || "created"} • Invoice ${booking?.invoice_number || "generated"}`;
+        ref.style.display =
+          "inline-block";
+      }
+
+      if(successMessage){
+        successMessage.textContent =
+          "Your booking and invoice have been created successfully. Thank you for choosing LifeSure Diagnostics.";
+      }
+
+      const wa =
+        $("successWhatsAppButton");
+
+      if(wa){
+        wa.onclick = () =>
+          openWhatsApp(
+            lastBookingMessage
+          );
+      }
+
+      const sms =
+        $("successSmsButton");
+
+      if(sms){
+        sms.onclick = () =>
+          openSms(
+            lastBookingMessage
+          );
+      }
+
+      const billing =
+        $("successBillingButton");
+
+      if(billing){
+        billing.onclick = () => {
+
+          if(!lastCreatedBooking){
+            showToast(
+              "Booking reference is missing.",
+              true
+            );
+            return;
+          }
+
+          window.location.href =
+            "billing.html?booking=" +
+            encodeURIComponent(
+              lastCreatedBooking.id
+            );
+
+        };
+      }
+
+      /* Best-effort automatic WhatsApp confirmation.
+         If popup blocking prevents it, the visible button
+         remains available. */
+      setTimeout(
+        () => {
+          try{
+            openWhatsApp(
+              lastBookingMessage
+            );
+          }catch(error){
+            console.warn(
+              "Automatic WhatsApp open failed:",
+              error
+            );
+          }
+        },
+        250
+      );
     }
 
     /* =========================================================
@@ -3206,6 +3512,18 @@
       }
     }
 
+    function syncBookingSubmitState(){
+
+      const button = $("confirmBookingButton");
+      if(!button) return;
+
+      const hasTests = Array.isArray(bookingCart) && bookingCart.length > 0;
+      const date = $("date")?.value || "";
+
+      button.disabled = !(hasTests && date);
+
+    }
+
     function openBooking(testName=null){
 
       /*
@@ -3265,6 +3583,7 @@
           .toISOString()
           .split("T")[0];
 
+      syncBookingSubmitState();
 
       renderBookingSelection();
 
@@ -3298,7 +3617,16 @@
         ?.classList
         .remove("show");
 
+      if($("successReference"))
+        $("successReference").style.display =
+          "none";
+
+      lastCreatedBooking = null;
+      lastBookingMessage = "";
+      lastBookingPhone = "";
+
       renderBookingSelection();
+      syncBookingSubmitState();
     }
 
     /* =========================================================
@@ -3415,7 +3743,7 @@
           const date =
             $("date")
               .value ||
-            "Not specified";
+            "";
 
 
           const address =
@@ -3433,6 +3761,32 @@
                   .toUpperCase()
               : "";
 
+
+          if(!date){
+
+            showToast(
+              "Preferred collection date is required.",
+              true
+            );
+
+            $("date").focus();
+            syncBookingSubmitState();
+            return;
+          }
+
+          const today =
+            new Date().toISOString().split("T")[0];
+
+          if(date < today){
+
+            showToast(
+              "Please select today or a future date.",
+              true
+            );
+
+            $("date").focus();
+            return;
+          }
 
           if(!name){
 
@@ -3575,6 +3929,21 @@
 
 
             /*
+             * Preserve the selected item details for customer
+             * communication before clearing the cart.
+             */
+
+            const bookedItems =
+              bookingCart.map(
+                item => ({
+                  test_code: item.test_code,
+                  name: item.name,
+                  quantity: Number(item.quantity || 1)
+                })
+              );
+
+
+            /*
              * Clear only after server success.
              */
 
@@ -3585,17 +3954,26 @@
             renderBookingCart();
             renderTests();
             renderBookingSelection();
+            syncBookingSubmitState();
 
 
-            /*
-             * Existing billing flow remains intact.
-             */
-
-            window.location.href =
-              "billing.html?booking=" +
-              encodeURIComponent(
-                booking.id
+            const confirmationMessage =
+              buildBookingMessage(
+                booking,
+                bookedItems,
+                name,
+                phone,
+                collection,
+                date,
+                address
               );
+
+
+            showBookingSuccess(
+              booking,
+              confirmationMessage,
+              phone
+            );
 
 
           }catch(error){
@@ -3703,6 +4081,13 @@
       );
 
     /* =========================================================
+       DATE / BOOKING STATE
+    ========================================================= */
+
+    $("date")?.addEventListener("change", syncBookingSubmitState);
+    $("date")?.addEventListener("input", syncBookingSubmitState);
+
+    /* =========================================================
        INIT — TEST CATALOGUE
     ========================================================= */
 
@@ -3710,6 +4095,7 @@
     renderTests();
 
     loadLifeSureTests();
+    syncBookingSubmitState();
 
     // HERO CAROUSEL
     const slides=[...document.querySelectorAll(".slide")];
