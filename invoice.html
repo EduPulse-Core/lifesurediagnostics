@@ -1183,7 +1183,7 @@
 
       @page{
         size:A4;
-        margin:10mm;
+        margin:7mm;
       }
 
       html,
@@ -1224,9 +1224,12 @@
       .items-section,
       .totals-wrap,
       .payment-strip,
-      .notes-section,
-      .document-footer{
+      .notes-section{
         break-inside:avoid;
+      }
+
+      .document-footer{
+        break-inside:auto;
       }
 
       .table-wrap{
@@ -1247,6 +1250,210 @@
         display:none !important;
       }
 
+    }
+
+
+    /* =====================================================
+       ADVANCED PAYMENT SUMMARY
+    ===================================================== */
+
+    .payment-summary-wrap{
+      margin:24px 34px 0;
+    }
+
+    .payment-strip{
+      margin:0;
+      grid-template-columns:repeat(4,1fr);
+      padding:13px;
+    }
+
+    .payment-box{
+      border-right:1px solid var(--line);
+    }
+
+    .payment-box:last-child{
+      border-right:0;
+    }
+
+    .payment-box.paid-box strong{
+      color:var(--green-dark);
+    }
+
+    .payment-box.status-box strong{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:24px;
+      padding:4px 9px;
+      border-radius:999px;
+      font-size:9px;
+      background:var(--amber-bg);
+      color:var(--amber);
+    }
+
+    .payment-box.status-box strong.status-paid{
+      background:var(--green-soft);
+      color:var(--green-dark);
+    }
+
+    .payment-box.status-box strong.status-partial{
+      background:#eff6ff;
+      color:#1d4ed8;
+    }
+
+    .payment-box.status-box strong.status-refunded{
+      background:#fef2f2;
+      color:var(--red);
+    }
+
+    .payment-progress-card{
+      margin-top:10px;
+      padding:13px 15px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:linear-gradient(135deg,#fbfefd,#f7fbfc);
+    }
+
+    .payment-progress-head,
+    .payment-progress-foot{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:15px;
+      color:var(--muted);
+      font-size:8px;
+      font-weight:700;
+    }
+
+    .payment-progress-head strong{
+      color:var(--navy);
+      font-size:9px;
+    }
+
+    .payment-progress-track{
+      height:9px;
+      margin:9px 0 7px;
+      border-radius:999px;
+      background:#e8eff3;
+      overflow:hidden;
+    }
+
+    .payment-progress-fill{
+      width:0%;
+      height:100%;
+      border-radius:999px;
+      background:linear-gradient(90deg,var(--green),#52c98b);
+      transition:width .55s var(--ease);
+      box-shadow:0 4px 12px rgba(22,167,101,.18);
+    }
+
+    .payment-progress-foot strong{
+      color:var(--green-dark);
+      font-size:9px;
+    }
+
+    .amount-words{
+      margin-top:9px;
+      display:flex;
+      align-items:flex-start;
+      gap:8px;
+      padding:11px 13px;
+      border:1px dashed #cfe0e8;
+      border-radius:12px;
+      background:#fbfdfe;
+      color:#617481;
+      font-size:8px;
+      line-height:1.6;
+    }
+
+    .amount-words i{
+      margin-top:2px;
+      color:var(--green-dark);
+    }
+
+    .amount-words strong{
+      color:var(--navy);
+    }
+
+    .invoice-payment-warning{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:11px;
+      background:var(--red-bg);
+      border:1px solid #fecaca;
+      color:var(--red);
+      font-size:8px;
+      line-height:1.55;
+      display:none;
+    }
+
+    .invoice-payment-warning.show{
+      display:block;
+    }
+
+    @media(max-width:820px){
+      .payment-summary-wrap{
+        margin-left:22px;
+        margin-right:22px;
+      }
+
+      .payment-strip{
+        grid-template-columns:1fr 1fr;
+      }
+
+      .payment-box:nth-child(2){
+        border-right:0;
+      }
+
+      .payment-box:nth-child(-n+2){
+        border-bottom:1px solid var(--line);
+        padding-bottom:10px;
+      }
+
+      .payment-box:nth-child(n+3){
+        padding-top:10px;
+      }
+    }
+
+    @media(max-width:560px){
+      .payment-summary-wrap{
+        margin-left:16px;
+        margin-right:16px;
+      }
+
+      .payment-strip{
+        grid-template-columns:1fr;
+      }
+
+      .payment-box{
+        border-right:0 !important;
+        border-bottom:1px solid var(--line);
+        padding:9px 6px !important;
+      }
+
+      .payment-box:last-child{
+        border-bottom:0;
+      }
+    }
+
+    @media print{
+      .payment-summary-wrap{
+        margin-left:0;
+        margin-right:0;
+      }
+
+      .payment-strip{
+        grid-template-columns:repeat(4,1fr);
+      }
+
+      .payment-progress-card,
+      .amount-words{
+        break-inside:avoid;
+      }
+
+      .document-footer{
+        break-inside:auto !important;
+      }
     }
 
   </style>
@@ -1683,45 +1890,77 @@
 
       <!-- PAYMENT SUMMARY -->
 
-      <section class="payment-strip">
+      <section class="payment-summary-wrap">
 
+        <div class="payment-strip">
 
-        <div class="payment-box">
+          <div class="payment-box">
 
-          <span>
-            Amount Paid
-          </span>
+            <span>
+              Invoice Total
+            </span>
 
-          <strong id="paidAmount">
-            ₹0.00
-          </strong>
+            <strong id="invoiceTotalAmount">
+              ₹0.00
+            </strong>
+
+          </div>
+
+          <div class="payment-box paid-box">
+
+            <span>
+              Amount Paid
+            </span>
+
+            <strong id="paidAmount">
+              ₹0.00
+            </strong>
+
+          </div>
+
+          <div class="payment-box balance">
+
+            <span>
+              Outstanding Balance
+            </span>
+
+            <strong id="balanceAmount">
+              ₹0.00
+            </strong>
+
+          </div>
+
+          <div class="payment-box status-box">
+
+            <span>
+              Payment Status
+            </span>
+
+            <strong id="paymentStatus">
+              PENDING
+            </strong>
+
+          </div>
 
         </div>
 
-
-        <div class="payment-box balance">
-
-          <span>
-            Outstanding Balance
-          </span>
-
-          <strong id="balanceAmount">
-            ₹0.00
-          </strong>
-
+        <div class="payment-progress-card">
+          <div class="payment-progress-head">
+            <span>Payment progress</span>
+            <strong id="paymentProgressText">0% paid</strong>
+          </div>
+          <div class="payment-progress-track" aria-hidden="true">
+            <div class="payment-progress-fill" id="paymentProgressFill"></div>
+          </div>
+          <div class="payment-progress-foot">
+            <span id="paymentDueLabel">Outstanding balance</span>
+            <strong id="paymentDueAmount">₹0.00</strong>
+          </div>
         </div>
 
-
-        <div class="payment-box">
-
-          <span>
-            Payment Status
-          </span>
-
-          <strong id="paymentStatus">
-            PENDING
-          </strong>
-
+        <div class="amount-words" id="amountWords">
+          <i class="fa-solid fa-receipt"></i>
+          <span>Total payable in words: <strong id="amountWordsText">Zero Rupees Only</strong></span>
         </div>
 
       </section>
@@ -1937,6 +2176,158 @@
   }
 
 
+  function amountInIndianWords(value){
+
+    const amount = Math.max(
+      0,
+      Number(value || 0)
+    );
+
+    const rupees = Math.floor(amount);
+    const paise = Math.round(
+      (amount - rupees) * 100
+    );
+
+    if(rupees === 0 && paise === 0){
+      return "Zero Rupees Only";
+    }
+
+    const ones = [
+      "",
+      "One",
+      "Two",
+      "Three",
+      "Four",
+      "Five",
+      "Six",
+      "Seven",
+      "Eight",
+      "Nine",
+      "Ten",
+      "Eleven",
+      "Twelve",
+      "Thirteen",
+      "Fourteen",
+      "Fifteen",
+      "Sixteen",
+      "Seventeen",
+      "Eighteen",
+      "Nineteen"
+    ];
+
+    const tens = [
+      "",
+      "",
+      "Twenty",
+      "Thirty",
+      "Forty",
+      "Fifty",
+      "Sixty",
+      "Seventy",
+      "Eighty",
+      "Ninety"
+    ];
+
+    function two(n){
+      n = Number(n);
+
+      if(n < 20){
+        return ones[n];
+      }
+
+      return tens[Math.floor(n / 10)] +
+        (n % 10
+          ? " " + ones[n % 10]
+          : "");
+    }
+
+    function three(n){
+      n = Number(n);
+
+      if(n < 100){
+        return two(n);
+      }
+
+      const hundred =
+        ones[Math.floor(n / 100)] +
+        " Hundred";
+
+      const remainder = n % 100;
+
+      return remainder
+        ? hundred + " " + two(remainder)
+        : hundred;
+    }
+
+    function indian(n){
+      n = Number(n);
+
+      if(n === 0){
+        return "";
+      }
+
+      const parts = [];
+
+      const crore =
+        Math.floor(n / 10000000);
+
+      if(crore){
+        parts.push(
+          indian(crore) +
+          " Crore"
+        );
+
+        n %= 10000000;
+      }
+
+      const lakh =
+        Math.floor(n / 100000);
+
+      if(lakh){
+        parts.push(
+          three(lakh) +
+          " Lakh"
+        );
+
+        n %= 100000;
+      }
+
+      const thousand =
+        Math.floor(n / 1000);
+
+      if(thousand){
+        parts.push(
+          two(thousand) +
+          " Thousand"
+        );
+
+        n %= 1000;
+      }
+
+      if(n){
+        parts.push(
+          three(n)
+        );
+      }
+
+      return parts.join(" ");
+    }
+
+    let result =
+      indian(rupees) +
+      " Rupees";
+
+    if(paise > 0){
+      result +=
+        " and " +
+        two(paise) +
+        " Paise";
+    }
+
+    return result + " Only";
+  }
+
+
   /* =====================================================
      ERROR
   ====================================================== */
@@ -2074,51 +2465,71 @@
 
   function renderInvoice(data){
 
-    const subtotal =
+    /* =====================================================
+       SERVER-AUTHORITATIVE FINANCIAL VALUES
+
+       Never trust a value typed into a browser.
+       The invoice displays the values returned by the
+       secure get_public_invoice() RPC.
+    ====================================================== */
+
+    const subtotal = Number(
+      data.subtotal ?? 0
+    );
+
+    const discount = Number(
+      data.discount ?? 0
+    );
+
+    const netAmount = Math.max(
+      0,
       Number(
-        data.subtotal || 0
-      );
+        data.net_amount ??
+        data.total_payable ??
+        0
+      )
+    );
 
-
-    const discount =
+    const paidAmount = Math.max(
+      0,
       Number(
-        data.discount || 0
-      );
+        data.paid_amount ??
+        data.amount_paid ??
+        0
+      )
+    );
 
+    const serverBalance =
+      data.balance_amount ??
+      data.outstanding_balance;
 
-    const netAmount =
-      Number(
-        data.net_amount || 0
-      );
-
-
-    const paidAmount =
-      Number(
-        data.paid_amount || 0
-      );
-
+    const calculatedBalance = Math.max(
+      0,
+      netAmount - paidAmount
+    );
 
     const balanceAmount =
-      Number(
-        data.balance_amount ??
-        Math.max(
-          0,
-          netAmount - paidAmount
-        )
-      );
-
+      serverBalance === null ||
+      serverBalance === undefined ||
+      Number.isNaN(Number(serverBalance))
+        ? calculatedBalance
+        : Math.max(
+            0,
+            Number(serverBalance)
+          );
 
     const paymentStatus =
       calculatePaymentStatus(
         data.payment_status,
         paidAmount,
-        netAmount
+        netAmount,
+        balanceAmount
       );
 
 
-    /* -----------------------------------------------
-       Header
-    ------------------------------------------------ */
+    /* =====================================================
+       HEADER
+    ====================================================== */
 
     document.getElementById(
       "invoiceNumber"
@@ -2135,9 +2546,9 @@
       );
 
 
-    /* -----------------------------------------------
-       Patient
-    ------------------------------------------------ */
+    /* =====================================================
+       PATIENT
+    ====================================================== */
 
     document.getElementById(
       "patientName"
@@ -2184,99 +2595,271 @@
       );
 
 
-    /* -----------------------------------------------
-       Financials
-    ------------------------------------------------ */
+    /* =====================================================
+       FINANCIALS
+    ====================================================== */
 
     document.getElementById(
       "subtotal"
     ).textContent =
-      "₹" +
-      money(subtotal);
+      "₹" + money(subtotal);
 
 
     document.getElementById(
       "discount"
     ).textContent =
-      "−₹" +
-      money(discount);
+      "−₹" + money(discount);
 
 
     document.getElementById(
       "netAmount"
     ).textContent =
-      "₹" +
-      money(netAmount);
+      "₹" + money(netAmount);
+
+
+    const invoiceTotalEl =
+      document.getElementById(
+        "invoiceTotalAmount"
+      );
+
+    if(invoiceTotalEl){
+      invoiceTotalEl.textContent =
+        "₹" + money(netAmount);
+    }
 
 
     document.getElementById(
       "paidAmount"
     ).textContent =
-      "₹" +
-      money(paidAmount);
+      "₹" + money(paidAmount);
 
 
     document.getElementById(
       "balanceAmount"
     ).textContent =
-      "₹" +
-      money(balanceAmount);
+      "₹" + money(balanceAmount);
 
 
-    document.getElementById(
-      "paymentStatus"
-    ).textContent =
-      statusLabel(
-        paymentStatus
+    const statusEl =
+      document.getElementById(
+        "paymentStatus"
       );
 
+    statusEl.textContent =
+      statusLabel(paymentStatus);
 
-    /* -----------------------------------------------
-       Coupon
-    ------------------------------------------------ */
+    statusEl.className =
+      "";
+
+    statusEl.classList.add(
+      paymentStatus === "paid"
+        ? "status-paid"
+        : paymentStatus === "partial"
+          ? "status-partial"
+          : paymentStatus === "refunded"
+            ? "status-refunded"
+            : ""
+    );
+
+
+    /* =====================================================
+       PAYMENT PROGRESS
+    ====================================================== */
+
+    const progress =
+      netAmount > 0
+        ? Math.min(
+            100,
+            Math.max(
+              0,
+              (paidAmount / netAmount) * 100
+            )
+          )
+        : 0;
+
+
+    const progressFill =
+      document.getElementById(
+        "paymentProgressFill"
+      );
+
+    if(progressFill){
+      progressFill.style.width =
+        progress.toFixed(2) + "%";
+    }
+
+
+    const progressText =
+      document.getElementById(
+        "paymentProgressText"
+      );
+
+    if(progressText){
+      progressText.textContent =
+        Math.round(progress) +
+        "% paid";
+    }
+
+
+    const paymentDueLabel =
+      document.getElementById(
+        "paymentDueLabel"
+      );
+
+    const paymentDueAmount =
+      document.getElementById(
+        "paymentDueAmount"
+      );
+
+    if(paymentDueLabel && paymentDueAmount){
+
+      if(paymentStatus === "paid"){
+
+        paymentDueLabel.textContent =
+          "Amount fully settled";
+
+        paymentDueAmount.textContent =
+          "₹0.00";
+
+      }else if(paymentStatus === "refunded"){
+
+        paymentDueLabel.textContent =
+          "Refunded payment status";
+
+        paymentDueAmount.textContent =
+          "₹" + money(balanceAmount);
+
+      }else{
+
+        paymentDueLabel.textContent =
+          "Outstanding balance";
+
+        paymentDueAmount.textContent =
+          "₹" + money(balanceAmount);
+
+      }
+
+    }
+
+
+    /* =====================================================
+       AMOUNT IN WORDS
+    ====================================================== */
+
+    const amountWordsText =
+      document.getElementById(
+        "amountWordsText"
+      );
+
+    if(amountWordsText){
+
+      amountWordsText.textContent =
+        amountInIndianWords(
+          netAmount
+        );
+
+    }
+
+
+    /* =====================================================
+       SANITY CHECK
+
+       If the backend ever returns inconsistent
+       numbers, surface a visible warning instead of
+       silently showing a mathematically misleading invoice.
+    ====================================================== */
+
+    let warning =
+      document.getElementById(
+        "invoicePaymentWarning"
+      );
+
+    if(!warning){
+
+      warning =
+        document.createElement(
+          "div"
+        );
+
+      warning.id =
+        "invoicePaymentWarning";
+
+      warning.className =
+        "invoice-payment-warning";
+
+      document
+        .querySelector(
+          ".payment-summary-wrap"
+        )
+        ?.appendChild(warning);
+
+    }
+
+
+    const expectedBalance =
+      calculatedBalance;
+
+    const difference = Math.abs(
+      balanceAmount - expectedBalance
+    );
+
+    if(difference > 0.01){
+
+      warning.textContent =
+        "Payment figures require verification. " +
+        "The server-reported outstanding balance does not " +
+        "match Total Payable − Amount Paid.";
+
+      warning.classList.add("show");
+
+    }else{
+
+      warning.classList.remove("show");
+
+    }
+
+
+    /* =====================================================
+       COUPON
+    ====================================================== */
 
     const discountRow =
       document.getElementById(
         "discountRow"
       );
 
-
     if(discount <= 0){
-
       discountRow.style.display =
         "none";
-
     }else{
-
       discountRow.style.display =
         "flex";
-
     }
 
 
-    /* -----------------------------------------------
-       Billing note
-    ------------------------------------------------ */
+    /* =====================================================
+       BILLING NOTE
+    ====================================================== */
 
     const billingNote =
       document.getElementById(
         "billingNote"
       );
 
-
-    if(
-      paymentStatus === "paid"
-    ){
+    if(paymentStatus === "paid"){
 
       billingNote.textContent =
         "This invoice has been fully settled according to the payment records maintained by LifeSure Diagnostics.";
 
-    }else if(
-      paymentStatus === "partial"
-    ){
+    }else if(paymentStatus === "partial"){
 
       billingNote.textContent =
         "This invoice is partially settled. The outstanding balance must be cleared according to LifeSure payment records.";
+
+    }else if(paymentStatus === "refunded"){
+
+      billingNote.textContent =
+        "This invoice is associated with a refunded payment status. Please retain this document for your records and contact LifeSure for clarification if required.";
 
     }else{
 
@@ -2286,9 +2869,9 @@
     }
 
 
-    /* -----------------------------------------------
-       Verification reference
-    ------------------------------------------------ */
+    /* =====================================================
+       VERIFICATION REFERENCE
+    ====================================================== */
 
     document.getElementById(
       "verificationReference"
@@ -2297,18 +2880,18 @@
       "LifeSure Secure Invoice";
 
 
-    /* -----------------------------------------------
-       Items
-    ------------------------------------------------ */
+    /* =====================================================
+       ITEMS
+    ====================================================== */
 
     renderItems(
       data.items || []
     );
 
 
-    /* -----------------------------------------------
-       Show
-    ------------------------------------------------ */
+    /* =====================================================
+       SHOW
+    ====================================================== */
 
     document.getElementById(
       "loadingState"
@@ -2318,9 +2901,7 @@
 
     document.getElementById(
       "invoice"
-    ).classList.add(
-      "show"
-    );
+    ).classList.add("show");
 
   }
 
@@ -2332,38 +2913,51 @@
   function calculatePaymentStatus(
     backendStatus,
     paid,
-    total
+    total,
+    balance
   ){
 
-    if(
-      backendStatus
-    ){
+    const backend = String(
+      backendStatus || ""
+    ).toLowerCase().trim();
 
-      return backendStatus;
+    const safeTotal = Math.max(
+      0,
+      Number(total || 0)
+    );
 
+    const safePaid = Math.max(
+      0,
+      Number(paid || 0)
+    );
+
+    const safeBalance = Math.max(
+      0,
+      Number(
+        balance ??
+        (safeTotal - safePaid)
+      )
+    );
+
+    /* Preserve explicit refunded state. */
+    if(backend === "refunded"){
+      return "refunded";
     }
 
+    /* Financial truth comes from amounts. */
+    if(safeTotal <= 0){
+      return backend || "pending";
+    }
 
-    if(
-      paid <= 0
-    ){
-
+    if(safePaid <= 0){
       return "pending";
-
     }
 
-
-    if(
-      paid < total
-    ){
-
-      return "partial";
-
+    if(safeBalance <= 0 || safePaid >= safeTotal){
+      return "paid";
     }
 
-
-    return "paid";
-
+    return "partial";
   }
 
 
