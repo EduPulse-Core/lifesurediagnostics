@@ -1509,6 +1509,17 @@
 
 
       <button
+        class="tool-btn secondary"
+        id="refreshInvoiceButton"
+        type="button"
+        title="Refresh payment status"
+      >
+        <i class="fa-solid fa-rotate"></i>
+        <span class="print-text">Refresh</span>
+      </button>
+
+
+      <button
         class="tool-btn"
         type="button"
         onclick="window.print()"
@@ -2078,7 +2089,7 @@
 
 
   const accessToken =
-    params.get("token");
+    (params.get("token") || "").trim();
 
 
   /* =====================================================
@@ -2499,7 +2510,7 @@
       )
     );
 
-    const serverBalance =
+    const serverBalanceRaw =
       data.balance_amount ??
       data.outstanding_balance;
 
@@ -2508,14 +2519,22 @@
       netAmount - paidAmount
     );
 
+    /*
+       The invoice display is derived from the accounting identity:
+       Outstanding = Total Payable - Amount Paid.
+       A server-supplied balance is used only for a consistency check.
+    */
     const balanceAmount =
-      serverBalance === null ||
-      serverBalance === undefined ||
-      Number.isNaN(Number(serverBalance))
-        ? calculatedBalance
+      calculatedBalance;
+
+    const serverBalance =
+      serverBalanceRaw === null ||
+      serverBalanceRaw === undefined ||
+      Number.isNaN(Number(serverBalanceRaw))
+        ? null
         : Math.max(
             0,
-            Number(serverBalance)
+            Number(serverBalanceRaw)
           );
 
     const paymentStatus =
@@ -2648,18 +2667,18 @@
     statusEl.textContent =
       statusLabel(paymentStatus);
 
-    statusEl.className =
-      "";
-
-    statusEl.classList.add(
+    /* Never pass an empty/dynamic token to DOMTokenList.
+       Assign the complete class string instead. */
+    const paymentStatusClass =
       paymentStatus === "paid"
         ? "status-paid"
         : paymentStatus === "partial"
           ? "status-partial"
           : paymentStatus === "refunded"
             ? "status-refunded"
-            : ""
-    );
+            : "status-pending";
+
+    statusEl.className = paymentStatusClass;
 
 
     /* =====================================================
@@ -2796,12 +2815,12 @@
     }
 
 
-    const expectedBalance =
-      calculatedBalance;
-
-    const difference = Math.abs(
-      balanceAmount - expectedBalance
-    );
+    const difference =
+      serverBalance === null
+        ? 0
+        : Math.abs(
+            serverBalance - calculatedBalance
+          );
 
     if(difference > 0.01){
 
@@ -2917,55 +2936,40 @@
     balance
   ){
 
-    const backend = String(
+    const normalized = String(
       backendStatus || ""
-    ).toLowerCase().trim();
+    ).toLowerCase();
 
-    const safeTotal = Math.max(
-      0,
-      Number(total || 0)
-    );
-
-    const safePaid = Math.max(
-      0,
-      Number(paid || 0)
-    );
-
-    const safeBalance = Math.max(
-      0,
-      Number(
-        balance ??
-        (safeTotal - safePaid)
-      )
-    );
-
-    /* Preserve explicit refunded state. */
-    if(backend === "refunded"){
+    if(normalized === "refunded"){
       return "refunded";
     }
 
-    /* Financial truth comes from amounts. */
-    if(safeTotal <= 0){
-      return backend || "pending";
-    }
-
-    if(safePaid <= 0){
+    if(total <= 0){
       return "pending";
     }
 
-    if(safeBalance <= 0 || safePaid >= safeTotal){
+    if(balance <= 0.01 || paid >= total - 0.01){
       return "paid";
     }
 
-    return "partial";
+    if(paid > 0){
+      return "partial";
+    }
+
+    return "pending";
+
   }
+
 
 
   /* =====================================================
      LOAD SECURE INVOICE
   ====================================================== */
 
-  async function loadInvoice(){
+  async function loadInvoice(options = {}){
+
+    const silent =
+      options.silent === true;
 
     if(!accessToken){
 
@@ -2979,6 +2983,16 @@
 
 
     try{
+
+      if(!silent){
+        const loading =
+          document.getElementById(
+            "loadingState"
+          );
+        if(loading){
+          loading.style.display = "grid";
+        }
+      }
 
       const {
         data,
@@ -3030,13 +3044,65 @@
 
 
       showError(
-        error?.message ||
-        "This invoice link is invalid, expired, or unavailable."
+        /DOMTokenList|classList|token must not be empty/i.test(
+          String(error?.message || "")
+        )
+          ? "This invoice viewer could not finish loading. Please refresh the page or open the invoice link again."
+          : (error?.message ||
+             "This invoice link is invalid, expired, or unavailable.")
       );
 
     }
 
   }
+
+
+  /* =====================================================
+     REFRESH / LIVE PAYMENT STATUS
+  ====================================================== */
+
+  const refreshButton =
+    document.getElementById(
+      "refreshInvoiceButton"
+    );
+
+  if(refreshButton){
+
+    refreshButton.addEventListener(
+      "click",
+      async () => {
+
+        refreshButton.disabled = true;
+
+        const icon =
+          refreshButton.querySelector("i");
+
+        icon?.classList.add("fa-spin");
+
+        try{
+          await loadInvoice({silent:true});
+        }finally{
+          icon?.classList.remove("fa-spin");
+          refreshButton.disabled = false;
+        }
+
+      }
+    );
+  }
+
+
+  /* Refresh the public invoice periodically so a payment recorded by
+     authorized Accounts staff can appear without rebuilding the link. */
+  const invoiceRefreshTimer =
+    setInterval(
+      () => loadInvoice({silent:true}),
+      10000
+    );
+
+  window.addEventListener(
+    "beforeunload",
+    () => clearInterval(invoiceRefreshTimer)
+  );
 
 
   /* =====================================================
