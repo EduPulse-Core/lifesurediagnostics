@@ -604,7 +604,8 @@ body.ready .app{visibility:visible;opacity:1;transition:opacity .32s ease}
 }
   .notice{padding:12px 14px;background:#eff8ff;color:#075985;border:1px solid #dbeafe;font-size:8px;line-height:1.6;border-radius:10px}
 @media(max-width:1100px){.grid4{grid-template-columns:repeat(2,1fr)}.chart-grid{grid-template-columns:1fr}.section-grid{grid-template-columns:1fr}}
-@media(max-width:820px){.topbar-brand-mini span{display:none}.sidebar{width:72px}.brand{justify-content:center}.brand-copy,.nav-section,.nav-btn span,.sidebar-bottom .secure-mini span,.logout span{display:none}.nav-btn{justify-content:center}.main{margin-left:72px;width:calc(100% - 72px)}.topbar{padding:0 15px}.content{padding:14px}.page-title{font-size:18px}.kpi-strip{grid-template-columns:repeat(2,1fr)}}
+.sidebar.mobile-open{transform:translateX(0)!important;z-index:120;box-shadow:28px 0 70px rgba(2,17,28,.35)}.sidebar{transition:transform .22s cubic-bezier(.2,.8,.2,1)}.mobile-menu{display:none}
+@media(max-width:820px){.mobile-menu{display:grid;place-items:center}.sidebar{transform:translateX(-105%)}.topbar-brand-mini span{display:none}.sidebar{width:72px}.brand{justify-content:center}.brand-copy,.nav-section,.nav-btn span,.sidebar-bottom .secure-mini span,.logout span{display:none}.nav-btn{justify-content:center}.main{margin-left:72px;width:calc(100% - 72px)}.topbar{padding:0 15px}.content{padding:14px}.page-title{font-size:18px}.kpi-strip{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){.grid4{grid-template-columns:1fr 1fr;gap:8px}.metric{padding:13px}.metric strong{font-size:21px}.top-actions .top-btn{display:none}.hero-strip{padding:16px}.form-grid,.detail-grid{grid-template-columns:1fr}.full{grid-column:auto}}
 
 /* =========================================================
@@ -699,222 +700,87 @@ body.ready .app{visibility:visible;opacity:1;transition:opacity .32s ease}
 .report-status-note{padding:11px 12px;border-radius:12px;background:#f5fafc;border:1px solid #ddebef;color:#637a88;font-size:8px;line-height:1.55}
 .report-modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px;padding-top:14px;border-top:1px solid #e8eef2}
 @media(max-width:760px){.report-grid{grid-template-columns:1fr}.report-field.full{grid-column:auto}}
+.chart-fallback{height:230px;margin:18px;display:grid;place-items:center;text-align:center;padding:20px;border:1px dashed #d7e4ea;border-radius:14px;background:linear-gradient(145deg,#f8fbfc,#f2f8f5);color:#6b8190;font-size:9px;line-height:1.5}.chart-fallback::before{content:'LIVE DATA';display:block;font-size:8px;font-weight:900;letter-spacing:1.2px;color:#16a765;margin-bottom:6px}
+body.ready .securityGate{pointer-events:none}
 
 
-/* ============================================================
-   LIFESURE COMMAND CENTER V8 — SMART / MODERN / PRODUCTION UI
-   ============================================================ */
+
+/* =========================================================
+   V7 — SMART COMMAND CENTER EXPERIENCE
+   ========================================================= */
 :root{
   --glass:rgba(255,255,255,.72);
-  --glass-line:rgba(255,255,255,.64);
-  --navy-950:#03121c;
-  --navy-900:#061d2d;
-  --surface:#ffffff;
-  --surface-soft:#f7fafc;
-  --success:#16a765;
-  --success-soft:#ecfdf5;
-  --warning:#d97706;
-  --danger:#dc2626;
-  --info:#0ea5e9;
-  --ring:0 0 0 4px rgba(14,165,233,.12);
+  --glass-border:rgba(255,255,255,.48);
+  --blue-soft:#eaf5fb;
+  --shadow-strong:0 24px 70px rgba(6,29,45,.14);
 }
-body{
-  background:
-    radial-gradient(circle at 76% 3%,rgba(14,165,233,.08),transparent 22%),
-    radial-gradient(circle at 12% 90%,rgba(22,167,101,.07),transparent 24%),
-    var(--bg);
-}
-body::before{
-  content:"";
-  position:fixed;inset:0;pointer-events:none;z-index:-1;
-  background-image:linear-gradient(rgba(6,29,45,.025) 1px,transparent 1px),
-                   linear-gradient(90deg,rgba(6,29,45,.025) 1px,transparent 1px);
-  background-size:32px 32px;
-  mask-image:linear-gradient(to bottom,rgba(0,0,0,.9),transparent 90%);
-}
-.sidebar{
-  width:278px;
-  transition:width .28s cubic-bezier(.2,.8,.2,1),transform .28s cubic-bezier(.2,.8,.2,1);
-}
-.main{
-  margin-left:278px;
-  width:calc(100% - 278px);
-  transition:margin-left .28s cubic-bezier(.2,.8,.2,1),width .28s cubic-bezier(.2,.8,.2,1);
-}
-.brand{
-  padding:8px 10px 17px;
-}
-.brand-logo{
-  width:64px;height:50px;border-radius:15px;
-  box-shadow:0 12px 32px rgba(0,0,0,.2),0 0 0 1px rgba(255,255,255,.1);
-}
-.brand-status i{animation:brandPulse 1.8s ease-in-out infinite}
-@keyframes brandPulse{
-  0%,100%{box-shadow:0 0 0 0 rgba(64,223,149,.45)}
-  50%{box-shadow:0 0 0 6px rgba(64,223,149,0)}
-}
-.nav-btn{
-  min-height:45px;
-  font-size:9.5px;
-  border-radius:14px;
-}
-.nav-btn .ico{
-  width:34px;height:34px;border-radius:11px;
-}
-.nav-btn:hover{
-  transform:translateX(3px);
-  background:linear-gradient(90deg,rgba(255,255,255,.075),rgba(255,255,255,.025));
-}
-.nav-btn.active{
-  background:linear-gradient(90deg,rgba(110,228,167,.18),rgba(14,165,233,.05));
-  box-shadow:inset 3px 0 0 #6ee4a7,0 10px 30px rgba(0,0,0,.10);
-}
+body{overflow-x:hidden}
+.app{position:relative}
+.main{min-height:100vh}
 .topbar{
-  height:82px;
-  box-shadow:0 8px 28px rgba(6,29,45,.045);
+  box-shadow:0 8px 30px rgba(6,29,45,.045);
 }
-.topbar::after{
-  content:"";
-  position:absolute;left:0;right:0;bottom:-1px;height:1px;
-  background:linear-gradient(90deg,transparent,#dfeaf0,transparent);
+.topbar-left{display:flex;align-items:center;gap:11px;min-width:0}
+.page-meta{min-width:0}
+.top-command{
+  display:inline-flex;align-items:center;gap:7px;
+  border:1px solid var(--line);background:linear-gradient(180deg,#fff,#f7fbfd);
+  border-radius:11px;padding:9px 11px;color:var(--navy);font-size:9px;font-weight:900;
+  box-shadow:0 5px 18px rgba(6,29,45,.045)
 }
-.top-actions{gap:7px}
-.top-btn{
-  min-height:37px;
-  transition:.2s ease;
+.top-command kbd{font-size:7px;color:#7b8f9c;padding:3px 5px;border:1px solid #dde7ec;border-radius:5px;background:#fff}
+.system-pill{
+ display:inline-flex;align-items:center;gap:7px;padding:8px 10px;border-radius:999px;
+ background:#f4fbf7;border:1px solid #d8eee2;color:#087a4a;font-size:7px;font-weight:900;
+ text-transform:uppercase;letter-spacing:.7px
 }
-.top-btn:hover{
-  transform:translateY(-1px);
-  box-shadow:0 8px 20px rgba(6,29,45,.07);
+.system-pill i{width:7px;height:7px;border-radius:50%;background:#27c985;box-shadow:0 0 11px rgba(39,201,133,.65)}
+.command-overlay{
+ position:fixed;inset:0;z-index:3000;display:none;background:rgba(2,15,25,.48);
+ backdrop-filter:blur(10px);align-items:flex-start;justify-content:center;padding:90px 18px 18px
 }
-.avatar{
-  width:38px;height:38px;border-radius:12px;
-  border:1px solid #d7eee3;
-}
-.content{padding:25px}
-.hero-strip{
-  min-height:150px;
-  padding:24px 25px;
-  border-radius:22px;
-  box-shadow:0 20px 50px rgba(6,29,45,.1);
-}
-.hero-strip::before{
-  content:"";
-  position:absolute;inset:auto auto -120px 48%;
-  width:330px;height:330px;border-radius:50%;
-  border:1px solid rgba(255,255,255,.08);
-  box-shadow:0 0 0 26px rgba(255,255,255,.025),0 0 0 52px rgba(255,255,255,.018);
-}
-.hero-strip::after{
-  width:360px;height:360px;
-  right:-130px;top:-210px;
-}
-.grid4{gap:16px}
-.metric{
-  position:relative;
-  min-height:150px;
-  overflow:hidden;
-  border-radius:20px;
-  background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(248,251,253,.92));
-}
-.metric::after{
-  content:"";
-  position:absolute;right:-28px;bottom:-50px;width:125px;height:125px;border-radius:50%;
-  background:linear-gradient(135deg,rgba(14,165,233,.05),rgba(22,167,101,.08));
-}
-.metric strong{font-size:28px}
-.card{
-  border-radius:20px;
-  background:rgba(255,255,255,.9);
-  box-shadow:0 16px 42px rgba(6,29,45,.065);
-}
-.card-head{padding:17px 19px}
-.data-table th{position:sticky;top:0;z-index:2}
-.data-table tbody tr{transition:.18s ease}
-.data-table tbody tr:hover{transform:translateX(2px)}
-.badge{letter-spacing:.2px}
-.btn{
-  min-height:36px;
-  border-radius:10px;
-}
-.btn-primary{
-  box-shadow:0 8px 20px rgba(22,167,101,.18);
-}
-.btn-primary:hover{
-  box-shadow:0 12px 26px rgba(22,167,101,.22);
-}
-.toast{
-  min-width:220px;
-  border:1px solid rgba(255,255,255,.08);
-  backdrop-filter:blur(16px);
-}
-#bootProgress{
-  width:220px;height:4px;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.08);margin:12px auto 0;
-}
-#bootProgress::after{
-  content:"";display:block;height:100%;width:38%;border-radius:inherit;
-  background:linear-gradient(90deg,#47d99a,#0ea5e9,#47d99a);
-  animation:bootFlow 1.2s ease-in-out infinite;
-}
-@keyframes bootFlow{0%{transform:translateX(-130%)}100%{transform:translateX(360%)}}
-.health-strip{
-  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
-}
-.health-pill{
-  display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;
-  border:1px solid var(--line);background:#fff;font-size:7px;font-weight:900;color:#536b78;
-}
-.health-dot{width:7px;height:7px;border-radius:50%;background:#38d98c;box-shadow:0 0 10px rgba(56,217,140,.5)}
-.quick-actions{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:14px 0 0;
-}
-.quick-action{
-  border:1px solid var(--line);background:linear-gradient(135deg,#fff,#f8fbfd);border-radius:14px;padding:12px;text-align:left;
-  transition:.2s ease;position:relative;overflow:hidden;
-}
-.quick-action:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(6,29,45,.08);border-color:#cfe1e8}
-.quick-action i{color:var(--green);font-size:14px}
-.quick-action b{display:block;margin-top:8px;font-size:9px;color:var(--navy)}
-.quick-action span{display:block;margin-top:3px;font-size:7px;color:var(--muted)}
-.command-palette{
-  position:fixed;inset:0;background:rgba(1,14,23,.48);backdrop-filter:blur(9px);display:none;place-items:start center;padding-top:10vh;z-index:300;
-}
-.command-palette.show{display:grid}
+.command-overlay.show{display:flex}
 .command-box{
-  width:min(650px,calc(100vw - 28px));background:rgba(255,255,255,.97);border:1px solid rgba(255,255,255,.8);
-  border-radius:20px;box-shadow:0 35px 100px rgba(0,0,0,.25);overflow:hidden;
+ width:min(720px,100%);background:#fff;border:1px solid rgba(255,255,255,.65);
+ border-radius:20px;overflow:hidden;box-shadow:0 35px 100px rgba(0,0,0,.22)
 }
-.command-input{
-  width:100%;height:58px;border:0;border-bottom:1px solid var(--line);padding:0 18px;outline:none;font-size:14px;color:var(--navy);
+.command-search-wrap{padding:12px;border-bottom:1px solid var(--line);background:#fbfdfe}
+.command-search{
+ width:100%;height:46px;border:1px solid #dce8ed;background:#fff;border-radius:12px;
+ padding:0 14px;font-size:12px;outline:none;color:var(--navy)
 }
-.command-results{max-height:360px;overflow:auto;padding:8px}
+.command-results{max-height:420px;overflow:auto;padding:8px}
 .command-item{
-  width:100%;display:flex;align-items:center;gap:10px;border:0;background:#fff;border-radius:12px;padding:11px;text-align:left;
+ width:100%;display:flex;align-items:center;gap:11px;text-align:left;border:0;background:#fff;
+ padding:12px;border-radius:12px;color:var(--navy);font-size:9px;font-weight:800
 }
-.command-item:hover{background:#f4f8fb}
-.command-item .ci{width:32px;height:32px;border-radius:10px;background:#edf8fc;color:var(--blue);display:grid;place-items:center}
-.command-item b{font-size:9px}.command-item span{display:block;font-size:7px;color:var(--muted);margin-top:3px}
-.mobile-nav-toggle{display:none}
-.sync-indicator{
-  display:inline-flex;align-items:center;gap:6px;padding:7px 9px;border-radius:999px;background:#f5faf7;border:1px solid #dbeee3;color:#39735a;font-size:7px;font-weight:900
+.command-item:hover,.command-item.active{background:#f1f8fb}
+.command-item .ci{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:#eef8fc;color:var(--blue);font-size:13px;flex:none}
+.command-item small{display:block;margin-top:3px;color:var(--muted);font-size:7px;font-weight:500}
+.command-empty{padding:30px;text-align:center;color:var(--muted);font-size:9px}
+.sidebar-toggle{
+ display:none;border:1px solid var(--line);background:#fff;border-radius:10px;width:36px;height:36px;
+ color:var(--navy);font-weight:900
 }
-.sync-indicator.busy .health-dot{animation:brandPulse 1s infinite}
-.data-degraded{
-  display:none;margin:0 0 14px;padding:11px 13px;border-radius:12px;
-  border:1px solid #fde7bf;background:#fffaf0;color:#9a6a12;font-size:8px;line-height:1.5;
+.sidebar-backdrop{display:none}
+.sidebar.mobile-open{transform:translateX(0);box-shadow:30px 0 80px rgba(0,0,0,.24)}
+.pulse-ring{animation:lsPulse 2.8s ease-in-out infinite}
+@keyframes lsPulse{0%,100%{box-shadow:0 0 0 0 rgba(22,167,101,.12)}50%{box-shadow:0 0 0 8px rgba(22,167,101,0)}}
+.quick-card{
+ background:linear-gradient(135deg,#fff,#f6fbfd);border:1px solid var(--line);border-radius:16px;
+ padding:14px;box-shadow:0 12px 32px rgba(6,29,45,.05)
 }
-.data-degraded.show{display:block}
-@media(max-width:1100px){.quick-actions{grid-template-columns:repeat(2,1fr)}}
+.quick-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-strong)}
+.quick-title{font-size:9px;font-weight:900;color:var(--navy)}
+.quick-sub{margin-top:4px;font-size:7px;color:var(--muted)}
 @media(max-width:820px){
-  .sidebar{width:78px}.main{margin-left:78px;width:calc(100% - 78px)}
-  .quick-actions{grid-template-columns:1fr 1fr}
-}
-@media(max-width:560px){
-  .quick-actions{grid-template-columns:1fr}
-  .content{padding:13px}
-}
-@media(prefers-reduced-motion:reduce){
-  .brand-status i{animation:none!important}
+ .sidebar-toggle{display:grid;place-items:center}
+ .sidebar{transform:translateX(-102%);transition:transform .22s ease}
+ .sidebar-backdrop{position:fixed;inset:0;z-index:45;background:rgba(2,18,29,.42);backdrop-filter:blur(3px)}
+ .sidebar-backdrop.show{display:block}
+ .main{margin-left:0;width:100%}
+ .topbar-left{gap:8px}
+ .system-pill{display:none}
 }
 
 </style>
@@ -922,9 +788,6 @@ body::before{
 
 <body class="booting">
 <div id="securityGate"><div class="gate-card"><div class="gate-logo"><img src="logo.png" alt="LifeSure Diagnostics" onerror="this.hidden=true"></div><div class="gate-title">Securing Command Center</div><div class="gate-spinner"></div><div class="gate-text" id="gateText">Verifying secure session, account status and workspace permissions…</div></div></div>
-
-<div class="data-degraded" id="dataDegraded"></div>
-
 <div class="app">
 
 <aside class="sidebar">
@@ -974,16 +837,33 @@ body::before{
 
 <main class="main">
 <header class="topbar">
-  <div>
-    <h1 id="pageTitle" class="page-title">Command Center</h1>
-    <div id="crumb" class="breadcrumb">LifeSure Diagnostics • Live management system</div>
+  <div class="topbar-left">
+    <button class="sidebar-toggle" type="button" onclick="toggleSidebar()" aria-label="Open navigation">☰</button>
+    <div class="page-meta">
+      <h1 id="pageTitle" class="page-title">Command Center</h1>
+      <div id="crumb" class="breadcrumb">LifeSure Diagnostics • Live management system</div>
+    </div>
+    <button class="top-command" type="button" onclick="openCommandPalette()" title="Open command palette">
+      <span>⌘ Quick Actions</span><kbd>Ctrl K</kbd>
+    </button>
+    <span class="system-pill"><i></i> Protected system</span>
   </div>
   <div class="top-actions">
     <button class="top-btn" onclick="refreshAll()">↻ Refresh</button>
     <button class="top-btn" onclick="showView('analytics')">Analytics</button>
-    <div id="adminAvatar" class="avatar">LS</div>
+    <div id="adminAvatar" class="avatar pulse-ring">LS</div>
   </div>
 </header>
+
+<div class="command-overlay" id="commandOverlay" onclick="if(event.target===this)closeCommandPalette()">
+  <div class="command-box" role="dialog" aria-modal="true" aria-label="LifeSure quick actions">
+    <div class="command-search-wrap">
+      <input id="commandSearch" class="command-search" autocomplete="off" placeholder="Search workspace, action or module…">
+    </div>
+    <div id="commandResults" class="command-results"></div>
+  </div>
+</div>
+<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
 
 <div class="content">
 
@@ -994,19 +874,6 @@ body::before{
     <h2 id="welcome">Welcome to your Command Center</h2>
     <p>Bookings, patients, reports, revenue, expenses, staff, payroll, inventory and franchise operations — organised in one control layer.</p>
   </div>
-
-    <div class="health-strip" style="margin-bottom:14px">
-      <span class="sync-indicator" id="syncIndicator"><span class="health-dot"></span> Protected data sync ready</span>
-      <span class="health-pill">Role-scoped access</span>
-      <span class="health-pill">Private reports</span>
-      <span class="health-pill">Secure RPC workflows</span>
-    </div>
-    <div class="quick-actions">
-      <button class="quick-action" type="button" onclick="showView('bookings')"><i>↗</i><b>Manage bookings</b><span>Review today's operational queue</span></button>
-      <button class="quick-action" type="button" onclick="showView('reports')"><i>▣</i><b>Report operations</b><span>Upload, review and publish</span></button>
-      <button class="quick-action" type="button" onclick="showView('finance')"><i>₹</i><b>Finance center</b><span>Collections and receivables</span></button>
-      <button class="quick-action" type="button" onclick="openCommandPalette()"><i>⌘</i><b>Command palette</b><span>Jump anywhere instantly</span></button>
-    </div>
 
   <div class="grid4">
     <div class="metric"><div class="row"><span class="icon">◫</span><span class="delta">LIVE</span></div><strong id="kBookings">0</strong><span>Total bookings</span></div>
@@ -1411,32 +1278,43 @@ body::before{
   </div>
 </div>
 
-
-<div class="command-palette" id="commandPalette" aria-hidden="true">
-  <div class="command-box" role="dialog" aria-modal="true" aria-label="LifeSure command palette">
-    <input id="commandSearch" class="command-input" placeholder="Search workspace… (Ctrl / Cmd + K)" autocomplete="off">
-    <div class="command-results" id="commandResults"></div>
-  </div>
-</div>
-
 <script>
 const SUPABASE_URL = "https://evzgfprzxsgxsymvwsip.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_IJC51IW4TePmMzCsbJ7Vyw_6fkqqV67";
-
 let supabaseClient = null;
-function ensureSupabaseClient(){
-  if(supabaseClient) return supabaseClient;
-  if(!window.supabase || typeof window.supabase.createClient!=="function"){
-    throw new Error("Secure authentication service is unavailable.");
-  }
-  supabaseClient = window.supabase.createClient(
+
+async function loadScriptOnce(src, test, timeout=8000){
+  if(test()) return true;
+  return await new Promise(resolve=>{
+    let done=false;
+    const finish=(ok)=>{ if(done)return; done=true; clearTimeout(timer); resolve(ok); };
+    const script=document.createElement('script');
+    script.src=src;
+    script.async=true;
+    script.onload=()=>finish(!!test());
+    script.onerror=()=>finish(false);
+    document.head.appendChild(script);
+    const timer=setTimeout(()=>finish(!!test()),timeout);
+  });
+}
+
+async function ensureRuntime(){
+  const supaOk=await loadScriptOnce(
+    'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
+    ()=>!!window.supabase?.createClient,
+    9000
+  );
+  if(!supaOk) throw new Error('Secure authentication service could not be loaded.');
+  supabaseClient=window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_PUBLISHABLE_KEY,
-    {
-      auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}
-    }
+    {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}}
   );
-  return supabaseClient;
+  // Charts/PDF tooling are optional at boot. The protected workspace must not
+  // be blocked just because an enhancement library is unavailable.
+  await loadScriptOnce('https://cdn.jsdelivr.net/npm/chart.js',()=>!!window.Chart,7000);
+  await loadScriptOnce('https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js',()=>!!window.jspdf,7000);
+  await loadScriptOnce('https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js',()=>!!window.PDFLib,7000);
 }
 
 const state = {
@@ -1510,158 +1388,169 @@ const ROLE_VIEWS={
 };
 function applyRoleWorkspace(role){const allowed=ROLE_VIEWS[role]||[];document.querySelectorAll('.nav-btn').forEach(btn=>{const visible=allowed.includes(btn.dataset.view);btn.hidden=!visible;if(!visible&&btn.classList.contains('active'))btn.classList.remove('active');});document.getElementById('sidebarRole').textContent=ROLE_LABELS[role]||role;document.getElementById('sidebarScope').textContent=role==='super_admin'?'Full command access':'Role-scoped command access';document.getElementById('secureSessionText').textContent='Authenticated • MFA-ready';}
 
-const BOOT_TIMEOUT_MS=12000;
-function withTimeout(promise, ms=BOOT_TIMEOUT_MS, message="Operation timed out."){
-  let timer;
-  const timeout=new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error(message)),ms)});
-  return Promise.race([promise,timeout]).finally(()=>clearTimeout(timer));
+function withTimeout(promise,ms,message="Request timed out. Please try again."){
+  return Promise.race([
+    promise,
+    new Promise((_,reject)=>setTimeout(()=>reject(new Error(message)),ms))
+  ]);
 }
-function setSync(busy=false,label=null){
-  const el=document.getElementById("syncIndicator");
-  if(!el)return;
-  el.classList.toggle("busy",busy);
-  el.innerHTML=`<span class="health-dot"></span> ${esc(label || (busy?"Syncing protected data…":"Protected data sync ready"))}`;
+
+function toggleSidebar(){
+  document.querySelector('.sidebar')?.classList.toggle('mobile-open');
+  document.getElementById('sidebarBackdrop')?.classList.toggle('show');
 }
-function showDataDegraded(messages){
-  const el=document.getElementById("dataDegraded");
-  if(!el)return;
-  const cleaned=[...new Set((messages||[]).filter(Boolean))];
-  if(!cleaned.length){el.classList.remove("show");return;}
-  el.innerHTML=`<b>Some data services are unavailable.</b> ${cleaned.slice(0,3).map(esc).join(" • ")}. Core workspace remains protected and available.`;
-  el.classList.add("show");
+function closeSidebar(){
+  document.querySelector('.sidebar')?.classList.remove('mobile-open');
+  document.getElementById('sidebarBackdrop')?.classList.remove('show');
 }
-function showWorkspaceError(message){
-  const gateText=document.getElementById("gateText");
-  if(gateText)gateText.textContent=message;
+
+const COMMANDS = [
+  {label:"Overview",hint:"Open dashboard overview",view:"dashboard",icon:"⌂"},
+  {label:"Bookings",hint:"Manage bookings and workflow",view:"bookings",icon:"◫"},
+  {label:"Enquiries",hint:"Review leads and follow-ups",view:"enquiries",icon:"✉"},
+  {label:"Patients",hint:"Open patient registry",view:"patients",icon:"♙"},
+  {label:"Reports",hint:"Upload, letterhead, review and publish reports",view:"reports",icon:"▣"},
+  {label:"Finance",hint:"Payments and collections",view:"finance",icon:"₹"},
+  {label:"Expenses",hint:"Track operating costs",view:"expenses",icon:"▤"},
+  {label:"Profit Analytics",hint:"Revenue, costs and margin intelligence",view:"analytics",icon:"⌁"},
+  {label:"Staff & HR",hint:"Employee records",view:"staff",icon:"♟"},
+  {label:"Attendance",hint:"Daily workforce tracking",view:"attendance",icon:"◷"},
+  {label:"Payroll",hint:"Salary ledger",view:"payroll",icon:"▣"},
+  {label:"Inventory",hint:"Stock and expiry monitoring",view:"inventory",icon:"▦"},
+  {label:"Audit Logs",hint:"Review security activity",view:"audit",icon:"✓"},
+  {label:"Settings",hint:"Account and workspace settings",view:"settings",icon:"⚙"},
+  {label:"Refresh Workspace",hint:"Reload protected operational data",action:()=>refreshAll(),icon:"↻"}
+];
+
+function renderCommandResults(){
+  const input=document.getElementById("commandSearch");
+  const box=document.getElementById("commandResults");
+  if(!input||!box)return;
+  const q=input.value.trim().toLowerCase();
+  const allowed=ROLE_VIEWS[state.profile?.role]||[];
+  const list=COMMANDS.filter(c=>
+    (!c.view || allowed.includes(c.view)) &&
+    (!q || `${c.label} ${c.hint}`.toLowerCase().includes(q))
+  );
+  box.innerHTML=list.length?list.map((c,i)=>`
+    <button class="command-item" type="button" onclick="runCommand(${i})">
+      <span class="ci">${esc(c.icon)}</span>
+      <span>${esc(c.label)}<small>${esc(c.hint)}</small></span>
+    </button>`).join("")
+    : `<div class="command-empty">No authorized action matches “${esc(input.value)}”.</div>`;
+  box.dataset.commands=JSON.stringify(list.map(c=>c.label));
 }
-function safeRedirectLogin(reason){
-  try{sessionStorage.removeItem("lifesure:credential-handoff")}catch(_){}
-  const sup=ensureSupabaseClient();
-  sup.auth.signOut({scope:"local"}).catch(()=>{}).finally(()=>{
-    window.location.replace(`login.html?next=admin.html&error=${encodeURIComponent(reason)}`);
-  });
+function openCommandPalette(){
+  const overlay=document.getElementById("commandOverlay");
+  if(!overlay)return;
+  overlay.classList.add("show");
+  const input=document.getElementById("commandSearch");
+  input.value="";
+  renderCommandResults();
+  setTimeout(()=>input.focus(),20);
 }
+function closeCommandPalette(){
+  document.getElementById("commandOverlay")?.classList.remove("show");
+}
+function runCommand(index){
+  const input=document.getElementById("commandSearch");
+  const q=input?.value.trim().toLowerCase()||"";
+  const allowed=ROLE_VIEWS[state.profile?.role]||[];
+  const list=COMMANDS.filter(c=>
+    (!c.view || allowed.includes(c.view)) &&
+    (!q || `${c.label} ${c.hint}`.toLowerCase().includes(q))
+  );
+  const item=list[index];
+  if(!item)return;
+  closeCommandPalette();
+  if(item.view) { closeSidebar(); showView(item.view); }
+  else if(item.action) item.action();
+}
+document.getElementById("commandSearch")?.addEventListener("input",renderCommandResults);
+document.addEventListener("keydown",e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){
+    e.preventDefault();openCommandPalette();
+  }
+  if(e.key==="Escape")closeCommandPalette();
+});
 
 async function guard(){
-  const gateText=document.getElementById("gateText");
-  try{
-    const sup=ensureSupabaseClient();
-
-    let handoff=null;
-    try{handoff=JSON.parse(sessionStorage.getItem("lifesure:credential-handoff")||"null")}catch(_){}
-
-    if(!handoff || !handoff.at || (Date.now()-Number(handoff.at))>10*60*1000){
-      safeRedirectLogin("login_required");
-      return false;
-    }
-
-    gateText.textContent="Checking secure authentication session…";
-    const sessionResult=await withTimeout(sup.auth.getSession(),BOOT_TIMEOUT_MS,"Authentication session check timed out.");
-    const session=sessionResult?.data?.session;
-
-    if(!session){
-      safeRedirectLogin("session_expired");
-      return false;
-    }
-
-    if(handoff.userId && handoff.userId!==session.user.id){
-      safeRedirectLogin("security_check");
-      return false;
-    }
-
-    state.user=session.user;
-    gateText.textContent="Validating active LifeSure profile…";
-
-    const profileResult=await withTimeout(
-      sup.from("profiles")
-        .select("id,full_name,email,role,active,organization_id")
-        .eq("id",state.user.id)
-        .maybeSingle(),
-      BOOT_TIMEOUT_MS,
-      "Profile verification timed out."
+ const gateText=document.getElementById('gateText');
+ try{
+   let handoff=null;
+   try{handoff=JSON.parse(sessionStorage.getItem('lifesure:credential-handoff')||'null')}catch(_){}
+   const launchedFromLogin=new URLSearchParams(location.search).get('from')==='login';
+   const handoffFresh=!!(handoff?.at && (Date.now()-Number(handoff.at)) <= 10*60*1000);
+   if(!handoffFresh && !launchedFromLogin){
+     await supabaseClient.auth.signOut({scope:'local'}).catch(()=>{});
+     window.location.replace('login.html?next=admin.html&error=login_required');
+     return false;
+   }
+   // A same-origin navigation can occasionally lose sessionStorage in strict
+   // privacy modes. The explicit login handoff URL is an emergency continuity
+   // path, while the real authorization still comes from Supabase + profile.
+   if(!handoffFresh && launchedFromLogin){
+     try{
+       sessionStorage.setItem('lifesure:credential-handoff',JSON.stringify({at:Date.now(),userId:null,nonce:String(Math.random())}));
+     }catch(_){}
+   }
+   gateText.textContent='Checking encrypted authentication session…';
+   const {data,error}=await supabaseClient.auth.getSession();
+   if(error||!data?.session){
+     sessionStorage.removeItem('lifesure:credential-handoff');
+     window.location.replace('login.html?next=admin.html&error=session_expired');
+     return false;
+   }
+   if(handoff?.userId && handoff.userId!==data.session.user.id){
+     await supabaseClient.auth.signOut();
+     sessionStorage.removeItem('lifesure:credential-handoff');
+     window.location.replace('login.html?next=admin.html&error=security_check');
+     return false;
+   }
+   state.user=data.session.user;
+   gateText.textContent='Validating active staff profile and role…';
+   const {data:profile,error:profileError}=await withTimeout(
+      supabaseClient.from('profiles').select('id,full_name,email,role,active,organization_id').eq('id',state.user.id).maybeSingle(),
+      10000,
+      "Security profile verification timed out."
     );
-
-    const {data:profile,error:profileError}=profileResult||{};
-    const allowedRoles=Object.keys(ROLE_LABELS);
-
-    if(profileError || !profile || !allowedRoles.includes(profile.role) || profile.active!==true){
-      safeRedirectLogin("access_denied");
-      return false;
-    }
-
-    state.profile=profile;
-    applyRoleWorkspace(profile.role);
-
-    const initials=(profile.full_name||"LS")
-      .split(/\s+/).map(x=>x[0]).join("").slice(0,2).toUpperCase();
-
-    document.getElementById("adminAvatar").textContent=initials||"LS";
-    document.getElementById("welcome").textContent=`Welcome, ${profile.full_name||"LifeSure Admin"}`;
-
-    const sn=document.getElementById("settingsName");
-    const se=document.getElementById("settingsEmail");
-    const sr=document.getElementById("settingsRole");
-    if(sn)sn.value=profile.full_name||"";
-    if(se)se.value=profile.email||state.user.email||"";
-    if(sr)sr.value=profile.role;
-
-    gateText.textContent="Workspace authorization verified.";
-    return true;
-
-  }catch(error){
-    console.error("SECURITY GUARD ERROR:",error);
-    safeRedirectLogin("security_check");
-    return false;
-  }
+   const allowedRoles=Object.keys(ROLE_LABELS);
+   if(profileError||!profile||!allowedRoles.includes(profile.role)||profile.active!==true){await supabaseClient.auth.signOut();window.location.replace('login.html?error=access_denied');return false;}
+   state.profile=profile;applyRoleWorkspace(profile.role);
+   const initials=(profile.full_name||'LS').split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase();
+   document.getElementById('adminAvatar').textContent=initials||'LS';
+   document.getElementById('welcome').textContent=`Welcome, ${profile.full_name||'LifeSure Admin'}`;
+   document.getElementById('settingsName').value=profile.full_name||'';
+   document.getElementById('settingsEmail').value=profile.email||state.user.email||'';
+   document.getElementById('settingsRole').value=profile.role;
+   gateText.textContent='Workspace authorization verified. Loading operational data…';
+   return true;
+ }catch(error){console.error('SECURITY GUARD ERROR:',error);window.location.replace('login.html?error=security_check');return false;}
 }
-function bindAuthEvents(){
-  const sup=ensureSupabaseClient();
-  sup.auth.onAuthStateChange((event)=>{
-    if(event==="SIGNED_OUT"){
-      try{sessionStorage.removeItem("lifesure:credential-handoff")}catch(_){}
-      if(!location.pathname.endsWith("/login.html") && !location.pathname.endsWith("login.html")){
-        window.location.replace("login.html?error=session_expired");
-      }
-    }
-    if(event==="TOKEN_REFRESHED"){
-      const el=document.getElementById("secureSessionText");
-      if(el)el.textContent="Session refreshed • Protected";
-    }
-  });
-}
+supabaseClient.auth.onAuthStateChange((event)=>{
+  if(event==='SIGNED_OUT'){try{sessionStorage.removeItem('lifesure:credential-handoff')}catch(_){} window.location.replace('login.html');}
+  if(event==='TOKEN_REFRESHED') document.getElementById('secureSessionText').textContent='Session refreshed • Protected';
+});
 
 async function assertLiveSession(){
-  const sup=ensureSupabaseClient();
-  const {data,error}=await withTimeout(
-    sup.auth.getSession(),
-    BOOT_TIMEOUT_MS,
-    "Session check timed out."
-  );
-  if(error || !data?.session){
-    safeRedirectLogin("session_expired");
-    return false;
-  }
-  state.user=data.session.user;
-  return true;
+ const {data,error}=await supabaseClient.auth.getSession();
+ if(error||!data?.session){
+   await supabaseClient.auth.signOut();
+   window.location.replace("login.html?error=session_expired");
+   return false;
+ }
+ state.user=data.session.user;
+ return true;
 }
 
 async function safeTable(table, columns="*"){
-  try{
-    const sup=ensureSupabaseClient();
-    const {data,error}=await withTimeout(
-      sup.from(table).select(columns),
-      BOOT_TIMEOUT_MS,
-      `${table} request timed out.`
-    );
-    if(error){
-      console.error(`LifeSure ${table} load error:`,error);
-      return {rows:[],error:`${table}: ${error.message}`};
-    }
-    return {rows:data||[],error:null};
-  }catch(error){
-    console.error(`LifeSure ${table} exception:`,error);
-    return {rows:[],error:`${table}: ${error.message||"unavailable"}`};
-  }
+ const {data,error}=await supabaseClient.from(table).select(columns);
+ if(error){
+   console.error(`LifeSure ${table} load error:`,error);
+   showToast(`${table}: ${error.message}`);
+   return null;
+ }
+ return data||[];
 }
 async function getAdminBookings() {
 
@@ -1685,7 +1574,7 @@ async function getAdminBookings() {
 
 
 async function getFinanceSummary(){
-  const sup=ensureSupabaseClient(); const {data,error}=await withTimeout(sup.rpc("get_admin_finance_summary"),BOOT_TIMEOUT_MS,"Finance request timed out.");
+  const {data,error}=await supabaseClient.rpc("get_admin_finance_summary");
   if(error){
     console.error("FINANCE SUMMARY ERROR:",error);
     showToast("Finance: "+error.message);
@@ -1705,42 +1594,23 @@ async function getAdminBookingBilling(id){
 
 async function secureRpc(name,args={}){
   if(!(await assertLiveSession())) throw new Error("Session expired");
-  const sup=ensureSupabaseClient(); const {data,error}=await withTimeout(sup.rpc(name,args),BOOT_TIMEOUT_MS,`Secure operation "${name}" timed out.`);
+  const {data,error}=await withTimeout(
+    supabaseClient.rpc(name,args),
+    12000,
+    `${name} service timed out. Please try again.`
+  );
   if(error) throw error;
   return data;
 }
 
-async function loadData(){
-  setSync(true);
-  showDataDegraded([]);
-
-  const results={errors:[]};
-
-  const bookingP=getAdminBookings().catch(error=>{
-    results.errors.push(`Bookings: ${error.message||"unavailable"}`);
-    return [];
-  });
-
-  const jobs={
-    enquiries:safeTable("enquiries"),
-    patients:safeTable("patients"),
-    reports:safeTable("reports"),
-    expenses:(["super_admin","management","accounts"].includes(state.profile?.role)?safeTable("expenses"):Promise.resolve({rows:[],error:null})),
-    franchises:safeTable("franchises"),
-    tests:safeTable("tests"),
-    staff:safeTable("staff"),
-    attendance:safeTable("attendance"),
-    payroll:safeTable("salary_payments"),
-    inventory:safeTable("inventory_items"),
-    audit:safeTable("audit_logs")
-  };
+async function loadData() {
 
   const [
     bookings,
-    financeSummary,
     enquiries,
     patients,
     reports,
+    payments,
     expenses,
     franchises,
     tests,
@@ -1749,48 +1619,123 @@ async function loadData(){
     payroll,
     inventory,
     audit
-  ]=await Promise.all([
-    bookingP,
-    (["super_admin","management","accounts"].includes(state.profile?.role)
-      ? getFinanceSummary().catch(error=>{results.errors.push(`Finance: ${error.message||"unavailable"}`);return null;})
-      : Promise.resolve(null)),
-    jobs.enquiries,
-    jobs.patients,
-    jobs.reports,
-    jobs.expenses,
-    jobs.franchises,
-    jobs.tests,
-    jobs.staff,
-    jobs.attendance,
-    jobs.payroll,
-    jobs.inventory,
-    jobs.audit
+  ] = await Promise.all([
+
+    getAdminBookings(),
+
+    safeTable("enquiries"),
+
+    safeTable("patients"),
+
+    safeTable("reports"),
+
+    (['super_admin','management','accounts'].includes(state.profile?.role) ? getFinanceSummary() : Promise.resolve(null)),
+
+    (['super_admin','management','accounts'].includes(state.profile?.role) ? safeTable("expenses") : Promise.resolve([])),
+
+    safeTable("franchises"),
+
+    safeTable("tests"),
+
+    safeTable("staff"),
+
+    safeTable("attendance"),
+
+    safeTable("salary_payments"),
+
+    safeTable("inventory_items"),
+
+    safeTable("audit_logs")
+
   ]);
 
-  for(const [key,obj] of Object.entries({
-    enquiries,patients,reports,expenses,franchises,tests,staff,attendance,payroll,inventory,audit
-  })){
-    if(obj?.error)results.errors.push(obj.error);
-  }
 
-  state.bookings=(bookings||[]).sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
-  state.enquiries=(enquiries?.rows||[]).sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
-  state.patients=(patients?.rows||[]).sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
-  state.reports=(reports?.rows||[]).sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
-  state.financeSummary=financeSummary||null;
-  state.payments=((financeSummary&&financeSummary.latest_payments)||[]).sort((a,b)=>new Date(b.received_at||0)-new Date(a.received_at||0));
-  state.expenses=(expenses?.rows||[]).sort((a,b)=>new Date(b.expense_date||b.created_at||0)-new Date(a.expense_date||a.created_at||0));
-  state.franchises=franchises?.rows||[];
-  state.tests=tests?.rows||[];
-  state.staff=staff?.rows||[];
-  state.attendance=(attendance?.rows||[]).sort((a,b)=>new Date(b.attendance_date||0)-new Date(a.attendance_date||0));
-  state.payroll=payroll?.rows||[];
-  state.inventory=inventory?.rows||[];
-  state.audit=(audit?.rows||[]).sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
+  state.bookings =
+    (bookings || []).sort(
+      (a, b) =>
+        new Date(b.created_at || 0) -
+        new Date(a.created_at || 0)
+    );
 
-  showDataDegraded(results.errors);
-  setSync(false,results.errors.length?"Partial protected data sync":"Protected data sync ready");
+
+  state.enquiries =
+    (enquiries || []).sort(
+      (a, b) =>
+        new Date(b.created_at || 0) -
+        new Date(a.created_at || 0)
+    );
+
+
+  state.patients =
+    (patients || []).sort(
+      (a, b) =>
+        new Date(b.created_at || 0) -
+        new Date(a.created_at || 0)
+    );
+
+
+  state.reports =
+    (reports || []).sort(
+      (a, b) =>
+        new Date(b.created_at || 0) -
+        new Date(a.created_at || 0)
+    );
+
+
+  state.financeSummary = payments || null;
+  state.payments =
+    ((payments && payments.latest_payments) || []).sort(
+      (a, b) =>
+        new Date(b.received_at || 0) -
+        new Date(a.received_at || 0)
+    );
+
+
+  state.expenses =
+    (expenses || []).sort(
+      (a, b) =>
+        new Date(b.expense_date || b.created_at || 0) -
+        new Date(a.expense_date || a.created_at || 0)
+    );
+
+
+  state.franchises =
+    franchises || [];
+
+
+  state.tests =
+    tests || [];
+
+
+  state.staff =
+    staff || [];
+
+
+  state.attendance =
+    (attendance || []).sort(
+      (a, b) =>
+        new Date(b.attendance_date || 0) -
+        new Date(a.attendance_date || 0)
+    );
+
+
+  state.payroll =
+    payroll || [];
+
+
+  state.inventory =
+    inventory || [];
+
+
+  state.audit =
+    (audit || []).sort(
+      (a, b) =>
+        new Date(b.created_at || 0) -
+        new Date(a.created_at || 0)
+    );
+
 }
+
 function totals(){
  const f=state.financeSummary||{};
  return {
@@ -1834,45 +1779,38 @@ function renderDashboard(){
 }
 
 function renderCharts(){
-  const labels=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
-  const rev=labels.map((_,i)=>{
-    const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-(6-i));
-    return state.bookings.filter(b=>{
-      const x=new Date(b.created_at||0);
-      return x.toDateString()===d.toDateString();
-    }).reduce((s,b)=>s+Number(b.net_charge||0),0);
-  });
-  const counts=[
-    state.bookings.filter(b=>b.status==="pending").length,
-    state.bookings.filter(b=>b.status==="confirmed").length,
-    state.bookings.filter(b=>b.status==="processing").length,
-    state.bookings.filter(b=>b.status==="completed").length,
-    state.bookings.filter(b=>b.status==="cancelled").length
-  ];
-
-  const revCanvas=document.getElementById("revenueChart");
-  const statusCanvas=document.getElementById("statusChart");
-
-  if(state.charts.revenue){try{state.charts.revenue.destroy()}catch(_){}}
-  if(state.charts.status){try{state.charts.status.destroy()}catch(_){}}
-
-  if(typeof window.Chart!=="function"){
-    if(revCanvas)revCanvas.parentElement.innerHTML='<div class="empty"><div class="big">⌁</div><b>Analytics chart temporarily unavailable</b><span>The operational data is still loaded securely.</span></div>';
-    if(statusCanvas)statusCanvas.parentElement.innerHTML='<div class="empty"><div class="big">◔</div><b>Status visualization unavailable</b><span>Refresh when the chart service is available.</span></div>';
-    return;
-  }
-
-  state.charts.revenue=new Chart(revCanvas,{
-    type:"line",
-    data:{labels,datasets:[{data:rev,borderColor:"#075985",backgroundColor:"rgba(7,89,133,.12)",fill:true,tension:.35,pointRadius:3}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{callback:v=>"₹"+v}},x:{grid:{display:false}}}}
-  });
-  state.charts.status=new Chart(statusCanvas,{
-    type:"doughnut",
-    data:{labels:["Pending","Confirmed","Processing","Completed","Cancelled"],datasets:[{data:counts,backgroundColor:["#f59e0b","#16a765","#0ea5e9","#3b82f6","#dc2626"],borderWidth:0}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"bottom",labels:{font:{size:8},boxWidth:10}}},cutout:"68%"}
-  });
+ if(typeof Chart !== 'function'){
+   const r=document.getElementById('revenueChart');
+   const s=document.getElementById('statusChart');
+   if(r) r.replaceWith(Object.assign(document.createElement('div'),{className:'chart-fallback',textContent:'Live chart service unavailable — operational data remains available.'}));
+   if(s) s.replaceWith(Object.assign(document.createElement('div'),{className:'chart-fallback',textContent:'Live chart service unavailable.'}));
+   return;
+ }
+ const labels=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+ const rev=labels.map((_,i)=>{
+   const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-(6-i));
+   return state.bookings.filter(b=>{const x=new Date(b.created_at||0);return x.toDateString()===d.toDateString()})
+     .reduce((s,b)=>s+Number(b.net_charge||0),0);
+ });
+ const counts=[
+   state.bookings.filter(b=>b.status==="pending").length,
+   state.bookings.filter(b=>b.status==="confirmed").length,
+   state.bookings.filter(b=>b.status==="processing").length,
+   state.bookings.filter(b=>b.status==="completed").length,
+   state.bookings.filter(b=>b.status==="cancelled").length
+ ];
+ if(state.charts.revenue)state.charts.revenue.destroy();
+ if(state.charts.status)state.charts.status.destroy();
+ state.charts.revenue=new Chart(document.getElementById("revenueChart"),{
+   type:"line",data:{labels,datasets:[{data:rev,borderColor:"#075985",backgroundColor:"rgba(7,89,133,.12)",fill:true,tension:.35,pointRadius:3}]},
+   options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{callback:v=>"₹"+v}},x:{grid:{display:false}}}}
+ });
+ state.charts.status=new Chart(document.getElementById("statusChart"),{
+   type:"doughnut",data:{labels:["Pending","Confirmed","Processing","Completed","Cancelled"],datasets:[{data:counts,backgroundColor:["#f59e0b","#16a765","#0ea5e9","#3b82f6","#dc2626"],borderWidth:0}]},
+   options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"bottom",labels:{font:{size:8},boxWidth:10}}},cutout:"68%"}}
+ );
 }
+
 function renderBookings(){
 
   const q =
@@ -2372,6 +2310,22 @@ function renderPatients(){
  : `<tr><td colspan="5"><div class="empty"><div class="big">♙</div><b>No patients</b><span>Patient records will appear here.</span></div></td></tr>`;
 }
 
+async function openSecureReportPdf(reportId){
+  try{
+    const report=state.reports.find(x=>String(x.id)===String(reportId));
+    if(!report){showToast("Report not found.");return;}
+    if(String(report.status).toLowerCase()!=="published"){showToast("Only published reports can be opened.");return;}
+    const path=report.original_path||report.letterhead_path;
+    if(!path){showToast("No report PDF is attached to this record.");return;}
+    const {data,error}=await supabaseClient.storage.from("reports-private").createSignedUrl(path,300);
+    if(error||!data?.signedUrl) throw error||new Error("Unable to create secure report link.");
+    window.open(data.signedUrl,"_blank","noopener,noreferrer");
+  }catch(error){
+    console.error("SECURE REPORT OPEN ERROR:",error);
+    showToast(error.message||"Report access was blocked.");
+  }
+}
+
 async function openSecureReportPdf(reportId, preferLetterhead=false){
   try{
     if(!(await assertLiveSession())) return;
@@ -2724,42 +2678,9 @@ function renderAudit(){
 }
 
 async function refreshAll(){
-  if(!(await assertLiveSession())) return;
-  try{
-    setSync(true);
-    await loadData();
-
-    const renderers=[
-      ["dashboard",renderDashboard],
-      ["bookings",renderBookings],
-      ["enquiries",renderEnquiries],
-      ["patients",renderPatients],
-      ["reports",renderReports],
-      ["finance",renderFinance],
-      ["expenses",renderExpenses],
-      ["franchise",renderFranchises],
-      ["analytics",renderAnalytics],
-      ["staff",renderStaff],
-      ["attendance",renderAttendance],
-      ["payroll",renderPayroll],
-      ["inventory",renderInventory],
-      ["audit",renderAudit]
-    ];
-
-    const renderErrors=[];
-    for(const [name,fn] of renderers){
-      try{fn()}catch(error){
-        console.error(`RENDER ${name} ERROR:`,error);
-        renderErrors.push(`${name} view unavailable`);
-      }
-    }
-    if(renderErrors.length)showDataDegraded(renderErrors);
-  }catch(error){
-    console.error("REFRESH ERROR:",error);
-    showDataDegraded([error.message||"Protected data refresh failed"]);
-  }finally{
-    setSync(false);
-  }
+ if(!(await assertLiveSession())) return;
+ await loadData();
+ renderDashboard();renderBookings();renderEnquiries();renderPatients();renderReports();renderFinance();renderExpenses();renderFranchises();renderAnalytics();renderStaff();renderAttendance();renderPayroll();renderInventory();renderAudit();
 }
 
 async function exportBookings(){
@@ -2798,82 +2719,42 @@ async function addExpense(payload){
  }
 }
 function logout(){try{sessionStorage.removeItem('lifesure:credential-handoff')}catch(_){} supabaseClient.auth.signOut().finally(()=>window.location.replace("login.html"))}
-
-const COMMAND_ITEMS=[
-  ["dashboard","Overview","Executive dashboard","⌂"],
-  ["bookings","Bookings","Operational queue","◫"],
-  ["enquiries","Enquiries","Leads and follow-up","✉"],
-  ["patients","Patients","Patient registry","♙"],
-  ["reports","Reports","Report operations","▣"],
-  ["finance","Finance","Collections and billing","₹"],
-  ["expenses","Expenses","Operating costs","▤"],
-  ["franchise","Franchises","Partner network","◇"],
-  ["analytics","Profit Analytics","Revenue and margin intelligence","⌁"],
-  ["staff","Staff & HR","People operations","♟"],
-  ["attendance","Attendance","Daily attendance","◷"],
-  ["payroll","Payroll","Salary ledger","▣"],
-  ["inventory","Inventory","Stock control","▦"],
-  ["audit","Audit Logs","Activity history","✓"],
-  ["settings","Settings","Account and workspace","⚙"]
-];
-function openCommandPalette(){
-  const p=document.getElementById("commandPalette");
-  const i=document.getElementById("commandSearch");
-  if(!p||!i)return;
-  p.classList.add("show");p.setAttribute("aria-hidden","false");
-  i.value="";renderCommandResults("");setTimeout(()=>i.focus(),30);
-}
-function closeCommandPalette(){
-  const p=document.getElementById("commandPalette");
-  if(!p)return;
-  p.classList.remove("show");p.setAttribute("aria-hidden","true");
-}
-function renderCommandResults(query){
-  const box=document.getElementById("commandResults");
-  if(!box)return;
-  const q=String(query||"").toLowerCase().trim();
-  const allowed=ROLE_VIEWS[state.profile?.role]||[];
-  const items=COMMAND_ITEMS.filter(x=>allowed.includes(x[0]) && (!q || `${x[1]} ${x[2]}`.toLowerCase().includes(q)));
-  box.innerHTML=items.map(x=>`
-    <button type="button" class="command-item" onclick="closeCommandPalette();showView('${x[0]}')">
-      <span class="ci">${x[3]}</span><span><b>${esc(x[1])}</b><span>${esc(x[2])}</span></span>
-    </button>
-  `).join("") || '<div class="empty"><b>No workspace matches</b><span>Try another command.</span></div>';
-}
-
 async function init(){
   try{
-    ensureSupabaseClient();
-    bindAuthEvents();
-
-    const palette=document.getElementById("commandPalette");
-    palette?.addEventListener("click",e=>{if(e.target===palette)closeCommandPalette();});
-    document.getElementById("commandSearch")?.addEventListener("input",e=>renderCommandResults(e.target.value));
-
-    document.addEventListener("keydown",e=>{
-      if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){
-        e.preventDefault();openCommandPalette();
-      }
-      if(e.key==="Escape")closeCommandPalette();
-    });
+    await ensureRuntime();
+    initPaymentModal();
+    document.getElementById("detailModal")?.addEventListener("click",e=>{if(e.target.id==="detailModal")closeModal()});
+    document.getElementById("reportUploadModal")?.addEventListener("click",e=>{if(e.target.id==="reportUploadModal")closeReportUploadModal()});
 
     const ok=await guard();
     if(!ok)return;
 
-    // The security gate is only for auth. Data loading is resilient and cannot
-    // prevent the protected shell from rendering.
-    document.getElementById("gateText").textContent="Workspace verified. Loading protected modules…";
-    document.body.classList.remove("booting");
-    document.body.classList.add("ready");
-    document.getElementById("securityGate").classList.add("hidden");
+    // CRITICAL UX FIX: open the protected shell immediately after auth.
+    // Data/chart enrichment must never keep the entire Command Center hidden.
+    document.body.classList.remove('booting');
+    document.body.classList.add('ready');
+    document.getElementById('securityGate')?.classList.add('hidden');
 
-    await refreshAll();
+    // Load operational data in the background. Individual module failures are
+    // non-fatal and are surfaced through the UI instead of forcing logout.
+    try{
+      await refreshAll();
+    }catch(error){
+      console.error('BACKGROUND DATA LOAD ERROR:',error);
+      showToast(error?.message||'Some live data could not be loaded.');
+    }
   }catch(error){
-    console.error("COMMAND CENTER BOOT ERROR:",error);
-    showWorkspaceError("Protected shell failed to initialize.");
-    setTimeout(()=>safeRedirectLogin("security_check"),1200);
+    console.error('COMMAND CENTER BOOT ERROR:',error);
+    const gate=document.getElementById('gateText');
+    if(gate) gate.textContent=error?.message||'Secure workspace could not start.';
+    setTimeout(()=>window.location.replace('login.html?error=security_check'),1200);
   }
 }
+
+window.addEventListener('unhandledrejection',event=>{
+  console.error('LifeSure unhandled rejection:',event.reason);
+});
+
 init();
 </script>
 </body>
