@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#061d2d">
-<title>LifeSure | Command Center</title>
+<title>LifeSure Diagnostics | Secure Command Center</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -1172,7 +1172,21 @@ async function guard(){
    return true;
  }catch(error){console.error('SECURITY GUARD ERROR:',error);window.location.replace('login.html?error=security_check');return false;}
 }
-supabaseClient.auth.onAuthStateChange((event)=>{if(event==='SIGNED_OUT')window.location.replace('login.html');if(event==='TOKEN_REFRESHED')document.getElementById('secureSessionText').textContent='Session refreshed • Protected';});
+supabaseClient.auth.onAuthStateChange((event)=>{
+  if(event==='SIGNED_OUT') window.location.replace('login.html');
+  if(event==='TOKEN_REFRESHED') document.getElementById('secureSessionText').textContent='Session refreshed • Protected';
+});
+
+async function assertLiveSession(){
+ const {data,error}=await supabaseClient.auth.getSession();
+ if(error||!data?.session){
+   await supabaseClient.auth.signOut();
+   window.location.replace("login.html?error=session_expired");
+   return false;
+ }
+ state.user=data.session.user;
+ return true;
+}
 
 async function safeTable(table, columns="*"){
  const {data,error}=await supabaseClient.from(table).select(columns);
@@ -1224,6 +1238,7 @@ async function getAdminBookingBilling(id){
 }
 
 async function secureRpc(name,args={}){
+  if(!(await assertLiveSession())) throw new Error("Session expired");
   const {data,error}=await supabaseClient.rpc(name,args);
   if(error) throw error;
   return data;
@@ -1929,11 +1944,28 @@ function renderPatients(){
  : `<tr><td colspan="5"><div class="empty"><div class="big">♙</div><b>No patients</b><span>Patient records will appear here.</span></div></td></tr>`;
 }
 
+async function openSecureReportPdf(reportId){
+  try{
+    const report=state.reports.find(x=>String(x.id)===String(reportId));
+    if(!report){showToast("Report not found.");return;}
+    if(String(report.status).toLowerCase()!=="published"){showToast("Only published reports can be opened.");return;}
+    const path=report.original_path||report.letterhead_path;
+    if(!path){showToast("No report PDF is attached to this record.");return;}
+    const {data,error}=await supabaseClient.storage.from("reports-private").createSignedUrl(path,300);
+    if(error||!data?.signedUrl) throw error||new Error("Unable to create secure report link.");
+    window.open(data.signedUrl,"_blank","noopener,noreferrer");
+  }catch(error){
+    console.error("SECURE REPORT OPEN ERROR:",error);
+    showToast(error.message||"Report access was blocked.");
+  }
+}
+
 function renderReports(){
  document.getElementById("reportRows").innerHTML=state.reports.length?state.reports.slice(0,100).map(r=>`
  <tr><td class="id">${esc(r.report_code||r.id)}</td><td>${esc(r.booking_id||"—")}</td><td class="person">${esc(r.patient_id||"—")}</td>
- <td>${statusBadge(r.status)}</td><td>${esc(r.version||1)}</td><td>${fmtDate(r.published_at)}</td></tr>`).join("")
- : `<tr><td colspan="6"><div class="empty"><div class="big">▣</div><b>No reports</b><span>Uploaded reports will appear here.</span></div></td></tr>`;
+ <td>${statusBadge(r.status)}</td><td>${esc(r.version||1)}</td><td>${fmtDate(r.published_at)}</td>
+ <td>${String(r.status).toLowerCase()==="published"&&(r.original_path||r.letterhead_path)?`<button class="btn btn-light" type="button" onclick="openSecureReportPdf('${esc(r.id)}')">View PDF</button>`:"—"}</td></tr>`).join("")
+ : `<tr><td colspan="7"><div class="empty"><div class="big">▣</div><b>No reports</b><span>Uploaded reports will appear here.</span></div></td></tr>`;
 }
 function reportUploadInfo(){
   showToast("Secure report workflow is ready for the private Storage/RPC step.");
@@ -2107,6 +2139,7 @@ function renderAudit(){
 }
 
 async function refreshAll(){
+ if(!(await assertLiveSession())) return;
  await loadData();
  renderDashboard();renderBookings();renderEnquiries();renderPatients();renderReports();renderFinance();renderExpenses();renderFranchises();renderAnalytics();renderStaff();renderAttendance();renderPayroll();renderInventory();renderAudit();
 }
