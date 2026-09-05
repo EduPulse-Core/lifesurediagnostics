@@ -586,7 +586,7 @@ a{text-decoration:none;color:inherit}
 }
   .notice{padding:12px 14px;background:#eff8ff;color:#075985;border:1px solid #dbeafe;font-size:8px;line-height:1.6;border-radius:10px}
 @media(max-width:1100px){.grid4{grid-template-columns:repeat(2,1fr)}.chart-grid{grid-template-columns:1fr}.section-grid{grid-template-columns:1fr}}
-@media(max-width:820px){.sidebar{width:70px}.brand{justify-content:center}.brand-copy,.nav-section,.nav-btn span,.sidebar-bottom .secure-mini span,.logout span{display:none}.nav-btn{justify-content:center}.main{margin-left:70px;width:calc(100% - 70px)}.topbar{padding:0 15px}.content{padding:14px}.page-title{font-size:18px}.kpi-strip{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:820px){.topbar-brand-mini span{display:none}.sidebar{width:70px}.brand{justify-content:center}.brand-copy,.nav-section,.nav-btn span,.sidebar-bottom .secure-mini span,.logout span{display:none}.nav-btn{justify-content:center}.main{margin-left:70px;width:calc(100% - 70px)}.topbar{padding:0 15px}.content{padding:14px}.page-title{font-size:18px}.kpi-strip{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){.grid4{grid-template-columns:1fr 1fr;gap:8px}.metric{padding:13px}.metric strong{font-size:21px}.top-actions .top-btn{display:none}.hero-strip{padding:16px}.form-grid,.detail-grid{grid-template-columns:1fr}.full{grid-column:auto}}
 
 /* =========================================================
@@ -651,8 +651,11 @@ a{text-decoration:none;color:inherit}
 <div class="app">
 
 <aside class="sidebar">
-  <a class="brand" href="index.html">
-    <div class="brand-logo">LS</div>
+  <a class="brand" href="index.html" aria-label="LifeSure Diagnostics Command Center">
+    <div class="brand-logo" aria-hidden="true">
+      <img src="logo.png" alt="" loading="eager" decoding="async" onerror="this.hidden=true;this.nextElementSibling.hidden=false">
+      <span class="brand-fallback">LS</span>
+    </div>
     <div class="brand-copy">
       <strong>Life<span>Sure</span></strong>
       <small>Diagnostics Command Center</small>
