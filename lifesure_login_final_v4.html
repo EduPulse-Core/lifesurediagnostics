@@ -130,7 +130,7 @@ form.addEventListener('submit',async function(e){
   const em=email.value.trim().toLowerCase();
   const pw=password.value;
   if(!em||!pw){setStatus('Enter your email and password.','error');return;}
-  if(!/^\\S+@\\S+\\.\\S+$/.test(em)){setStatus('Enter a valid email address.','error');return;}
+  if(!/^\S+@\S+\.\S+$/.test(em)){setStatus('Enter a valid email address.','error');return;}
   if(!client){
     const ready=await waitForSupabase();
     if(ready) client=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
