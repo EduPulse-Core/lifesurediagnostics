@@ -783,6 +783,18 @@ body{overflow-x:hidden}
  .system-pill{display:none}
 }
 
+
+/* =========================================================
+   V10 PRODUCTION POLISH
+========================================================= */
+.nav-btn{min-height:48px}
+.sidebar{scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.14) transparent}
+.sidebar::-webkit-scrollbar{width:6px}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:999px}
+.metric{position:relative;overflow:hidden}
+.metric:after{content:"";position:absolute;width:120px;height:120px;right:-55px;top:-55px;border-radius:50%;background:radial-gradient(circle,rgba(22,167,101,.08),transparent 70%);pointer-events:none}
+.chart-box{position:relative}
+
 </style>
 </head>
 
@@ -1298,6 +1310,8 @@ async function loadScriptOnce(src, test, timeout=8000){
   });
 }
 
+let authListenerBound=false;
+
 async function ensureRuntime(){
   const supaOk=await loadScriptOnce(
     'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
@@ -1305,16 +1319,40 @@ async function ensureRuntime(){
     9000
   );
   if(!supaOk) throw new Error('Secure authentication service could not be loaded.');
-  supabaseClient=window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY,
-    {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}}
-  );
-  // Charts/PDF tooling are optional at boot. The protected workspace must not
-  // be blocked just because an enhancement library is unavailable.
-  await loadScriptOnce('https://cdn.jsdelivr.net/npm/chart.js',()=>!!window.Chart,7000);
-  await loadScriptOnce('https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js',()=>!!window.jspdf,7000);
-  await loadScriptOnce('https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js',()=>!!window.PDFLib,7000);
+
+  if(!supabaseClient){
+    supabaseClient=window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY,
+      {auth:{
+        persistSession:true,
+        autoRefreshToken:true,
+        detectSessionInUrl:false
+      }}
+    );
+  }
+
+  // Bind listeners only after the Supabase client exists.
+  if(!authListenerBound && supabaseClient?.auth){
+    authListenerBound=true;
+    supabaseClient.auth.onAuthStateChange((event)=>{
+      if(event==='SIGNED_OUT'){
+        try{sessionStorage.removeItem('lifesure:credential-handoff')}catch(_){}
+        window.location.replace('login.html?error=session_expired');
+      }
+      if(event==='TOKEN_REFRESHED'){
+        const el=document.getElementById('secureSessionText');
+        if(el) el.textContent='Session refreshed • Protected';
+      }
+    });
+  }
+
+  // Optional enhancements load in the background and never block shell boot.
+  Promise.allSettled([
+    loadScriptOnce('https://cdn.jsdelivr.net/npm/chart.js',()=>!!window.Chart,7000),
+    loadScriptOnce('https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js',()=>!!window.jspdf,7000),
+    loadScriptOnce('https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js',()=>!!window.PDFLib,7000)
+  ]);
 }
 
 const state = {
@@ -1475,72 +1513,103 @@ document.addEventListener("keydown",e=>{
 });
 
 async function guard(){
- const gateText=document.getElementById('gateText');
- try{
-   let handoff=null;
-   try{handoff=JSON.parse(sessionStorage.getItem('lifesure:credential-handoff')||'null')}catch(_){}
-   const launchedFromLogin=new URLSearchParams(location.search).get('from')==='login';
-   const handoffFresh=!!(handoff?.at && (Date.now()-Number(handoff.at)) <= 10*60*1000);
-   if(!handoffFresh && !launchedFromLogin){
-     await supabaseClient.auth.signOut({scope:'local'}).catch(()=>{});
-     window.location.replace('login.html?next=admin.html&error=login_required');
-     return false;
-   }
-   // A same-origin navigation can occasionally lose sessionStorage in strict
-   // privacy modes. The explicit login handoff URL is an emergency continuity
-   // path, while the real authorization still comes from Supabase + profile.
-   if(!handoffFresh && launchedFromLogin){
-     try{
-       sessionStorage.setItem('lifesure:credential-handoff',JSON.stringify({at:Date.now(),userId:null,nonce:String(Math.random())}));
-     }catch(_){}
-   }
-   gateText.textContent='Checking encrypted authentication session…';
-   const {data,error}=await supabaseClient.auth.getSession();
-   if(error||!data?.session){
-     sessionStorage.removeItem('lifesure:credential-handoff');
-     window.location.replace('login.html?next=admin.html&error=session_expired');
-     return false;
-   }
-   if(handoff?.userId && handoff.userId!==data.session.user.id){
-     await supabaseClient.auth.signOut();
-     sessionStorage.removeItem('lifesure:credential-handoff');
-     window.location.replace('login.html?next=admin.html&error=security_check');
-     return false;
-   }
-   state.user=data.session.user;
-   gateText.textContent='Validating active staff profile and role…';
-   const {data:profile,error:profileError}=await withTimeout(
-      supabaseClient.from('profiles').select('id,full_name,email,role,active,organization_id').eq('id',state.user.id).maybeSingle(),
+  const gateText=document.getElementById('gateText');
+  try{
+    // Fresh credential handoff is mandatory. A persisted session alone is not
+    // sufficient to open the administrative workspace.
+    let handoff=null;
+    try{handoff=JSON.parse(sessionStorage.getItem('lifesure:credential-handoff')||'null')}catch(_){}
+    const handoffFresh=!!(handoff?.at && (Date.now()-Number(handoff.at)) <= 10*60*1000);
+
+    if(!handoffFresh){
+      await supabaseClient.auth.signOut({scope:'local'}).catch(()=>{});
+      window.location.replace('login.html?next=admin.html&error=login_required');
+      return false;
+    }
+
+    gateText.textContent='Checking secure authentication session…';
+
+    const {data,error}=await supabaseClient.auth.getSession();
+
+    if(error||!data?.session){
+      try{sessionStorage.removeItem('lifesure:credential-handoff')}catch(_){}
+      window.location.replace('login.html?next=admin.html&error=session_expired');
+      return false;
+    }
+
+    if(handoff?.userId && handoff.userId!==data.session.user.id){
+      await supabaseClient.auth.signOut({scope:'local'}).catch(()=>{});
+      try{sessionStorage.removeItem('lifesure:credential-handoff')}catch(_){}
+      window.location.replace('login.html?next=admin.html&error=security_check');
+      return false;
+    }
+
+    state.user=data.session.user;
+    gateText.textContent='Validating active staff profile and role…';
+
+    const {data:profile,error:profileError}=await withTimeout(
+      supabaseClient
+        .from('profiles')
+        .select('id,full_name,email,role,active,organization_id')
+        .eq('id',state.user.id)
+        .maybeSingle(),
       10000,
-      "Security profile verification timed out."
+      'Security profile verification timed out.'
     );
-   const allowedRoles=Object.keys(ROLE_LABELS);
-   if(profileError||!profile||!allowedRoles.includes(profile.role)||profile.active!==true){await supabaseClient.auth.signOut();window.location.replace('login.html?error=access_denied');return false;}
-   state.profile=profile;applyRoleWorkspace(profile.role);
-   const initials=(profile.full_name||'LS').split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase();
-   document.getElementById('adminAvatar').textContent=initials||'LS';
-   document.getElementById('welcome').textContent=`Welcome, ${profile.full_name||'LifeSure Admin'}`;
-   document.getElementById('settingsName').value=profile.full_name||'';
-   document.getElementById('settingsEmail').value=profile.email||state.user.email||'';
-   document.getElementById('settingsRole').value=profile.role;
-   gateText.textContent='Workspace authorization verified. Loading operational data…';
-   return true;
- }catch(error){console.error('SECURITY GUARD ERROR:',error);window.location.replace('login.html?error=security_check');return false;}
+
+    const allowedRoles=Object.keys(ROLE_LABELS);
+
+    if(profileError||!profile||!allowedRoles.includes(profile.role)||profile.active!==true){
+      await supabaseClient.auth.signOut({scope:'local'}).catch(()=>{});
+      try{sessionStorage.removeItem('lifesure:credential-handoff')}catch(_){}
+      window.location.replace('login.html?error=access_denied');
+      return false;
+    }
+
+    state.profile=profile;
+    applyRoleWorkspace(profile.role);
+
+    const initials=(profile.full_name||'LS')
+      .split(/\s+/)
+      .map(x=>x[0])
+      .join('')
+      .slice(0,2)
+      .toUpperCase();
+
+    document.getElementById('adminAvatar').textContent=initials||'LS';
+    document.getElementById('welcome').textContent=`Welcome, ${profile.full_name||'LifeSure Admin'}`;
+
+    const settingsName=document.getElementById('settingsName');
+    const settingsEmail=document.getElementById('settingsEmail');
+    const settingsRole=document.getElementById('settingsRole');
+
+    if(settingsName) settingsName.value=profile.full_name||'';
+    if(settingsEmail) settingsEmail.value=profile.email||state.user.email||'';
+    if(settingsRole) settingsRole.value=profile.role;
+
+    gateText.textContent='Workspace authorization verified.';
+    return true;
+  }catch(error){
+    console.error('SECURITY GUARD ERROR:',error);
+    window.location.replace('login.html?error=security_check');
+    return false;
+  }
 }
-supabaseClient.auth.onAuthStateChange((event)=>{
-  if(event==='SIGNED_OUT'){try{sessionStorage.removeItem('lifesure:credential-handoff')}catch(_){} window.location.replace('login.html');}
-  if(event==='TOKEN_REFRESHED') document.getElementById('secureSessionText').textContent='Session refreshed • Protected';
-});
 
 async function assertLiveSession(){
- const {data,error}=await supabaseClient.auth.getSession();
- if(error||!data?.session){
-   await supabaseClient.auth.signOut();
-   window.location.replace("login.html?error=session_expired");
-   return false;
- }
- state.user=data.session.user;
- return true;
+  if(!supabaseClient?.auth){
+    window.location.replace('login.html?error=security_check');
+    return false;
+  }
+  const {data,error}=await supabaseClient.auth.getSession();
+  if(error||!data?.session){
+    await supabaseClient.auth.signOut({scope:'local'}).catch(()=>{});
+    try{sessionStorage.removeItem('lifesure:credential-handoff')}catch(_){}
+    window.location.replace('login.html?error=session_expired');
+    return false;
+  }
+  state.user=data.session.user;
+  return true;
 }
 
 async function safeTable(table, columns="*"){
@@ -2718,7 +2787,7 @@ async function addExpense(payload){
    showToast(error.message||"Expense could not be recorded");
  }
 }
-function logout(){try{sessionStorage.removeItem('lifesure:credential-handoff')}catch(_){} supabaseClient.auth.signOut().finally(()=>window.location.replace("login.html"))}
+function logout(){try{sessionStorage.removeItem('lifesure:credential-handoff')}catch(_){} supabaseClient?.auth?.signOut({scope:'local'}).finally(()=>window.location.replace("login.html"))}
 async function init(){
   try{
     await ensureRuntime();
