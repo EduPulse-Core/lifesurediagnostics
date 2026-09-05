@@ -169,11 +169,14 @@ async function createClient(){
 
 async function boot(){
   try{
-    setStatus('Ready. Enter your authorised credentials.','info');
+    setStatus('Preparing secure sign-in…','info');
     client=await createClient();
-    // We intentionally do NOT redirect based on an existing session.
-    const existing=await withTimeout(client.auth.getSession(),SDK_TIMEOUT,'Session check timed out.');
-    if(existing?.data?.session) sessionNote.classList.add('show');
+    // Credential-first policy: entering the Login page clears only the local
+    // browser session so an old persisted session cannot bypass credentials.
+    await client.auth.signOut({scope:'local'}).catch(()=>{});
+    try{sessionStorage.removeItem('lifesure:credential-handoff')}catch(_){}
+    sessionNote.classList.remove('show');
+    setStatus('Ready. Enter your authorised credentials.','info');
   }catch(err){
     console.error('[LifeSure Login] boot',err);
     setStatus(err?.message || 'Authentication service is temporarily unavailable.','error');
@@ -243,6 +246,25 @@ form.addEventListener('submit',async function(e){
     }
 
     sessionNote.classList.remove('show');
+
+    // Fresh credential handoff. The Command Center requires this short-lived
+    // browser handoff in addition to the authenticated Supabase session.
+    try{
+      sessionStorage.setItem(
+        'lifesure:credential-handoff',
+        JSON.stringify({
+          at:Date.now(),
+          userId:data.user.id,
+          nonce:(globalThis.crypto?.randomUUID ? crypto.randomUUID() : String(Date.now())+'-'+Math.random())
+        })
+      );
+    }catch(storageError){
+      console.error('[LifeSure Login] handoff storage',storageError);
+      await client.auth.signOut({scope:'local'}).catch(()=>{});
+      setStatus('Secure login handoff could not be created. Please allow session storage and try again.','error');
+      return;
+    }
+
     setStatus('Access verified. Opening protected Command Center…','ok');
 
     // Give the UI a tiny success frame, then perform the protected redirect.
