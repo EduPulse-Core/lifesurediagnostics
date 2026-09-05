@@ -58,6 +58,8 @@ const SUPABASE_URL="https://evzgfprzxsgxsymvwsip.supabase.co";
 const SUPABASE_ANON_KEY="sb_publishable_IJC51IW4TePmMzCsbJ7Vyw_6fkqqV67";
 const supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 const ALLOWED_ROLES=['super_admin','management','accounts','hr','reception','lab_staff','franchise'];
+const CREDENTIAL_HANDOFF_KEY='lifesure:credential-handoff';
+const CREDENTIAL_HANDOFF_MAX_AGE=10*60*1000;
 const form=document.getElementById('loginForm');
 const email=document.getElementById('email');
 const password=document.getElementById('password');
@@ -66,11 +68,14 @@ const submit=document.getElementById('submit');
 const sessionNote=document.getElementById('sessionNote');
 function setStatus(text,kind='info'){status.textContent=text;status.className='status '+kind}
 function nextPath(){return 'admin.html'}
+function clearCredentialHandoff(){try{sessionStorage.removeItem(CREDENTIAL_HANDOFF_KEY)}catch(_) {}}
+clearCredentialHandoff();
 const queryParams=new URLSearchParams(location.search);
 const queryError=queryParams.get('error');
 if(queryError==='access_denied') setStatus('Access denied: an active authorised staff profile is required.','error');
 if(queryError==='session_expired') setStatus('Your secure session expired. Please sign in again.','error');
 if(queryError==='security_check') setStatus('Security verification failed. Please sign in again.','error');
+if(queryError==='login_required') setStatus('Please sign in with your LifeSure credentials to enter the Command Center.','error');
 if(queryError==='data_unavailable') setStatus('The workspace could not load its protected data services.','error');
 
 async function inspectExistingSession(){
@@ -116,6 +121,10 @@ form.addEventListener('submit',async(e)=>{
       submit.textContent='Sign in securely';
       return;
     }
+    sessionStorage.setItem(CREDENTIAL_HANDOFF_KEY, JSON.stringify({
+      at: Date.now(),
+      userId: data.user.id
+    }));
     setStatus('Credentials verified. Opening protected workspace…','ok');
     window.location.replace(nextPath());
   }catch(err){
