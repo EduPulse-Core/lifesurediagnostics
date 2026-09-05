@@ -608,6 +608,42 @@ a{text-decoration:none;color:inherit}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important;}
 }
+
+/* =========================================================
+   LIFESURE V2 — PRODUCTION ACTION / MOTION LAYER
+========================================================= */
+:root{
+  --green-dark:#087a4a;
+  --focus-ring:0 0 0 3px rgba(14,165,233,.14);
+}
+.btn,.nav-btn,.top-btn,.payment-method,.close,.metric,.card,.mini-kpi,.detail{
+  transition:transform .18s ease,box-shadow .18s ease,background-color .18s ease,border-color .18s ease,opacity .18s ease;
+}
+.btn:hover,.top-btn:hover{transform:translateY(-1px)}
+.btn:active,.top-btn:active,.nav-btn:active,.payment-method:active{transform:translateY(0) scale(.98)}
+.btn:focus-visible,.top-btn:focus-visible,.nav-btn:focus-visible,.payment-method:focus-visible,.close:focus-visible,.input:focus-visible,.select:focus-visible,.form-field input:focus-visible,.form-field select:focus-visible,.form-field textarea:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+.metric:hover,.card:hover{box-shadow:0 22px 60px rgba(6,29,45,.11)}
+.action-busy{pointer-events:none;opacity:.72;position:relative}
+.action-busy::after{content:"";width:12px;height:12px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:lsSpin .65s linear infinite;display:inline-block}
+@keyframes lsSpin{to{transform:rotate(360deg)}}
+.success-flash{animation:lsSuccess .65s ease}
+@keyframes lsSuccess{0%{box-shadow:0 0 0 0 rgba(22,167,101,.34)}100%{box-shadow:0 0 0 12px rgba(22,167,101,0)}}
+.action-danger{animation:lsShake .25s ease}
+@keyframes lsShake{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+.workflow-strip{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:15px}
+.workflow-step{display:flex;align-items:center;gap:6px;padding:7px 9px;border:1px solid var(--line);border-radius:999px;background:#f8fafc;color:#64748b;font-size:7px;font-weight:800}
+.workflow-step.done{background:#ecfdf5;border-color:#c8ecd9;color:#047857}
+.workflow-step.current{background:#eff6ff;border-color:#cfe1fa;color:#1d4ed8;box-shadow:0 6px 16px rgba(29,78,216,.08)}
+.workflow-line{width:18px;height:1px;background:#dce6eb}
+.finance-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border-radius:999px;background:#f8fafc;border:1px solid var(--line);font-size:7px;font-weight:800;color:#475569}
+.toast.error{background:#7f1d1d}
+.security-note{margin-top:10px;padding:10px 12px;border:1px dashed #d7e5eb;border-radius:11px;background:#fbfdfe;color:#64748b;font-size:8px;line-height:1.5}
+@media (prefers-reduced-motion:reduce){
+  .btn,.nav-btn,.top-btn,.payment-method,.close,.metric,.card,.mini-kpi,.detail{transition:none}
+  .workspace-panel.active{animation:none}
+  .action-busy::after,.success-flash,.action-danger{animation:none}
+}
+
 </style>
 </head>
 
@@ -1027,7 +1063,8 @@ const state = {
   bookings:[], enquiries:[], patients:[], reports:[],
   payments:[], expenses:[], franchises:[], tests:[],
   staff:[], attendance:[], payroll:[], inventory:[], audit:[],
-  charts:{revenue:null,status:null}
+  charts:{revenue:null,status:null},
+  financeSummary:null
 };
 
 const titles = {
@@ -1134,11 +1171,34 @@ async function getAdminBookings() {
 
   }
 
-  console.log("ADMIN BOOKINGS DATA:", data);
-
   return data || [];
 }
 
+
+async function getFinanceSummary(){
+  const {data,error}=await supabaseClient.rpc("get_admin_finance_summary");
+  if(error){
+    console.error("FINANCE SUMMARY ERROR:",error);
+    showToast("Finance: "+error.message);
+    return null;
+  }
+  return data||null;
+}
+
+async function getAdminBookingBilling(id){
+  const {data,error}=await supabaseClient.rpc("get_admin_booking_billing",{p_booking_id:id});
+  if(error){
+    console.error("BOOKING BILLING ERROR:",error);
+    throw error;
+  }
+  return data||null;
+}
+
+async function secureRpc(name,args={}){
+  const {data,error}=await supabaseClient.rpc(name,args);
+  if(error) throw error;
+  return data;
+}
 
 async function loadData() {
 
@@ -1166,7 +1226,7 @@ async function loadData() {
 
     safeTable("reports"),
 
-    safeTable("payments"),
+    getFinanceSummary(),
 
     safeTable("expenses"),
 
@@ -1219,8 +1279,9 @@ async function loadData() {
     );
 
 
+  state.financeSummary = payments || null;
   state.payments =
-    (payments || []).sort(
+    ((payments && payments.latest_payments) || []).sort(
       (a, b) =>
         new Date(b.received_at || 0) -
         new Date(a.received_at || 0)
@@ -1273,13 +1334,15 @@ async function loadData() {
 }
 
 function totals(){
- const revenue=state.bookings.reduce((s,b)=>s+Number(b.net_charge||b.subtotal||0),0);
- const paid=state.payments.reduce((s,p)=>s+Number(p.amount||0),0);
- const cost=state.bookings.reduce((s,b)=>s+Number(b.test_cost||0),0);
- const expenses=state.expenses.reduce((s,e)=>s+Number(e.amount||0),0);
- const pending=Math.max(0,revenue-paid);
- const profit=revenue-cost-expenses;
- return {revenue,paid,cost,expenses,pending,profit};
+ const f=state.financeSummary||{};
+ return {
+   revenue:Number(f.revenue||0),
+   paid:Number(f.paid||0),
+   cost:Number(f.cost||0),
+   expenses:Number(f.expenses||0),
+   pending:Number(f.pending||0),
+   profit:Number(f.profit||0)
+ };
 }
 
 function renderDashboard(){
@@ -1489,12 +1552,17 @@ function renderBookings(){
 
         <td>
 
-          <button
-            class="btn btn-light"
-            onclick="viewBooking('${esc(b.booking_id)}')"
-          >
-            View
-          </button>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button
+              class="btn btn-light"
+              onclick="viewBooking('${esc(b.booking_id)}')"
+            >
+              View
+            </button>
+            ${["super_admin","management","accounts"].includes(state.profile?.role) && b.payment_status!=="paid"
+              ? `<button class="btn btn-primary" onclick="openPaymentModal('${esc(b.booking_id)}')">Pay</button>`
+              : ""}
+          </div>
 
         </td>
 
@@ -1706,6 +1774,14 @@ function viewBooking(id){
     </div>
 
 
+    <div class="workflow-strip">
+      ${["pending","confirmed","sample_collected","processing","completed"].map((step,i)=>{
+        const order={pending:0,confirmed:1,sample_collected:2,processing:3,completed:4};
+        const current=order[String(b.status)] ?? -1;
+        return `${i>0?'<span class="workflow-line"></span>':''}<span class="workflow-step ${current>i?'done':''} ${current===i?'current':''}">${esc(step.replaceAll("_"," "))}</span>`;
+      }).join("")}
+    </div>
+
     <div
       style="
         margin-top:16px;
@@ -1782,9 +1858,21 @@ function viewBooking(id){
 function closeModal(){document.getElementById("detailModal").classList.remove("show")}
 
 async function changeBookingStatus(id,status){
- const {error}=await supabaseClient.from("bookings").update({status,updated_at:new Date().toISOString()}).eq("id",id);
- if(error){showToast(error.message);return}
- showToast("Booking status updated");closeModal();await refreshAll();
+ const buttons=[...document.querySelectorAll('#detailModal .btn')];
+ buttons.forEach(b=>b.classList.add('action-busy'));
+ try{
+   await secureRpc("transition_booking_status",{p_booking_id:id,p_next_status:status});
+   showToast(`Booking moved to ${String(status).replaceAll("_"," ")}`);
+   closeModal();
+   await refreshAll();
+ }catch(error){
+   console.error("BOOKING STATUS ERROR:",error);
+   showToast(error.message||"Unable to update booking");
+   buttons.forEach(b=>b.classList.add('action-danger'));
+   setTimeout(()=>buttons.forEach(b=>b.classList.remove('action-danger')),350);
+ }finally{
+   buttons.forEach(b=>b.classList.remove('action-busy'));
+ }
 }
 
 function renderEnquiries(){
@@ -1819,11 +1907,107 @@ function renderReports(){
  <td>${statusBadge(r.status)}</td><td>${esc(r.version||1)}</td><td>${fmtDate(r.published_at)}</td></tr>`).join("")
  : `<tr><td colspan="6"><div class="empty"><div class="big">▣</div><b>No reports</b><span>Uploaded reports will appear here.</span></div></td></tr>`;
 }
-function reportUploadInfo(){showToast("Next step: connect a private Supabase Storage bucket for report upload.");}
+function reportUploadInfo(){
+  showToast("Secure report workflow is ready for the private Storage/RPC step.");
+}
+
+let selectedAdminPaymentMethod="upi";
+let activePaymentBookingId=null;
+
+function setPaymentError(message=""){
+  const el=document.getElementById("paymentError");
+  if(!el)return;
+  el.textContent=message;
+  el.style.display=message?"block":"none";
+}
+
+async function openPaymentModal(bookingId){
+  activePaymentBookingId=bookingId;
+  setPaymentError("");
+  const modal=document.getElementById("paymentModal");
+  const button=document.getElementById("recordPaymentButton");
+  try{
+    button.classList.add("action-busy");
+    const data=await getAdminBookingBilling(bookingId);
+    const booking=data?.booking||{};
+    const invoice=data?.invoice||{};
+    const balance=Number(invoice.balance_amount ?? invoice.net_amount ?? booking.net_charge ?? 0);
+    document.getElementById("paymentBookingLabel").textContent=`${booking.booking_code||bookingId} • ${data?.patient?.name||"Patient"}`;
+    document.getElementById("paymentOutstanding").textContent=money(balance);
+    document.getElementById("paymentAmount").value=balance>0?balance.toFixed(2):"";
+    document.getElementById("paymentReference").value="";
+    document.getElementById("paymentNotes").value="";
+    modal.classList.add("show");
+    modal.dataset.balance=String(balance);
+  }catch(error){
+    console.error(error);
+    showToast(error.message||"Unable to load billing details");
+  }finally{
+    button.classList.remove("action-busy");
+  }
+}
+
+function closePaymentModal(){
+  document.getElementById("paymentModal")?.classList.remove("show");
+  activePaymentBookingId=null;
+  setPaymentError("");
+}
+
+async function recordPayment(){
+  if(!activePaymentBookingId){setPaymentError("Booking context is missing.");return;}
+  const amount=Number(document.getElementById("paymentAmount").value||0);
+  const method=selectedAdminPaymentMethod;
+  const reference=document.getElementById("paymentReference").value.trim();
+  const notes=document.getElementById("paymentNotes").value.trim();
+  const button=document.getElementById("recordPaymentButton");
+  setPaymentError("");
+  if(!Number.isFinite(amount)||amount<=0){setPaymentError("Enter a valid payment amount.");return;}
+  button.classList.add("action-busy");
+  try{
+    const result=await secureRpc("record_booking_payment",{
+      p_booking_id:activePaymentBookingId,
+      p_amount:Number(amount.toFixed(2)),
+      p_method:method,
+      p_reference:reference||null,
+      p_notes:notes||null
+    });
+    if(result?.duplicate){
+      setPaymentError(result.message||"This payment reference already exists.");
+      return;
+    }
+    closePaymentModal();
+    showToast(`Payment recorded • ${result?.receipt_number||"Receipt created"}`);
+    await refreshAll();
+  }catch(error){
+    console.error("PAYMENT ERROR:",error);
+    setPaymentError(error.message||"Payment could not be recorded.");
+    button.classList.add("action-danger");
+    setTimeout(()=>button.classList.remove("action-danger"),350);
+  }finally{
+    button.classList.remove("action-busy");
+  }
+}
+
+function initPaymentModal(){
+  document.querySelectorAll(".payment-method").forEach(btn=>btn.addEventListener("click",()=>{
+    document.querySelectorAll(".payment-method").forEach(x=>x.classList.remove("active"));
+    btn.classList.add("active");
+    selectedAdminPaymentMethod=btn.dataset.method||"upi";
+  }));
+  document.getElementById("recordPaymentButton")?.addEventListener("click",recordPayment);
+  document.getElementById("paymentModal")?.addEventListener("click",e=>{
+    if(e.target.id==="paymentModal")closePaymentModal();
+  });
+}
 
 function renderFinance(){
- const t=totals();fRevenue.textContent=money(t.revenue);fPaid.textContent=money(t.paid);fPending.textContent=money(t.pending);fCost.textContent=money(t.cost);
- document.getElementById("paymentRows").innerHTML=state.payments.slice(0,100).map(p=>`
+ const t=totals();
+ fRevenue.textContent=money(t.revenue);
+ fPaid.textContent=money(t.paid);
+ fPending.textContent=money(t.pending);
+ fCost.textContent=money(t.cost);
+ const rows=(state.financeSummary?.latest_payments)||[];
+ document.getElementById("paymentRows").innerHTML=rows.slice(0,100).map(p=>`
  <tr><td>${fmtDate(p.received_at)}</td><td class="id">${esc(p.booking_id||"—")}</td><td>${money(p.amount)}</td><td>${esc(p.method)}</td><td>${esc(p.reference||"—")}</td></tr>`).join("")
  || `<tr><td colspan="5"><div class="empty">No payment records.</div></td></tr>`;
 }
@@ -1919,13 +2103,24 @@ function openExpenseForm(){
  addExpense({category,amount,vendor,payment_method,expense_date:new Date().toISOString().slice(0,10)});
 }
 async function addExpense(payload){
- const row={organization_id:null, ...payload, status:"recorded",created_by:state.user.id};
- const {error}=await supabaseClient.from("expenses").insert(row);
- if(error){showToast(error.message);return}
- showToast("Expense recorded");await refreshAll();
+ try{
+   await secureRpc("record_expense_securely",{
+     p_category:String(payload.category||"").trim(),
+     p_amount:Number(payload.amount||0),
+     p_vendor:String(payload.vendor||"").trim()||null,
+     p_payment_method:String(payload.payment_method||"").trim()||null,
+     p_expense_date:payload.expense_date||null
+   });
+   showToast("Expense recorded");
+   await refreshAll();
+ }catch(error){
+   console.error("EXPENSE ERROR:",error);
+   showToast(error.message||"Expense could not be recorded");
+ }
 }
 function logout(){supabaseClient.auth.signOut().finally(()=>window.location.replace("login.html"))}
 function init(){
+ initPaymentModal();
  document.getElementById("detailModal").addEventListener("click",e=>{if(e.target.id==="detailModal")closeModal()});
  guard().then(ok=>{if(ok)refreshAll()});
 }
