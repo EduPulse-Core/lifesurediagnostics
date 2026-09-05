@@ -1,73 +1,140 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>LifeSure Diagnostics | Secure Sign In</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LifeSure Diagnostics | Secure Staff Sign In</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--navy:#061d2d;--blue:#075985;--green:#16a765;--mint:#e9f9f1;--bg:#f3f8fb;--ink:#102235;--muted:#66788a;--line:#e1ebef}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 10% 10%,rgba(22,167,101,.12),transparent 28%),radial-gradient(circle at 92% 86%,rgba(14,165,233,.12),transparent 30%),linear-gradient(135deg,#eef7fa,#f7fbfd);font-family:Inter,Arial,sans-serif;color:var(--ink);display:grid;place-items:center;padding:22px}
-.shell{width:min(1040px,100%);min-height:650px;border:1px solid rgba(255,255,255,.9);border-radius:32px;background:rgba(255,255,255,.76);backdrop-filter:blur(26px);box-shadow:0 35px 110px rgba(6,29,45,.13);overflow:hidden;display:grid;grid-template-columns:1.05fr .95fr}
-.left{position:relative;padding:52px;background:linear-gradient(150deg,#06273b,#075985 62%,#0b8d55);color:#fff;overflow:hidden}.left:before,.left:after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,.13)}.left:before{width:390px;height:390px;right:-190px;top:-160px}.left:after{width:260px;height:260px;left:-120px;bottom:-120px}
-.logo-wrap{width:220px;height:70px;background:#fff;border-radius:18px;display:grid;place-items:center;overflow:hidden;box-shadow:0 15px 45px rgba(0,0,0,.18)}.logo-wrap img{width:100%;height:100%;object-fit:contain;padding:9px}.hero{position:relative;margin-top:76px;z-index:1}.eyebrow{font-size:9px;text-transform:uppercase;letter-spacing:2px;font-weight:900;color:#87efbc}.hero h1{font:800 40px "Plus Jakarta Sans";letter-spacing:-1.4px;line-height:1.06;margin:10px 0 14px}.hero p{font-size:11px;line-height:1.7;color:#d4e6ee;max-width:470px}.signal{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:34px}.signal div{padding:13px;border:1px solid rgba(255,255,255,.12);border-radius:14px;background:rgba(255,255,255,.06)}.signal b{display:block;font-size:10px}.signal span{display:block;margin-top:4px;color:#a8c2ce;font-size:8px}
-.right{padding:52px;display:flex;align-items:center}.panel{width:min(420px,100%);margin:auto}.mini{font-size:9px;color:var(--blue);font-weight:900;letter-spacing:1.5px;text-transform:uppercase}.panel h2{font:800 30px "Plus Jakarta Sans";letter-spacing:-1px;color:var(--navy);margin:8px 0 7px}.sub{font-size:10px;color:var(--muted);line-height:1.55}.field{margin-top:18px}.field label{display:block;font-size:8px;text-transform:uppercase;letter-spacing:1px;font-weight:900;color:#64748b;margin-bottom:7px}.field input{width:100%;height:46px;padding:0 13px;border:1px solid var(--line);border-radius:12px;background:#f9fcfd;outline:none;font-size:11px}.field input:focus{background:#fff;border-color:#77d6a9;box-shadow:0 0 0 4px rgba(22,167,101,.09)}.pass{position:relative}.pass button{position:absolute;right:7px;top:7px;height:32px;border:0;background:#eef6f8;border-radius:8px;color:#416072;font-size:8px;font-weight:800}.submit{width:100%;height:48px;margin-top:21px;border:0;border-radius:13px;background:linear-gradient(135deg,var(--green),#0b8d55);color:#fff;font-size:10px;font-weight:900;box-shadow:0 12px 30px rgba(22,167,101,.22)}.submit:active{transform:scale(.99)}.submit.busy{opacity:.7;pointer-events:none}.security{margin-top:17px;padding:12px;border:1px dashed #d7e5eb;border-radius:12px;background:#fbfdfe;color:#617788;font-size:8px;line-height:1.55}.status{min-height:17px;margin-top:11px;font-size:9px;font-weight:800}.status.error{color:#b91c1c}.status.ok{color:#047857}.foot{margin-top:20px;font-size:8px;color:#8a99a4;text-align:center}
-@media(max-width:820px){.shell{grid-template-columns:1fr}.left{min-height:280px;padding:30px}.hero{margin-top:36px}.hero h1{font-size:30px}.right{padding:30px}}
+:root{--navy:#061d2d;--blue:#075985;--green:#16a765;--bg:#f3f8fb;--ink:#102235;--muted:#66788a;--line:#dce8ed;--danger:#b91c1c}
+*{box-sizing:border-box}html{color-scheme:light}body{margin:0;min-height:100vh;background:radial-gradient(circle at 8% 12%,rgba(22,167,101,.13),transparent 28%),radial-gradient(circle at 92% 88%,rgba(14,165,233,.12),transparent 30%),linear-gradient(135deg,#eef7fa,#f8fbfd);font-family:Inter,Arial,sans-serif;color:var(--ink);display:grid;place-items:center;padding:20px}
+.shell{width:min(1080px,100%);min-height:670px;border:1px solid rgba(255,255,255,.92);border-radius:30px;background:rgba(255,255,255,.82);backdrop-filter:blur(25px);box-shadow:0 35px 110px rgba(6,29,45,.14);overflow:hidden;display:grid;grid-template-columns:1.06fr .94fr}
+.left{position:relative;padding:52px;background:linear-gradient(150deg,#06273b,#075985 62%,#0b8d55);color:#fff;overflow:hidden}.left:before,.left:after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,.13);pointer-events:none}.left:before{width:410px;height:410px;right:-205px;top:-170px}.left:after{width:280px;height:280px;left:-135px;bottom:-130px}
+.logo-wrap{width:min(280px,100%);height:82px;background:#fff;border-radius:19px;display:grid;place-items:center;overflow:hidden;box-shadow:0 16px 45px rgba(0,0,0,.18);position:relative;z-index:2}.logo-wrap img{width:100%;height:100%;object-fit:contain;padding:8px}.brand-fallback{display:none;color:var(--navy);font:800 22px "Plus Jakarta Sans";letter-spacing:-.8px}.logo-wrap img:not([src]),.logo-wrap img.hidden{display:none}.hero{position:relative;margin-top:76px;z-index:1}.eyebrow{font-size:9px;text-transform:uppercase;letter-spacing:2px;font-weight:900;color:#87efbc}.hero h1{font:800 42px "Plus Jakarta Sans";letter-spacing:-1.5px;line-height:1.05;margin:10px 0 14px}.hero p{font-size:11px;line-height:1.75;color:#d6e8ef;max-width:470px}.signal{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:34px}.signal div{padding:13px;border:1px solid rgba(255,255,255,.13);border-radius:14px;background:rgba(255,255,255,.07);box-shadow:inset 0 1px 0 rgba(255,255,255,.07)}.signal b{display:block;font-size:10px}.signal span{display:block;margin-top:4px;color:#a8c2ce;font-size:8px}
+.right{padding:52px;display:flex;align-items:center}.panel{width:min(430px,100%);margin:auto}.mini{font-size:9px;color:var(--blue);font-weight:900;letter-spacing:1.5px;text-transform:uppercase}.panel h2{font:800 30px "Plus Jakarta Sans";letter-spacing:-1px;color:var(--navy);margin:8px 0 7px}.sub{font-size:10px;color:var(--muted);line-height:1.6}.security-banner{margin:18px 0 2px;padding:11px 12px;border:1px solid #d8ebe3;border-radius:12px;background:#f5fcf8;color:#25634e;font-size:8px;line-height:1.5;font-weight:700}.field{margin-top:18px}.field label{display:block;font-size:8px;text-transform:uppercase;letter-spacing:1px;font-weight:900;color:#64748b;margin-bottom:7px}.field input{width:100%;height:48px;padding:0 13px;border:1px solid var(--line);border-radius:12px;background:#f9fcfd;outline:none;font-size:11px;transition:border-color .18s,box-shadow .18s,background .18s}.field input:focus{background:#fff;border-color:#77d6a9;box-shadow:0 0 0 4px rgba(22,167,101,.09)}.pass{position:relative}.pass input{padding-right:72px}.pass button{position:absolute;right:7px;top:7px;height:34px;padding:0 10px;border:0;background:#eef6f8;border-radius:8px;color:#416072;font-size:8px;font-weight:800;cursor:pointer}.submit{width:100%;height:50px;margin-top:21px;border:0;border-radius:13px;background:linear-gradient(135deg,var(--green),#0b8d55);color:#fff;font-size:10px;font-weight:900;box-shadow:0 12px 30px rgba(22,167,101,.22);cursor:pointer;transition:transform .15s,opacity .15s}.submit:hover{transform:translateY(-1px)}.submit:active{transform:scale(.99)}.submit.busy{opacity:.7;pointer-events:none}.status{min-height:22px;margin-top:11px;font-size:9px;font-weight:800}.status.error{color:var(--danger)}.status.ok{color:#047857}.status.info{color:#475569}.security{margin-top:17px;padding:12px;border:1px dashed #d7e5eb;border-radius:12px;background:#fbfdfe;color:#617788;font-size:8px;line-height:1.6}.foot{margin-top:20px;font-size:8px;color:#8a99a4;text-align:center}.session-note{display:none;margin-top:13px;padding:10px 12px;border-radius:10px;background:#fefce8;border:1px solid #f2e4a7;color:#796b22;font-size:8px;line-height:1.55}.session-note.show{display:block}
+@media(max-width:820px){.shell{grid-template-columns:1fr}.left{min-height:300px;padding:30px}.hero{margin-top:38px}.hero h1{font-size:31px}.right{padding:30px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 </style>
 </head>
 <body>
 <div class="shell">
 <section class="left">
-  <div class="logo-wrap"><img src="logo.png" alt="LifeSure Diagnostics" onerror="this.hidden=true"></div>
+  <div class="logo-wrap">
+    <img src="logo.png" alt="LifeSure Diagnostics logo" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+    <span class="brand-fallback">LifeSure Diagnostics</span>
+  </div>
   <div class="hero">
     <div class="eyebrow">Protected operations</div>
     <h1>LifeSure<br>Command Center</h1>
-    <p>Secure workspace for authorised LifeSure team members. Access is checked before the management console is rendered.</p>
-    <div class="signal"><div><b>Auth</b><span>Supabase session</span></div><div><b>Roles</b><span>Permission scoped</span></div><div><b>Data</b><span>Server controlled</span></div></div>
+    <p>Secure workspace for authorised LifeSure team members. Opening the Login page will never automatically enter the Command Center. Credentials are required every time.</p>
+    <div class="signal">
+      <div><b>Auth</b><span>Supabase credentials</span></div>
+      <div><b>Roles</b><span>Permission scoped</span></div>
+      <div><b>Data</b><span>Server controlled</span></div>
+    </div>
   </div>
 </section>
-<section class="right"><div class="panel">
-  <div class="mini">Staff sign in</div><h2>Welcome back</h2><div class="sub">Use your authorised LifeSure account to continue to the protected workspace.</div>
-  <form id="loginForm" novalidate>
-    <div class="field"><label>Email</label><input id="email" type="email" autocomplete="username" placeholder="name@lifesurediagnostics.com" required></div>
-    <div class="field"><label>Password</label><div class="pass"><input id="password" type="password" autocomplete="current-password" placeholder="Enter your password" required><button id="toggle" type="button">SHOW</button></div></div>
-    <button class="submit" id="submit" type="submit">Sign in securely</button>
-    <div id="status" class="status" aria-live="polite"></div>
-  </form>
-  <div class="security">Security policy: an active authenticated session and an active LifeSure staff profile are both required. Unauthorised or inactive accounts are rejected before the Command Center becomes visible.</div>
-  <div class="foot">LifeSure Diagnostics • Internal Operations • Do not share credentials</div>
-</div></section>
+<section class="right">
+  <div class="panel">
+    <div class="mini">Staff sign in</div>
+    <h2>Sign in to continue</h2>
+    <div class="sub">Enter your authorised LifeSure account credentials. A valid active staff profile is required before the Command Center can be opened.</div>
+    <div class="security-banner">Credential required • No automatic dashboard redirect from this page</div>
+    <form id="loginForm" novalidate>
+      <div class="field"><label for="email">Email</label><input id="email" type="email" autocomplete="username" inputmode="email" placeholder="name@lifesurediagnostics.com" required></div>
+      <div class="field"><label for="password">Password</label><div class="pass"><input id="password" type="password" autocomplete="current-password" placeholder="Enter your password" required><button id="toggle" type="button" aria-label="Show password">SHOW</button></div></div>
+      <button class="submit" id="submit" type="submit">Sign in securely</button>
+      <div id="status" class="status" aria-live="polite"></div>
+      <div id="sessionNote" class="session-note">A previous authenticated session exists in this browser. It will <strong>not</strong> be used to bypass this form. Enter your credentials to continue.</div>
+    </form>
+    <div class="security">Security policy: the Command Center is never opened from this page based only on an existing browser session. Authentication, active-profile validation and role authorization must succeed before redirect.</div>
+    <div class="foot">LifeSure Diagnostics • Internal Operations • Do not share credentials</div>
+  </div>
+</section>
 </div>
 <script>
 const SUPABASE_URL="https://evzgfprzxsgxsymvwsip.supabase.co";
 const SUPABASE_ANON_KEY="sb_publishable_IJC51IW4TePmMzCsbJ7Vyw_6fkqqV67";
-const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
-const form=document.getElementById('loginForm'),email=document.getElementById('email'),password=document.getElementById('password'),status=document.getElementById('status'),submit=document.getElementById('submit');
-function setStatus(t,kind){status.textContent=t;status.className='status '+(kind||'')}
-function nextPath(){const q=new URLSearchParams(location.search).get('next');return q==='admin.html'?'admin.html':'admin.html'}
-async function routeIfAlreadyAuthenticated(){
- const {data}=await client.auth.getSession();
- if(!data?.session)return;
- setStatus('Existing secure session found. Verifying account…','ok');
- const {data:profile,error}=await client.from('profiles').select('role,active').eq('id',data.session.user.id).maybeSingle();
- const roles=['super_admin','management','accounts','hr','reception','lab_staff','franchise'];
- if(!error&&profile&&profile.active===true&&roles.includes(profile.role)) location.replace(nextPath());
- else await client.auth.signOut();
+const supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+const ALLOWED_ROLES=['super_admin','management','accounts','hr','reception','lab_staff','franchise'];
+const form=document.getElementById('loginForm');
+const email=document.getElementById('email');
+const password=document.getElementById('password');
+const status=document.getElementById('status');
+const submit=document.getElementById('submit');
+const sessionNote=document.getElementById('sessionNote');
+function setStatus(text,kind='info'){status.textContent=text;status.className='status '+kind}
+function nextPath(){return 'admin.html'}
+const queryParams=new URLSearchParams(location.search);
+const queryError=queryParams.get('error');
+if(queryError==='access_denied') setStatus('Access denied: an active authorised staff profile is required.','error');
+if(queryError==='session_expired') setStatus('Your secure session expired. Please sign in again.','error');
+if(queryError==='security_check') setStatus('Security verification failed. Please sign in again.','error');
+if(queryError==='data_unavailable') setStatus('The workspace could not load its protected data services.','error');
+
+async function inspectExistingSession(){
+  try{
+    const {data,error}=await supabase.auth.getSession();
+    if(error) return;
+    if(data?.session){
+      // IMPORTANT: Never redirect from login.html because a session already exists.
+      sessionNote.classList.add('show');
+    }
+  }catch(_){/* Keep login usable even if session inspection fails. */}
 }
-form.addEventListener('submit',async e=>{
- e.preventDefault();const em=email.value.trim(),pw=password.value;
- if(!em||!pw){setStatus('Enter your email and password.','error');return}
- submit.classList.add('busy');submit.textContent='Verifying…';setStatus('Checking credentials and staff permissions…');
- const {data,error}=await client.auth.signInWithPassword({email:em,password:pw});
- if(error){setStatus(error.message||'Sign in failed.','error');submit.classList.remove('busy');submit.textContent='Sign in securely';return}
- const {data:profile,error:profileError}=await client.from('profiles').select('role,active').eq('id',data.user.id).maybeSingle();
- const roles=['super_admin','management','accounts','hr','reception','lab_staff','franchise'];
- if(profileError||!profile||profile.active!==true||!roles.includes(profile.role)){
-   await client.auth.signOut();setStatus('Access denied: authorised staff profile required.','error');submit.classList.remove('busy');submit.textContent='Sign in securely';return;
- }
- setStatus('Access verified. Opening protected workspace…','ok');location.replace(nextPath());
+
+form.addEventListener('submit',async(e)=>{
+  e.preventDefault();
+  const em=email.value.trim().toLowerCase();
+  const pw=password.value;
+  if(!em||!pw){setStatus('Enter your email and password.','error');return;}
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){setStatus('Enter a valid email address.','error');return;}
+  submit.classList.add('busy');
+  submit.textContent='Verifying credentials…';
+  setStatus('Authenticating securely…','info');
+  try{
+    // Clear any previous client session before accepting this login attempt.
+    // This guarantees the flow is credential-driven.
+    await supabase.auth.signOut();
+    const {data,error}=await supabase.auth.signInWithPassword({email:em,password:pw});
+    if(error||!data?.user){
+      setStatus(error?.message||'Sign in failed. Check your credentials.','error');
+      submit.classList.remove('busy');
+      submit.textContent='Sign in securely';
+      return;
+    }
+    const {data:profile,error:profileError}=await supabase
+      .from('profiles')
+      .select('role,active')
+      .eq('id',data.user.id)
+      .maybeSingle();
+    if(profileError||!profile||profile.active!==true||!ALLOWED_ROLES.includes(profile.role)){
+      await supabase.auth.signOut();
+      setStatus('Access denied: authorised active staff profile required.','error');
+      submit.classList.remove('busy');
+      submit.textContent='Sign in securely';
+      return;
+    }
+    setStatus('Credentials verified. Opening protected workspace…','ok');
+    window.location.replace(nextPath());
+  }catch(err){
+    console.error(err);
+    try{await supabase.auth.signOut();}catch(_){ }
+    setStatus('Unable to complete secure sign in. Please try again.','error');
+    submit.classList.remove('busy');
+    submit.textContent='Sign in securely';
+  }
 });
-document.getElementById('toggle').addEventListener('click',()=>{const show=password.type==='password';password.type=show?'text':'password';document.getElementById('toggle').textContent=show?'HIDE':'SHOW'});
-routeIfAlreadyAuthenticated();
+
+document.getElementById('toggle').addEventListener('click',()=>{
+  const show=password.type==='password';
+  password.type=show?'text':'password';
+  document.getElementById('toggle').textContent=show?'HIDE':'SHOW';
+  document.getElementById('toggle').setAttribute('aria-label',show?'Hide password':'Show password');
+});
+
+inspectExistingSession();
 </script>
-</body></html>
+</body>
+</html>
