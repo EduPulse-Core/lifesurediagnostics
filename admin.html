@@ -8,6 +8,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 
 <style>
@@ -660,6 +662,44 @@ body.ready .app{visibility:visible;opacity:1;transition:opacity .32s ease}
   .action-busy::after,.success-flash,.action-danger{animation:none}
 }
 
+
+/* ===== V6 REPORT OPERATIONS ===== */
+.report-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.report-kicker{display:inline-flex;align-items:center;gap:7px;padding:7px 9px;border:1px solid #d7e7ed;border-radius:999px;background:#f8fcfd;color:#55707f;font-size:7px;font-weight:900;text-transform:uppercase;letter-spacing:.9px}
+.report-kicker i{width:7px;height:7px;border-radius:50%;background:#2bd38a;box-shadow:0 0 11px rgba(43,211,138,.55)}
+.report-modal-card{width:min(820px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:22px;box-shadow:0 35px 100px rgba(2,17,28,.25)}
+.report-modal-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding:19px 20px;background:linear-gradient(135deg,#06243a,#075985 65%,#0b8d55);color:#fff}
+.report-modal-head h3{margin:0;font:800 17px "Plus Jakarta Sans"}
+.report-modal-head p{margin:5px 0 0;color:#bfe3ef;font-size:8px;line-height:1.5}
+.report-modal-body{padding:20px}
+.report-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.report-field{display:flex;flex-direction:column;gap:7px}
+.report-field.full{grid-column:1/-1}
+.report-field label{font-size:8px;text-transform:uppercase;letter-spacing:1px;font-weight:900;color:#587080}
+.report-field input,.report-field select{height:44px;padding:0 12px;border:1px solid #dbe8ed;border-radius:11px;background:#fbfdfe;color:#193047;outline:none;font-size:10px}
+.report-field input:focus,.report-field select:focus{border-color:#72d9aa;box-shadow:0 0 0 4px rgba(22,167,101,.08)}
+.file-drop{border:1.5px dashed #b9d5df;border-radius:15px;padding:18px;background:linear-gradient(145deg,#f9fcfd,#f3faf7);cursor:pointer;transition:.18s}
+.file-drop:hover{border-color:#59c995;transform:translateY(-1px)}
+.file-drop strong{display:block;font-size:10px;color:#173348}
+.file-drop span{display:block;margin-top:4px;font-size:8px;color:#718594;line-height:1.5}
+.file-chip{margin-top:10px;display:flex;align-items:center;gap:8px;padding:9px 10px;background:#eef8f3;border:1px solid #ccebdd;border-radius:10px;color:#287153;font-size:8px;font-weight:800}
+.file-chip b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.letterhead-preview{position:relative;min-height:215px;border:1px solid #dce8ed;border-radius:15px;background:#fff;overflow:hidden;box-shadow:0 13px 35px rgba(6,29,45,.07)}
+.letterhead-preview:before{content:"";display:block;height:8px;background:linear-gradient(90deg,#06243a,#075985 55%,#16a765)}
+.letterhead-inner{padding:17px}
+.letterhead-brand{display:flex;align-items:center;gap:10px;padding-bottom:11px;border-bottom:1px solid #e4edf1}
+.letterhead-brand img{width:48px;height:38px;object-fit:contain;background:#fff;border-radius:8px;border:1px solid #e3ecef;padding:4px}
+.letterhead-brand b{font:800 14px "Plus Jakarta Sans";color:#0d2b3d}
+.letterhead-brand small{display:block;margin-top:2px;color:#6d8795;font-size:7px;letter-spacing:1.1px;text-transform:uppercase;font-weight:800}
+.letterhead-meta{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:12px}
+.letterhead-meta span{display:block;color:#8296a1;font-size:7px;text-transform:uppercase;letter-spacing:.6px;font-weight:800}
+.letterhead-meta b{display:block;margin-top:3px;color:#193247;font-size:8px}
+.letterhead-footer{margin-top:20px;padding-top:9px;border-top:1px solid #e4edf1;color:#78909c;font-size:7px;line-height:1.5}
+.report-actions{display:flex;gap:6px;flex-wrap:wrap}
+.report-status-note{padding:11px 12px;border-radius:12px;background:#f5fafc;border:1px solid #ddebef;color:#637a88;font-size:8px;line-height:1.55}
+.report-modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px;padding-top:14px;border-top:1px solid #e8eef2}
+@media(max-width:760px){.report-grid{grid-template-columns:1fr}.report-field.full{grid-column:auto}}
+
 </style>
 </head>
 
@@ -798,8 +838,27 @@ body.ready .app{visibility:visible;opacity:1;transition:opacity .32s ease}
 <!-- REPORTS -->
 <section class="view" id="reports">
   <div class="section-grid" style="margin-top:0">
-    <div class="card"><div class="card-head"><div><h3>Report Center</h3><div class="card-sub">Uploaded, reviewed and published reports</div></div><button class="btn btn-primary" onclick="reportUploadInfo()">Upload Report</button></div><div class="table-wrap"><table class="data-table"><thead><tr><th>Report</th><th>Booking</th><th>Patient</th><th>Status</th><th>Version</th><th>Published</th></tr></thead><tbody id="reportRows"></tbody></table></div></div>
-    <div class="card"><div class="card-head"><div><h3>Report workflow</h3><div class="card-sub">Built for the staff → patient journey</div></div></div><div class="pad" style="padding:18px"><div class="insight-list"><div class="insight"><div class="insight-icon">1</div><div><b>Upload original report</b><p>Lab staff attaches the report to the booking.</p></div></div><div class="insight"><div class="insight-icon">2</div><div><b>Review & verify</b><p>Authorized reviewer checks the report.</p></div></div><div class="insight"><div class="insight-icon">3</div><div><b>Publish</b><p>Patient and permitted franchise users can access it.</p></div></div><div class="insight"><div class="insight-icon">4</div><div><b>Download</b><p>Original, letterhead and verified copies can be offered.</p></div></div></div></div></div>
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h3>Report Operations</h3>
+          <div class="card-sub">Secure upload, LifeSure letterhead and controlled publication</div>
+        </div>
+        <div class="report-toolbar">
+          <span class="report-kicker"><i></i> Private PDF storage</span>
+          <button class="btn btn-primary" onclick="openReportUploadModal()">+ New Report</button>
+        </div>
+      </div>
+      <div class="security-note">Original reports stay in the private <b>reports-private</b> bucket. Uploads are linked to a real booking, patient and report path before the database stores the file references.</div>
+      <div class="table-wrap"><table class="data-table"><thead><tr><th>Report</th><th>Booking</th><th>Patient</th><th>Status</th><th>Version</th><th>Published</th><th>Actions</th></tr></thead><tbody id="reportRows"></tbody></table></div>
+    </div>
+    <div class="section-grid">
+      <div class="card"><div class="card-head"><div><h3>LifeSure Letterhead</h3><div class="card-sub">Professional first page generated from the booking</div></div></div>
+        <div class="letterhead-preview"><div class="letterhead-inner"><div class="letterhead-brand"><img src="logo.png" alt="LifeSure logo" onerror="this.style.display='none'"><div><b>LifeSure Diagnostics</b><small>Diagnostic Report • Confidential Medical Document</small></div></div><div class="letterhead-meta"><div><span>Patient</span><b>Generated per booking</b></div><div><span>Report Code</span><b>LifeSure controlled identifier</b></div><div><span>Booking</span><b>Linked to original order</b></div><div><span>Issued</span><b>System timestamp</b></div></div><div class="letterhead-footer">This LifeSure-branded cover is attached to the preserved original laboratory report. The source report remains unchanged in private storage.</div></div></div>
+      </div>
+      <div class="card"><div class="card-head"><div><h3>Controlled workflow</h3><div class="card-sub">No direct report-table browser writes</div></div></div><div class="pad" style="padding:18px"><div class="insight-list"><div class="insight"><div class="insight-icon">1</div><div><b>Create report</b><p>Link the report to an existing LifeSure booking.</p></div></div><div class="insight"><div class="insight-icon">2</div><div><b>Upload source PDF</b><p>Private Storage path is validated against the report and patient.</p></div></div><div class="insight"><div class="insight-icon">3</div><div><b>Generate letterhead copy</b><p>Optional LifeSure-branded cover is merged with the source PDF.</p></div></div><div class="insight"><div class="insight-icon">4</div><div><b>Publish securely</b><p>Existing authorization and payment controls remain the final publication gate.</p></div></div></div></div></div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1070,6 +1129,55 @@ body.ready .app{visibility:visible;opacity:1;transition:opacity .32s ease}
   </div>
 
 </div>
+
+<!-- REPORT UPLOAD MODAL -->
+<div class="modal" id="reportUploadModal">
+  <div class="report-modal-card">
+    <div class="report-modal-head">
+      <div>
+        <h3>New Diagnostic Report</h3>
+        <p>Create the report record, upload the original PDF and optionally generate a LifeSure letterhead copy.</p>
+      </div>
+      <button class="close" type="button" onclick="closeReportUploadModal()">×</button>
+    </div>
+    <div class="report-modal-body">
+      <div class="report-grid">
+        <div class="report-field full">
+          <label>Booking</label>
+          <select id="reportBookingSelect"></select>
+        </div>
+        <div class="report-field">
+          <label>Report Code (optional)</label>
+          <input id="reportCodeInput" maxlength="80" placeholder="Auto-generated when blank">
+        </div>
+        <div class="report-field">
+          <label>Letterhead copy</label>
+          <select id="reportLetterheadMode">
+            <option value="merge">Generate LifeSure letterhead + merge</option>
+            <option value="none">Keep original PDF only</option>
+          </select>
+        </div>
+        <div class="report-field full">
+          <label>Original laboratory report PDF</label>
+          <input id="reportPdfInput" type="file" accept="application/pdf,.pdf" hidden>
+          <div class="file-drop" onclick="document.getElementById('reportPdfInput').click()">
+            <strong>Choose the source PDF</strong>
+            <span>PDF only • maximum 10 MB • preserved as the original source document.</span>
+          </div>
+          <div class="file-chip" id="reportFileChip" hidden><span>PDF</span><b id="reportFileName"></b><span id="reportFileSize"></span></div>
+        </div>
+        <div class="report-field full">
+          <div class="report-status-note"><b>Security:</b> the browser cannot directly insert into <code>reports</code>. Report creation and file attachment use role-checked RPCs, while the PDF itself stays in private Storage.</div>
+        </div>
+      </div>
+      <div class="report-modal-actions">
+        <button class="btn btn-light" type="button" onclick="closeReportUploadModal()">Cancel</button>
+        <button class="btn btn-primary" id="createReportUploadButton" type="button" onclick="submitReportUpload()">Create & Upload Securely</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 const SUPABASE_URL = "https://evzgfprzxsgxsymvwsip.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_IJC51IW4TePmMzCsbJ7Vyw_6fkqqV67";
@@ -1153,9 +1261,26 @@ function applyRoleWorkspace(role){const allowed=ROLE_VIEWS[role]||[];document.qu
 async function guard(){
  const gateText=document.getElementById('gateText');
  try{
+   let handoff=null;
+   try{handoff=JSON.parse(sessionStorage.getItem('lifesure:credential-handoff')||'null')}catch(_){}
+   if(!handoff || !handoff.at || (Date.now()-Number(handoff.at)) > 10*60*1000){
+     await supabaseClient.auth.signOut();
+     window.location.replace('login.html?next=admin.html&error=login_required');
+     return false;
+   }
    gateText.textContent='Checking encrypted authentication session…';
    const {data,error}=await supabaseClient.auth.getSession();
-   if(error||!data?.session){window.location.replace('login.html?next=admin.html');return false;}
+   if(error||!data?.session){
+     sessionStorage.removeItem('lifesure:credential-handoff');
+     window.location.replace('login.html?next=admin.html&error=session_expired');
+     return false;
+   }
+   if(handoff.userId && handoff.userId!==data.session.user.id){
+     await supabaseClient.auth.signOut();
+     sessionStorage.removeItem('lifesure:credential-handoff');
+     window.location.replace('login.html?next=admin.html&error=security_check');
+     return false;
+   }
    state.user=data.session.user;
    gateText.textContent='Validating active staff profile and role…';
    const {data:profile,error:profileError}=await supabaseClient.from('profiles').select('id,full_name,email,role,active,organization_id').eq('id',state.user.id).maybeSingle();
@@ -1173,7 +1298,7 @@ async function guard(){
  }catch(error){console.error('SECURITY GUARD ERROR:',error);window.location.replace('login.html?error=security_check');return false;}
 }
 supabaseClient.auth.onAuthStateChange((event)=>{
-  if(event==='SIGNED_OUT') window.location.replace('login.html');
+  if(event==='SIGNED_OUT'){try{sessionStorage.removeItem('lifesure:credential-handoff')}catch(_){} window.location.replace('login.html');}
   if(event==='TOKEN_REFRESHED') document.getElementById('secureSessionText').textContent='Session refreshed • Protected';
 });
 
@@ -1960,15 +2085,188 @@ async function openSecureReportPdf(reportId){
   }
 }
 
-function renderReports(){
- document.getElementById("reportRows").innerHTML=state.reports.length?state.reports.slice(0,100).map(r=>`
- <tr><td class="id">${esc(r.report_code||r.id)}</td><td>${esc(r.booking_id||"—")}</td><td class="person">${esc(r.patient_id||"—")}</td>
- <td>${statusBadge(r.status)}</td><td>${esc(r.version||1)}</td><td>${fmtDate(r.published_at)}</td>
- <td>${String(r.status).toLowerCase()==="published"&&(r.original_path||r.letterhead_path)?`<button class="btn btn-light" type="button" onclick="openSecureReportPdf('${esc(r.id)}')">View PDF</button>`:"—"}</td></tr>`).join("")
- : `<tr><td colspan="7"><div class="empty"><div class="big">▣</div><b>No reports</b><span>Uploaded reports will appear here.</span></div></td></tr>`;
+async function openSecureReportPdf(reportId, preferLetterhead=false){
+  try{
+    if(!(await assertLiveSession())) return;
+    const report=state.reports.find(x=>String(x.id)===String(reportId));
+    if(!report){showToast("Report not found.");return;}
+    if(String(report.status).toLowerCase()!=="published"){showToast("Only published reports can be opened.");return;}
+    const path=(preferLetterhead && report.letterhead_path) ? report.letterhead_path : (report.original_path||report.letterhead_path);
+    if(!path){showToast("No report PDF is attached to this record.");return;}
+    const {data,error}=await supabaseClient.storage.from("reports-private").createSignedUrl(path,300);
+    if(error||!data?.signedUrl) throw error||new Error("Unable to create secure report link.");
+    window.open(data.signedUrl,"_blank","noopener,noreferrer");
+  }catch(error){
+    console.error("SECURE REPORT OPEN ERROR:",error);
+    showToast(error.message||"Report access was blocked.");
+  }
 }
-function reportUploadInfo(){
-  showToast("Secure report workflow is ready for the private Storage/RPC step.");
+
+function renderReports(){
+ const role=state.profile?.role||"";
+ document.getElementById("reportRows").innerHTML=state.reports.length?state.reports.slice(0,100).map(r=>{
+   const status=String(r.status||"").toLowerCase();
+   const published=status==="published";
+   const canOperate=["super_admin","management","lab_staff"].includes(role);
+   const actions=[];
+   if(published&&(r.original_path||r.letterhead_path)){
+     actions.push(`<button class="btn btn-light" type="button" onclick="openSecureReportPdf('${esc(r.id)}',false)">Original</button>`);
+     if(r.letterhead_path) actions.push(`<button class="btn btn-light" type="button" onclick="openSecureReportPdf('${esc(r.id)}',true)">Letterhead</button>`);
+   } else if(canOperate && (r.original_path||r.letterhead_path)){
+     actions.push(`<span class="finance-chip">PDF attached</span>`);
+   }
+   return `<tr><td class="id">${esc(r.report_code||r.id)}</td><td>${esc(r.booking_id||"—")}</td><td class="person">${esc(r.patient_id||"—")}</td>
+ <td>${statusBadge(r.status)}</td><td>${esc(r.version||1)}</td><td>${fmtDate(r.published_at)}</td>
+ <td><div class="report-actions">${actions.join("")||"—"}</div></td></tr>`;
+ }).join("")
+ : `<tr><td colspan="7"><div class="empty"><div class="big">▣</div><b>No reports</b><span>Create the first report from an existing booking.</span></div></td></tr>`;
+}
+
+function closeReportUploadModal(){
+  document.getElementById("reportUploadModal")?.classList.remove("show");
+  const input=document.getElementById("reportPdfInput");
+  if(input) input.value="";
+  document.getElementById("reportFileChip")?.setAttribute("hidden","");
+  const code=document.getElementById("reportCodeInput"); if(code) code.value="";
+}
+
+function openReportUploadModal(){
+  const role=state.profile?.role;
+  if(!["super_admin","management","lab_staff"].includes(role)){showToast("Report creation is restricted to Lab Staff, Management and Super Admin.");return;}
+  const select=document.getElementById("reportBookingSelect");
+  const activeReports=new Set(state.reports.filter(r=>String(r.status||"").toLowerCase()!=="replaced").map(r=>String(r.booking_id)));
+  const options=state.bookings
+    .filter(b=>b.booking_id && !activeReports.has(String(b.booking_id)))
+    .map(b=>`<option value="${esc(b.booking_id)}">${esc(b.booking_code||b.booking_id)} • ${esc(b.patient_name||"Patient")} • ${esc(b.test_name||b.package_name||"Diagnostic test")}</option>`)
+    .join("");
+  select.innerHTML=options||`<option value="">No eligible bookings available</option>`;
+  document.getElementById("reportUploadModal")?.classList.add("show");
+}
+
+document.getElementById("reportPdfInput")?.addEventListener("change",e=>{
+  const file=e.target.files?.[0];
+  const chip=document.getElementById("reportFileChip");
+  if(!file){chip?.setAttribute("hidden","");return;}
+  if(file.type!=="application/pdf" && !file.name.toLowerCase().endsWith(".pdf")){
+    e.target.value=""; chip?.setAttribute("hidden",""); showToast("Only PDF files are allowed."); return;
+  }
+  if(file.size>10*1024*1024){
+    e.target.value=""; chip?.setAttribute("hidden",""); showToast("PDF exceeds the 10 MB storage limit."); return;
+  }
+  document.getElementById("reportFileName").textContent=file.name;
+  document.getElementById("reportFileSize").textContent=(file.size/1024/1024).toFixed(2)+" MB";
+  chip?.removeAttribute("hidden");
+});
+
+async function imageToDataUrl(src){
+  return new Promise((resolve,reject)=>{
+    const img=new Image();
+    img.onload=()=>{
+      try{
+        const c=document.createElement("canvas");
+        c.width=img.naturalWidth||300;c.height=img.naturalHeight||150;
+        const ctx=c.getContext("2d");ctx.drawImage(img,0,0);
+        resolve(c.toDataURL("image/png"));
+      }catch(err){reject(err)}
+    };
+    img.onerror=()=>reject(new Error("LifeSure logo could not be loaded."));
+    img.src=src;
+  });
+}
+
+async function generateLifeSureLetterheadPdf(booking, report, originalFile){
+  if(!window.jspdf?.jsPDF) throw new Error("Letterhead PDF engine is unavailable.");
+  if(!window.PDFLib?.PDFDocument) throw new Error("PDF merge engine is unavailable.");
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({unit:"mm",format:"a4"});
+  const logo=await imageToDataUrl("logo.png");
+  const pageW=210;
+  doc.setFillColor(6,36,58);doc.rect(0,0,pageW,7,"F");
+  doc.setFillColor(7,89,133);doc.rect(0,7,pageW,1.5,"F");
+  doc.setFillColor(22,167,101);doc.rect(0,8.5,pageW,1.3,"F");
+  doc.addImage(logo,"PNG",18,19,22,17,"LSLOGO");
+  doc.setTextColor(13,43,61);doc.setFont("helvetica","bold");doc.setFontSize(19);doc.text("LifeSure Diagnostics",47,27);
+  doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(98,119,132);doc.text("DIAGNOSTIC REPORT  •  CONFIDENTIAL MEDICAL DOCUMENT",47,33);
+  doc.setDrawColor(218,231,237);doc.line(18,43,192,43);
+
+  const label=(x,y,t,v)=>{
+    doc.setTextColor(126,145,156);doc.setFont("helvetica","bold");doc.setFontSize(7);doc.text(t.toUpperCase(),x,y);
+    doc.setTextColor(25,50,71);doc.setFont("helvetica","normal");doc.setFontSize(9);doc.text(String(v||"—"),x,y+5);
+  };
+  label(18,56,"Patient",booking.patient_name||"Patient");
+  label(110,56,"Booking",booking.booking_code||booking.booking_id);
+  label(18,74,"Report Code",report.report_code||"—");
+  label(110,74,"Issued",new Date().toLocaleString("en-IN",{dateStyle:"medium",timeStyle:"short"}));
+  label(18,92,"Test / Package",booking.test_name||booking.package_name||"Diagnostic test");
+  label(110,92,"Collection",booking.collection_type||"Centre");
+  doc.setFillColor(245,249,251);doc.roundedRect(18,108,174,42,4,4,"F");
+  doc.setTextColor(13,43,61);doc.setFont("helvetica","bold");doc.setFontSize(10);doc.text("LifeSure Report Cover",27,119);
+  doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(92,111,124);
+  doc.text(doc.splitTextToSize("This LifeSure-branded cover is attached to the preserved original laboratory report. The source report remains unchanged in private storage.",150),27,128);
+  doc.setDrawColor(218,231,237);doc.line(18,261,192,261);
+  doc.setTextColor(100,120,132);doc.setFontSize(7);
+  doc.text("LifeSure Diagnostics  •  Serving Mumbai  •  7266925657",18,270);
+  doc.text("Generated by the protected LifeSure Report Operations workspace.",18,276);
+
+  const merged=await window.PDFLib.PDFDocument.create();
+  const cover=await window.PDFLib.PDFDocument.load(doc.output("arraybuffer"));
+  const [coverPage]=await merged.copyPages(cover,[0]);
+  merged.addPage(coverPage);
+  const original=await window.PDFLib.PDFDocument.load(await originalFile.arrayBuffer());
+  const pages=await merged.copyPages(original,original.getPageIndices());
+  pages.forEach(p=>merged.addPage(p));
+  return new Blob([await merged.save({useObjectStreams:true})],{type:"application/pdf"});
+}
+
+async function submitReportUpload(){
+  const button=document.getElementById("createReportUploadButton");
+  const bookingId=document.getElementById("reportBookingSelect").value;
+  const sourceFile=document.getElementById("reportPdfInput").files?.[0];
+  const code=document.getElementById("reportCodeInput").value.trim();
+  const mode=document.getElementById("reportLetterheadMode").value;
+  if(!bookingId){showToast("Select a booking.");return;}
+  if(!sourceFile){showToast("Choose the original laboratory PDF.");return;}
+  if(sourceFile.type!=="application/pdf" && !sourceFile.name.toLowerCase().endsWith(".pdf")){showToast("Only PDF files are allowed.");return;}
+  if(sourceFile.size>10*1024*1024){showToast("PDF exceeds the 10 MB limit.");return;}
+  const booking=state.bookings.find(b=>String(b.booking_id)===String(bookingId));
+  if(!booking){showToast("Booking could not be resolved.");return;}
+
+  button.classList.add("action-busy");button.disabled=true;
+  try{
+    const report=await secureRpc("create_report_securely",{p_booking_id:bookingId,p_report_code:code||null});
+    const reportId=report.report_id;
+    const patientId=report.patient_id;
+    const version="v1";
+    const stamp=Date.now();
+    const originalPath=`${patientId}/${reportId}/${version}/original-${stamp}.pdf`;
+
+    const {error:upErr}=await supabaseClient.storage.from("reports-private").upload(originalPath,sourceFile,{contentType:"application/pdf",upsert:false});
+    if(upErr) throw upErr;
+
+    let letterheadPath=null;
+    if(mode==="merge"){
+      const mergedBlob=await generateLifeSureLetterheadPdf(booking,report,sourceFile);
+      if(mergedBlob.size>10*1024*1024) throw new Error('Generated letterhead PDF exceeds the 10 MB private-storage limit. Use the original PDF without merge or reduce the source PDF size.');
+      letterheadPath=`${patientId}/${reportId}/${version}/letterhead-${stamp}.pdf`;
+      const {error:lhErr}=await supabaseClient.storage.from("reports-private").upload(letterheadPath,mergedBlob,{contentType:"application/pdf",upsert:false});
+      if(lhErr) throw lhErr;
+    }
+
+    await secureRpc("attach_report_files_securely",{
+      p_report_id:reportId,
+      p_original_path:originalPath,
+      p_letterhead_path:letterheadPath
+    });
+
+    closeReportUploadModal();
+    showToast(`Report ${report.report_code} uploaded securely.`);
+    await refreshAll();
+  }catch(error){
+    console.error("REPORT UPLOAD ERROR:",error);
+    showToast(error.message||"Report upload failed.");
+  }finally{
+    button.classList.remove("action-busy");button.disabled=false;
+  }
 }
 
 let selectedAdminPaymentMethod="upi";
@@ -2179,10 +2477,11 @@ async function addExpense(payload){
    showToast(error.message||"Expense could not be recorded");
  }
 }
-function logout(){supabaseClient.auth.signOut().finally(()=>window.location.replace("login.html"))}
+function logout(){try{sessionStorage.removeItem('lifesure:credential-handoff')}catch(_){} supabaseClient.auth.signOut().finally(()=>window.location.replace("login.html"))}
 async function init(){
  initPaymentModal();
  document.getElementById("detailModal").addEventListener("click",e=>{if(e.target.id==="detailModal")closeModal()});
+ document.getElementById("reportUploadModal")?.addEventListener("click",e=>{if(e.target.id==="reportUploadModal")closeReportUploadModal()});
  const ok=await guard();
  if(!ok)return;
  try{await refreshAll();document.body.classList.remove('booting');document.body.classList.add('ready');document.getElementById('securityGate').classList.add('hidden');}
