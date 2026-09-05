@@ -64,15 +64,43 @@
 </section>
 </div>
 
-<!-- Primary SDK + automatic fallback so the form still works if one CDN is unavailable. -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" onload="window.__LS_SB_READY__=true"></script>
-<script src="https://unpkg.com/@supabase/supabase-js@2" onload="if(!window.__LS_SB_READY__)window.__LS_SB_READY__=true"></script>
+<!-- Production Supabase loader: primary + one fast fallback. -->
+<script>
+(function(){
+  'use strict';
+  const SDK_URLS = [
+    'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js',
+    'https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.min.js'
+  ];
+  const LOAD_TIMEOUT = 7000;
+  window.__LS_SB_PROMISE__ = (async function loadSDK(){
+    if (window.supabase && typeof window.supabase.createClient === 'function') return true;
+    for (const src of SDK_URLS) {
+      const ok = await new Promise(resolve => {
+        let done = false;
+        const script = document.createElement('script');
+        const timer = setTimeout(() => { if (!done) { done = true; script.remove(); resolve(false); } }, LOAD_TIMEOUT);
+        script.src = src;
+        script.async = true;
+        script.onload = () => { if (!done) { done = true; clearTimeout(timer); resolve(!!(window.supabase && typeof window.supabase.createClient === 'function')); } };
+        script.onerror = () => { if (!done) { done = true; clearTimeout(timer); script.remove(); resolve(false); } };
+        document.head.appendChild(script);
+      });
+      if (ok) return true;
+    }
+    return false;
+  })();
+})();
+</script>
 <script>
 (function(){
 'use strict';
+
 const SUPABASE_URL='https://evzgfprzxsgxsymvwsip.supabase.co';
 const SUPABASE_ANON_KEY='sb_publishable_IJC51IW4TePmMzCsbJ7Vyw_6fkqqV67';
 const ALLOWED_ROLES=['super_admin','management','accounts','hr','reception','lab_staff','franchise'];
+const SDK_TIMEOUT=15000;
+
 const form=document.getElementById('loginForm');
 const email=document.getElementById('email');
 const password=document.getElementById('password');
@@ -84,15 +112,18 @@ const logo=document.getElementById('brandLogo');
 const fallback=document.getElementById('brandFallback');
 let client=null;
 
-function setStatus(text,kind){
+function setStatus(text,kind='info'){
   status.textContent=text||'';
-  status.className='status '+(kind||'info');
+  status.className='status '+kind;
 }
-function redirectToAdmin(){ window.location.replace('./admin.html'); }
-function showBrandFallback(){ logo.style.display='none'; fallback.classList.add('show'); }
+
+function showBrandFallback(){
+  logo.style.display='none';
+  fallback.classList.add('show');
+}
 logo.addEventListener('error',showBrandFallback);
 
-// Password toggle works independently of Supabase.
+// Password toggle is intentionally independent of Supabase.
 toggle.addEventListener('click',function(){
   const reveal=password.type==='password';
   password.type=reveal?'text':'password';
@@ -101,81 +132,134 @@ toggle.addEventListener('click',function(){
   password.focus();
 });
 
-async function waitForSupabase(){
-  for(let i=0;i<80;i++){
-    if(window.supabase && typeof window.supabase.createClient==='function') return true;
-    await new Promise(r=>setTimeout(r,50));
+function withTimeout(promise, ms, message){
+  return Promise.race([
+    promise,
+    new Promise((_,reject)=>setTimeout(()=>reject(new Error(message)),ms))
+  ]);
+}
+
+async function fetchWithTimeout(input, init={}){
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),SDK_TIMEOUT);
+  try{
+    return await fetch(input,{...init,signal:controller.signal});
+  }catch(err){
+    if(err && err.name==='AbortError') throw new Error('Authentication request timed out. Check your internet connection and try again.');
+    throw err;
+  }finally{
+    clearTimeout(timer);
   }
-  return false;
+}
+
+async function createClient(){
+  const ready=await withTimeout(window.__LS_SB_PROMISE__ || Promise.resolve(false),15000,'Authentication service took too long to load.');
+  if(!ready || !window.supabase || typeof window.supabase.createClient!=='function'){
+    throw new Error('Secure authentication service could not load.');
+  }
+  return window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{
+    auth:{
+      persistSession:true,
+      autoRefreshToken:true,
+      detectSessionInUrl:false
+    },
+    global:{fetch:fetchWithTimeout}
+  });
 }
 
 async function boot(){
   try{
-    const ready=await waitForSupabase();
-    if(!ready){
-      setStatus('Secure authentication service could not load. Please refresh and try again.','error');
-      return;
-    }
-    client=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
-    const result=await client.auth.getSession();
-    if(result && result.data && result.data.session) sessionNote.classList.add('show');
+    setStatus('Ready. Enter your authorised credentials.','info');
+    client=await createClient();
+    // We intentionally do NOT redirect based on an existing session.
+    const existing=await withTimeout(client.auth.getSession(),SDK_TIMEOUT,'Session check timed out.');
+    if(existing?.data?.session) sessionNote.classList.add('show');
   }catch(err){
-    console.error(err);
-    setStatus('Authentication service is temporarily unavailable.','error');
+    console.error('[LifeSure Login] boot',err);
+    setStatus(err?.message || 'Authentication service is temporarily unavailable.','error');
   }
 }
 
 form.addEventListener('submit',async function(e){
   e.preventDefault();
+
+  if(submit.classList.contains('busy')) return;
+
   const em=email.value.trim().toLowerCase();
   const pw=password.value;
-  if(!em||!pw){setStatus('Enter your email and password.','error');return;}
-  if(!/^\S+@\S+\.\S+$/.test(em)){setStatus('Enter a valid email address.','error');return;}
-  if(!client){
-    const ready=await waitForSupabase();
-    if(ready) client=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+
+  if(!em || !pw){
+    setStatus('Enter your email and password.','error');
+    return;
   }
-  if(!client){setStatus('Authentication service is not ready. Refresh the page and try again.','error');return;}
+
+  if(!/^\S+@\S+\.\S+$/.test(em)){
+    setStatus('Enter a valid email address.','error');
+    email.focus();
+    return;
+  }
+
   submit.classList.add('busy');
+  submit.disabled=true;
   submit.textContent='Verifying credentials…';
   setStatus('Authenticating securely…','info');
-  try{
-    // Deliberately clear an earlier browser session first. The new login must be credential-driven.
-    const previous=await client.auth.getSession();
-    if(previous.data && previous.data.session) await client.auth.signOut();
 
-    const {data,error}=await client.auth.signInWithPassword({email:em,password:pw});
-    if(error || !data || !data.user){
-      setStatus(error && error.message ? error.message : 'Sign in failed. Check your credentials.','error');
+  try{
+    if(!client) client=await createClient();
+
+    // Credential-driven login. An existing persisted session never authorizes the redirect.
+    const result=await withTimeout(
+      client.auth.signInWithPassword({email:em,password:pw}),
+      SDK_TIMEOUT,
+      'Authentication request timed out. Please check your connection and try again.'
+    );
+
+    const {data,error}=result || {};
+    if(error || !data?.user){
+      setStatus(error?.message || 'Sign in failed. Check your credentials.','error');
       return;
     }
 
-    const {data:profile,error:profileError}=await client
-      .from('profiles')
-      .select('role,active')
-      .eq('id',data.user.id)
-      .maybeSingle();
+    setStatus('Credentials verified. Checking LifeSure access…','info');
 
+    const profileResult=await withTimeout(
+      client.from('profiles').select('role,active').eq('id',data.user.id).maybeSingle(),
+      SDK_TIMEOUT,
+      'Security profile verification timed out. Please try again.'
+    );
+
+    const {data:profile,error:profileError}=profileResult || {};
     if(profileError){
-      console.error(profileError);
-      await client.auth.signOut();
+      console.error('[LifeSure Login] profile',profileError);
+      await client.auth.signOut({scope:'local'}).catch(()=>{});
       setStatus('Security profile could not be verified. Access denied.','error');
       return;
     }
+
     if(!profile || profile.active!==true || !ALLOWED_ROLES.includes(profile.role)){
-      await client.auth.signOut();
+      await client.auth.signOut({scope:'local'}).catch(()=>{});
       setStatus('Access denied: an active authorised LifeSure profile is required.','error');
       return;
     }
 
-    setStatus('Credentials verified. Opening protected workspace…','ok');
-    redirectToAdmin();
+    sessionNote.classList.remove('show');
+    setStatus('Access verified. Opening protected Command Center…','ok');
+
+    // Give the UI a tiny success frame, then perform the protected redirect.
+    await new Promise(r=>setTimeout(r,220));
+    window.location.replace('./admin.html?from=login');
+
   }catch(err){
-    console.error(err);
-    try{await client.auth.signOut();}catch(_){ }
-    setStatus('Unable to complete secure sign in. Please try again.','error');
+    console.error('[LifeSure Login] sign-in',err);
+    const message=err?.message || 'Unable to complete secure sign in.';
+    if(/timed out|internet|load/i.test(message)){
+      setStatus(message,'error');
+    }else{
+      setStatus('Unable to complete secure sign in. Please try again.','error');
+    }
   }finally{
     submit.classList.remove('busy');
+    submit.disabled=false;
     submit.textContent='Sign in securely';
   }
 });
