@@ -1311,6 +1311,7 @@ async function loadScriptOnce(src, test, timeout=8000){
 }
 
 let authListenerBound=false;
+let commandCenterBooting=true;
 
 async function ensureRuntime(){
   const supaOk=await loadScriptOnce(
@@ -1336,7 +1337,7 @@ async function ensureRuntime(){
   if(!authListenerBound && supabaseClient?.auth){
     authListenerBound=true;
     supabaseClient.auth.onAuthStateChange((event)=>{
-      if(event==='SIGNED_OUT'){
+      if(event==='SIGNED_OUT' && !commandCenterBooting){
         try{sessionStorage.removeItem('lifesure:credential-handoff')}catch(_){}
         window.location.replace('login.html?error=session_expired');
       }
@@ -1514,54 +1515,79 @@ document.addEventListener("keydown",e=>{
 
 async function guard(){
   const gateText=document.getElementById('gateText');
+  const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));
+  async function getUserWithRetry(){
+    let last=null;
+    for(let i=0;i<4;i++){
+      try{
+        const result=await withTimeout(supabaseClient.auth.getUser(),5000,'Authentication verification timed out.');
+        if(result?.data?.user) return result.data.user;
+        last=result?.error||new Error('No authenticated user.');
+      }catch(e){ last=e; }
+      if(i<3) await sleep(350);
+    }
+    throw last||new Error('Unable to verify authentication.');
+  }
+  async function getProfileWithRetry(userId){
+    let last=null;
+    for(let i=0;i<3;i++){
+      try{
+        const result=await withTimeout(
+          supabaseClient.from('profiles').select('id,full_name,email,role,active,organization_id').eq('id',userId).maybeSingle(),
+          5000,
+          'Security profile verification timed out.'
+        );
+        if(result?.data) return result;
+        last=result?.error||new Error('LifeSure profile not found.');
+      }catch(e){ last=e; }
+      if(i<2) await sleep(350);
+    }
+    throw last||new Error('Unable to verify LifeSure profile.');
+  }
   try{
-    // Fresh credential handoff is mandatory. A persisted session alone is not
-    // sufficient to open the administrative workspace.
     let handoff=null;
-    try{handoff=JSON.parse(sessionStorage.getItem('lifesure:credential-handoff')||'null')}catch(_){}
-    const handoffFresh=!!(handoff?.at && (Date.now()-Number(handoff.at)) <= 10*60*1000);
+    try{handoff=JSON.parse(sessionStorage.getItem('lifesure:credential-handoff')||'null')}catch(_){handoff=null;}
+    const handoffFresh=!!(
+      handoff?.at &&
+      Number.isFinite(Number(handoff.at)) &&
+      (Date.now()-Number(handoff.at)) <= 10*60*1000
+    );
 
     if(!handoffFresh){
+      gateText.textContent='Login required. Returning to secure sign-in…';
       await supabaseClient.auth.signOut({scope:'local'}).catch(()=>{});
       window.location.replace('login.html?next=admin.html&error=login_required');
       return false;
     }
 
-    gateText.textContent='Checking secure authentication session…';
-
-    const {data,error}=await supabaseClient.auth.getSession();
-
-    if(error||!data?.session){
-      try{sessionStorage.removeItem('lifesure:credential-handoff')}catch(_){}
+    gateText.textContent='Confirming authenticated session…';
+    const user=await getUserWithRetry();
+    if(!user?.id){
+      try{sessionStorage.removeItem('lifesure:credential-handoff')}catch(_){ }
+      await supabaseClient.auth.signOut({scope:'local'}).catch(()=>{});
       window.location.replace('login.html?next=admin.html&error=session_expired');
       return false;
     }
 
-    if(handoff?.userId && handoff.userId!==data.session.user.id){
+    if(handoff.userId && String(handoff.userId)!==String(user.id)){
+      gateText.textContent='Security check failed. Returning to sign-in…';
+      try{sessionStorage.removeItem('lifesure:credential-handoff')}catch(_){ }
       await supabaseClient.auth.signOut({scope:'local'}).catch(()=>{});
-      try{sessionStorage.removeItem('lifesure:credential-handoff')}catch(_){}
       window.location.replace('login.html?next=admin.html&error=security_check');
       return false;
     }
 
-    state.user=data.session.user;
-    gateText.textContent='Validating active staff profile and role…';
-
-    const {data:profile,error:profileError}=await withTimeout(
-      supabaseClient
-        .from('profiles')
-        .select('id,full_name,email,role,active,organization_id')
-        .eq('id',state.user.id)
-        .maybeSingle(),
-      10000,
-      'Security profile verification timed out.'
-    );
-
+    state.user=user;
+    gateText.textContent='Validating active LifeSure profile…';
+    const profileResult=await getProfileWithRetry(user.id);
+    const profile=profileResult?.data;
+    const profileError=profileResult?.error;
     const allowedRoles=Object.keys(ROLE_LABELS);
 
     if(profileError||!profile||!allowedRoles.includes(profile.role)||profile.active!==true){
+      gateText.textContent='Access denied. Returning to secure sign-in…';
+      try{sessionStorage.removeItem('lifesure:credential-handoff')}catch(_){ }
       await supabaseClient.auth.signOut({scope:'local'}).catch(()=>{});
-      try{sessionStorage.removeItem('lifesure:credential-handoff')}catch(_){}
       window.location.replace('login.html?error=access_denied');
       return false;
     }
@@ -1570,28 +1596,25 @@ async function guard(){
     applyRoleWorkspace(profile.role);
 
     const initials=(profile.full_name||'LS')
-      .split(/\s+/)
-      .map(x=>x[0])
-      .join('')
-      .slice(0,2)
-      .toUpperCase();
-
+      .split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase();
     document.getElementById('adminAvatar').textContent=initials||'LS';
     document.getElementById('welcome').textContent=`Welcome, ${profile.full_name||'LifeSure Admin'}`;
 
     const settingsName=document.getElementById('settingsName');
     const settingsEmail=document.getElementById('settingsEmail');
     const settingsRole=document.getElementById('settingsRole');
-
     if(settingsName) settingsName.value=profile.full_name||'';
-    if(settingsEmail) settingsEmail.value=profile.email||state.user.email||'';
+    if(settingsEmail) settingsEmail.value=profile.email||user.email||'';
     if(settingsRole) settingsRole.value=profile.role;
 
     gateText.textContent='Workspace authorization verified.';
     return true;
   }catch(error){
     console.error('SECURITY GUARD ERROR:',error);
-    window.location.replace('login.html?error=security_check');
+    const message=error?.message||'Secure authentication could not be verified.';
+    if(gateText) gateText.textContent=message;
+    try{sessionStorage.removeItem('lifesure:credential-handoff')}catch(_){ }
+    setTimeout(()=>window.location.replace('login.html?next=admin.html&error=security_check'),900);
     return false;
   }
 }
@@ -2803,6 +2826,7 @@ async function init(){
     document.body.classList.remove('booting');
     document.body.classList.add('ready');
     document.getElementById('securityGate')?.classList.add('hidden');
+    commandCenterBooting=false;
 
     // Load operational data in the background. Individual module failures are
     // non-fatal and are surfaced through the UI instead of forcing logout.
@@ -2813,6 +2837,7 @@ async function init(){
       showToast(error?.message||'Some live data could not be loaded.');
     }
   }catch(error){
+    commandCenterBooting=false;
     console.error('COMMAND CENTER BOOT ERROR:',error);
     const gate=document.getElementById('gateText');
     if(gate) gate.textContent=error?.message||'Secure workspace could not start.';
