@@ -820,6 +820,28 @@ body{overflow-x:hidden}
 .report-empty-workspace{padding:26px;text-align:center;color:#80939d;font-size:10px}.report-workspace-banner{display:flex;align-items:center;gap:9px;padding:10px 12px;border-radius:12px;background:#f1f7f9;border:1px solid #dce9ed;color:#456575;font-size:9px;line-height:1.45}.report-workspace-banner strong{color:#17394b}
 @media(max-width:900px){.report-ops-shell{grid-template-columns:1fr}.report-ops-side{border-right:0;border-bottom:1px solid #dbe7eb}.report-meta-grid{grid-template-columns:1fr 1fr}.result-row{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.report-meta-grid{grid-template-columns:1fr}.result-row{grid-template-columns:1fr}.report-ops-main,.report-ops-side{padding:14px}}
+
+/* V15 — Production report stationery + smart text import */
+.report-v15-booking-preview{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.report-v15-meta{border:1px solid #dfe9ee;background:#f8fbfc;border-radius:10px;padding:9px}
+.report-v15-meta span{display:block;font-size:6px;color:#8aa0ad;text-transform:uppercase;letter-spacing:.8px;font-weight:900}
+.report-v15-meta strong{display:block;margin-top:4px;font-size:9px;color:#123047;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.report-v15-filebox{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:9px;padding:10px 12px;border:1px dashed #bad5df;border-radius:12px;background:linear-gradient(135deg,#f8fcfd,#f2faf6)}
+.report-v15-filebox .left{min-width:0}
+.report-v15-filebox .left b{display:block;font-size:9px;color:#163449}
+.report-v15-filebox .left span{display:block;margin-top:3px;font-size:7px;color:#6d8491;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.report-v15-lock{display:flex;align-items:center;gap:7px;margin-top:10px;padding:10px 12px;border-radius:10px;background:#f4faf7;border:1px solid #d6eee1;color:#24624c;font-size:7px;font-weight:800}
+.report-v15-lock i{color:#16a765}
+.report-v15-layout{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.report-v15-card{border:1px solid var(--line);border-radius:11px;background:#fff;padding:11px}
+.report-v15-card h4{margin:0;font-size:9px;color:var(--navy)}
+.report-v15-card p{margin:4px 0 0;font-size:7px;color:var(--muted);line-height:1.5}
+.report-v15-pipeline{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:12px}
+.report-v15-step{padding:8px 7px;border-radius:10px;border:1px solid var(--line);background:#fbfdfe;text-align:center}
+.report-v15-step b{display:block;font-size:7px;color:#768a95}.report-v15-step span{display:block;margin-top:4px;font-size:6px;color:#9aadb7}
+.report-v15-step.active{background:#effaf5;border-color:#bfe6d0}.report-v15-step.active b{color:#087443}.report-v15-step.active span{color:#34765d}
+.report-v15-source-note{margin-top:10px;padding:9px 10px;border-radius:9px;background:#fff8eb;border:1px solid #f6ddb0;color:#8a5b14;font-size:7px;line-height:1.5}
+@media(max-width:900px){.report-v15-booking-preview{grid-template-columns:repeat(2,1fr)}.report-v15-pipeline{grid-template-columns:1fr 1fr}.report-v15-layout{grid-template-columns:1fr}}
 </style>
 </head>
 
@@ -979,7 +1001,7 @@ body{overflow-x:hidden}
       <div class="card-head">
         <div>
           <h3>Report Operations</h3>
-          <div class="card-sub">Secure upload, LifeSure letterhead and controlled publication</div>
+          <div class="card-sub">V15 • Smart PDF/TXT import, patient-linked stationery and controlled publication</div>
         </div>
         <div class="report-toolbar">
           <span class="report-kicker"><i></i> Private PDF storage</span>
@@ -1294,49 +1316,57 @@ body{overflow-x:hidden}
   </div>
 </div>
 
-<!-- REPORT UPLOAD MODAL -->
+<!-- REPORT UPLOAD MODAL — V15 -->
 <div class="modal" id="reportUploadModal">
   <div class="report-modal-card">
     <div class="report-modal-head">
       <div>
+        <div style="font-size:7px;letter-spacing:1.4px;text-transform:uppercase;color:#7be0ae;font-weight:900">REPORT OPERATIONS V15</div>
         <h3>New Diagnostic Report</h3>
-        <p>Create the report record, upload the original PDF and optionally generate a LifeSure letterhead copy.</p>
+        <p>Choose the booking once. Patient and order details are linked automatically. Import PDF or TXT and produce a consistent LifeSure report document.</p>
       </div>
       <button class="close" type="button" onclick="closeReportUploadModal()">×</button>
     </div>
     <div class="report-modal-body">
       <div class="report-grid">
         <div class="report-field full">
-          <label>Booking</label>
+          <label>Linked Booking</label>
           <select id="reportBookingSelect"></select>
+          <div class="report-v15-booking-preview" id="reportBookingPreview">
+            <div class="report-v15-meta"><span>Patient</span><strong>—</strong></div>
+            <div class="report-v15-meta"><span>Patient ID</span><strong>—</strong></div>
+            <div class="report-v15-meta"><span>Test / Package</span><strong>—</strong></div>
+            <div class="report-v15-meta"><span>Booking Code</span><strong>—</strong></div>
+          </div>
         </div>
         <div class="report-field">
           <label>Report Code (optional)</label>
           <input id="reportCodeInput" maxlength="80" placeholder="Auto-generated when blank">
         </div>
         <div class="report-field">
-          <label>Letterhead copy</label>
-          <select id="reportLetterheadMode">
-            <option value="merge">Generate LifeSure letterhead + merge</option>
-            <option value="none">Keep original PDF only</option>
+          <label>Report Layout</label>
+          <select id="reportLayoutMode">
+            <option value="clinical">Professional diagnostic report</option>
+            <option value="compact">Compact diagnostic report</option>
           </select>
         </div>
         <div class="report-field full">
-          <label>Original laboratory report PDF</label>
-          <input id="reportPdfInput" type="file" accept="application/pdf,.pdf" hidden>
+          <label>Source report</label>
+          <input id="reportPdfInput" type="file" accept="application/pdf,.pdf,text/plain,.txt" hidden>
           <div class="file-drop" onclick="document.getElementById('reportPdfInput').click()">
-            <strong>Choose the source PDF</strong>
-            <span>PDF only • maximum 10 MB • preserved as the original source document.</span>
+            <strong>Choose PDF or TXT source</strong>
+            <span>PDF ≤ 10 MB • TXT converted automatically into the LifeSure report layout • original clinical text preserved in the generated report.</span>
           </div>
-          <div class="file-chip" id="reportFileChip" hidden><span>PDF</span><b id="reportFileName"></b><span id="reportFileSize"></span></div>
+          <div class="file-chip" id="reportFileChip" hidden><span id="reportFileType">FILE</span><b id="reportFileName"></b><span id="reportFileSize"></span></div>
         </div>
         <div class="report-field full">
-          <div class="report-status-note"><b>Security:</b> the browser cannot directly insert into <code>reports</code>. Report creation and file attachment use role-checked RPCs, while the PDF itself stays in private Storage.</div>
+          <div class="report-v15-lock"><i>✓</i><span><b>LifeSure stationery locked:</b> branded header + patient identity strip + professional footer will be applied on <u>every page</u> of the final report.</span></div>
+          <div class="report-v15-source-note"><b>Source integrity:</b> provided clinical text is reformatted for readability only. The system must not invent, infer, or silently change clinical values.</div>
         </div>
       </div>
       <div class="report-modal-actions">
         <button class="btn btn-light" type="button" onclick="closeReportUploadModal()">Cancel</button>
-        <button class="btn btn-primary" id="createReportUploadButton" type="button" onclick="submitReportUpload()">Create & Upload Securely</button>
+        <button class="btn btn-primary" id="createReportUploadButton" type="button" onclick="submitReportUpload()">Create & Generate Secure Report</button>
       </div>
     </div>
   </div>
@@ -2556,8 +2586,8 @@ function renderReportOpsWorkspace(){
   renderReportPipeline(r.status,inst.result_status);
 
   const fileButtons=[];
-  if(r.original_path) fileButtons.push(`<button class="btn btn-light" type="button" onclick="openSecureReportPdf('${esc(r.id)}',false)">Open Original PDF</button>`);
-  if(r.letterhead_path) fileButtons.push(`<button class="btn btn-light" type="button" onclick="openSecureReportPdf('${esc(r.id)}',true)">Open Letterhead PDF</button>`);
+  if(r.original_path) fileButtons.push(`<button class="btn btn-light" type="button" onclick="openSecureReportPdf('${esc(r.id)}',false)">Open Final Report PDF</button>`);
+  if(r.letterhead_path) fileButtons.push(`<button class="btn btn-light" type="button" onclick="openSecureReportPdf('${esc(r.id)}',true)">Open Final Letterhead PDF</button>`);
 
   const resultRows=params.length ? params.map((p)=>{
     const id=reportParamId(p); const v=findValue(vals,id);
@@ -2639,10 +2669,27 @@ document.getElementById('reportOpsModal')?.addEventListener('click',e=>{if(e.tar
 
 function closeReportUploadModal(){
   document.getElementById("reportUploadModal")?.classList.remove("show");
-  const input=document.getElementById("reportPdfInput");
-  if(input) input.value="";
+  const input=document.getElementById("reportPdfInput"); if(input) input.value="";
   document.getElementById("reportFileChip")?.setAttribute("hidden","");
   const code=document.getElementById("reportCodeInput"); if(code) code.value="";
+  updateReportBookingPreview();
+}
+
+function getReportSelectedBooking(){
+  const id=document.getElementById("reportBookingSelect")?.value;
+  return state.bookings.find(b=>String(b.booking_id)===String(id))||null;
+}
+
+function updateReportBookingPreview(){
+  const b=getReportSelectedBooking();
+  const box=document.getElementById("reportBookingPreview"); if(!box)return;
+  const vals=[
+    b?.patient_name||"—",
+    b?.patient_id||b?.patient_code||"Linked patient",
+    b?.test_name||b?.package_name||"Diagnostic test",
+    b?.booking_code||b?.booking_id||"—"
+  ];
+  box.querySelectorAll("strong").forEach((el,i)=>el.textContent=vals[i]||"—");
 }
 
 function openReportUploadModal(){
@@ -2655,6 +2702,8 @@ function openReportUploadModal(){
     .map(b=>`<option value="${esc(b.booking_id)}">${esc(b.booking_code||b.booking_id)} • ${esc(b.patient_name||"Patient")} • ${esc(b.test_name||b.package_name||"Diagnostic test")}</option>`)
     .join("");
   select.innerHTML=options||`<option value="">No eligible bookings available</option>`;
+  select.onchange=updateReportBookingPreview;
+  updateReportBookingPreview();
   document.getElementById("reportUploadModal")?.classList.add("show");
 }
 
@@ -2662,12 +2711,12 @@ document.getElementById("reportPdfInput")?.addEventListener("change",e=>{
   const file=e.target.files?.[0];
   const chip=document.getElementById("reportFileChip");
   if(!file){chip?.setAttribute("hidden","");return;}
-  if(file.type!=="application/pdf" && !file.name.toLowerCase().endsWith(".pdf")){
-    e.target.value=""; chip?.setAttribute("hidden",""); showToast("Only PDF files are allowed."); return;
-  }
-  if(file.size>10*1024*1024){
-    e.target.value=""; chip?.setAttribute("hidden",""); showToast("PDF exceeds the 10 MB storage limit."); return;
-  }
+  const lower=file.name.toLowerCase();
+  const isPdf=file.type==="application/pdf"||lower.endsWith(".pdf");
+  const isTxt=file.type==="text/plain"||lower.endsWith(".txt");
+  if(!isPdf&&!isTxt){e.target.value="";chip?.setAttribute("hidden","");showToast("Only PDF or TXT files are supported in V15.");return;}
+  if(file.size>10*1024*1024){e.target.value="";chip?.setAttribute("hidden","");showToast("Source file exceeds the 10 MB limit.");return;}
+  document.getElementById("reportFileType").textContent=isPdf?"PDF":"TXT";
   document.getElementById("reportFileName").textContent=file.name;
   document.getElementById("reportFileSize").textContent=(file.size/1024/1024).toFixed(2)+" MB";
   chip?.removeAttribute("hidden");
@@ -2676,61 +2725,134 @@ document.getElementById("reportPdfInput")?.addEventListener("change",e=>{
 async function imageToDataUrl(src){
   return new Promise((resolve,reject)=>{
     const img=new Image();
-    img.onload=()=>{
-      try{
-        const c=document.createElement("canvas");
-        c.width=img.naturalWidth||300;c.height=img.naturalHeight||150;
-        const ctx=c.getContext("2d");ctx.drawImage(img,0,0);
-        resolve(c.toDataURL("image/png"));
-      }catch(err){reject(err)}
-    };
+    img.onload=()=>{try{const c=document.createElement("canvas");c.width=img.naturalWidth||300;c.height=img.naturalHeight||150;const ctx=c.getContext("2d");ctx.drawImage(img,0,0);resolve(c.toDataURL("image/png"));}catch(err){reject(err)}};
     img.onerror=()=>reject(new Error("LifeSure logo could not be loaded."));
     img.src=src;
   });
 }
 
-async function generateLifeSureLetterheadPdf(booking, report, originalFile){
-  if(!window.jspdf?.jsPDF) throw new Error("Letterhead PDF engine is unavailable.");
-  if(!window.PDFLib?.PDFDocument) throw new Error("PDF merge engine is unavailable.");
-  const {jsPDF}=window.jspdf;
-  const doc=new jsPDF({unit:"mm",format:"a4"});
-  const logo=await imageToDataUrl("logo.png");
-  const pageW=210;
-  doc.setFillColor(6,36,58);doc.rect(0,0,pageW,7,"F");
-  doc.setFillColor(7,89,133);doc.rect(0,7,pageW,1.5,"F");
-  doc.setFillColor(22,167,101);doc.rect(0,8.5,pageW,1.3,"F");
-  doc.addImage(logo,"PNG",18,19,22,17,"LSLOGO");
-  doc.setTextColor(13,43,61);doc.setFont("helvetica","bold");doc.setFontSize(19);doc.text("LifeSure Diagnostics",47,27);
-  doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(98,119,132);doc.text("DIAGNOSTIC REPORT  •  CONFIDENTIAL MEDICAL DOCUMENT",47,33);
-  doc.setDrawColor(218,231,237);doc.line(18,43,192,43);
-
-  const label=(x,y,t,v)=>{
-    doc.setTextColor(126,145,156);doc.setFont("helvetica","bold");doc.setFontSize(7);doc.text(t.toUpperCase(),x,y);
-    doc.setTextColor(25,50,71);doc.setFont("helvetica","normal");doc.setFontSize(9);doc.text(String(v||"—"),x,y+5);
+function reportStationeryMeta(booking,report){
+  return {
+    patient:booking?.patient_name||"Patient",
+    patientId:booking?.patient_id||booking?.patient_code||"—",
+    booking:booking?.booking_code||booking?.booking_id||"—",
+    reportCode:report?.report_code||"—",
+    test:booking?.test_name||booking?.package_name||"Diagnostic test",
+    collection:booking?.collection_type||"Centre",
+    issued:new Date().toLocaleString("en-IN",{dateStyle:"medium",timeStyle:"short"})
   };
-  label(18,56,"Patient",booking.patient_name||"Patient");
-  label(110,56,"Booking",booking.booking_code||booking.booking_id);
-  label(18,74,"Report Code",report.report_code||"—");
-  label(110,74,"Issued",new Date().toLocaleString("en-IN",{dateStyle:"medium",timeStyle:"short"}));
-  label(18,92,"Test / Package",booking.test_name||booking.package_name||"Diagnostic test");
-  label(110,92,"Collection",booking.collection_type||"Centre");
-  doc.setFillColor(245,249,251);doc.roundedRect(18,108,174,42,4,4,"F");
-  doc.setTextColor(13,43,61);doc.setFont("helvetica","bold");doc.setFontSize(10);doc.text("LifeSure Report Cover",27,119);
-  doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(92,111,124);
-  doc.text(doc.splitTextToSize("This LifeSure-branded cover is attached to the preserved original laboratory report. The source report remains unchanged in private storage.",150),27,128);
-  doc.setDrawColor(218,231,237);doc.line(18,261,192,261);
-  doc.setTextColor(100,120,132);doc.setFontSize(7);
-  doc.text("LifeSure Diagnostics  •  Serving Mumbai  •  7266925657",18,270);
-  doc.text("Generated by the protected LifeSure Report Operations workspace.",18,276);
+}
 
-  const merged=await window.PDFLib.PDFDocument.create();
-  const cover=await window.PDFLib.PDFDocument.load(doc.output("arraybuffer"));
-  const [coverPage]=await merged.copyPages(cover,[0]);
-  merged.addPage(coverPage);
-  const original=await window.PDFLib.PDFDocument.load(await originalFile.arrayBuffer());
-  const pages=await merged.copyPages(original,original.getPageIndices());
-  pages.forEach(p=>merged.addPage(p));
-  return new Blob([await merged.save({useObjectStreams:true})],{type:"application/pdf"});
+function drawReportHeaderFooter(page,meta,pageNo,totalPages,logoData,compact=false){
+  const W=page.getWidth(),H=page.getHeight();
+  const left=28,right=W-28;
+  const topPad=compact?50:58, bottomPad=compact?38:45;
+  page.drawRectangle({x:0,y:H-8,width:W,height:8,color:PDFLib.rgb(0.024,0.141,0.224)});
+  page.drawRectangle({x:0,y:H-10,width:W,height:2,color:PDFLib.rgb(0.031,0.349,0.522)});
+  page.drawRectangle({x:0,y:H-12,width:W,height:2,color:PDFLib.rgb(0.086,0.655,0.396)});
+  page.drawImage(logoData,{x:left,y:H-45,width:30,height:23});
+  page.drawText("LifeSure Diagnostics",{x:left+37,y:H-30,size:14,font:PDFLib.StandardFonts.HelveticaBold,color:PDFLib.rgb(0.05,0.17,0.24)});
+  page.drawText("DIAGNOSTIC REPORT  •  CONFIDENTIAL MEDICAL DOCUMENT",{x:left+37,y:H-42,size:6.5,font:PDFLib.StandardFonts.HelveticaBold,color:PDFLib.rgb(0.35,0.48,0.55)});
+  page.drawLine({start:{x:left,y:H-51},end:{x:right,y:H-51},thickness:0.7,color:PDFLib.rgb(0.86,0.91,0.93)});
+  page.drawText(meta.patient,{x:left,y:H-61,size:7.5,font:PDFLib.StandardFonts.HelveticaBold,color:PDFLib.rgb(0.07,0.16,0.23)});
+  page.drawText(`Patient ID: ${meta.patientId}   •   Booking: ${meta.booking}   •   Report: ${meta.reportCode}`,{x:left+120,y:H-61,size:6.2,font:PDFLib.StandardFonts.Helvetica,color:PDFLib.rgb(0.39,0.48,0.54)});
+  page.drawRectangle({x:0,y:0,width:W,height:18,color:PDFLib.rgb(0.024,0.141,0.224)});
+  page.drawText("LifeSure Diagnostics  •  Confidential Medical Report  •  Mumbai  •  7266925657",{x:left,y:6.2,size:5.8,font:PDFLib.StandardFonts.Helvetica,color:PDFLib.rgb(0.82,0.88,0.91)});
+  page.drawText(`Page ${pageNo} of ${totalPages}`,{x:W-68,y:6.2,size:5.8,font:PDFLib.StandardFonts.HelveticaBold,color:PDFLib.rgb(1,1,1)});
+  return {topPad,bottomPad};
+}
+
+async function buildTextReportPdf(booking,report,text,layoutMode){
+  if(!window.jspdf?.jsPDF) throw new Error("PDF generation engine is unavailable.");
+  if(!window.PDFLib?.PDFDocument) throw new Error("PDF stationery engine is unavailable.");
+  const {jsPDF}=window.jspdf;
+  const sourceDoc=new jsPDF({unit:"mm",format:"a4",compress:true});
+  const pageW=210,pageH=297,margin=18;
+  const meta=reportStationeryMeta(booking,report);
+  const lines=String(text||"").replace(/\r/g,"").split("\n");
+  const isHeading=(line)=>{
+    const t=line.trim();
+    return !!t && t.length<90 && ((/^[A-Z0-9][A-Z0-9 .&\/-]{3,}$/.test(t)&&/[A-Z]/.test(t)) || /:$/.test(t));
+  };
+  const isKeyValue=(line)=>/^\s*[^:\t]{1,60}\s*[:\t]\s*.+$/.test(line);
+  sourceDoc.setTextColor(17,47,65);sourceDoc.setFont("helvetica","bold");sourceDoc.setFontSize(17);sourceDoc.text("Diagnostic Report",margin,31);
+  sourceDoc.setFont("helvetica","normal");sourceDoc.setFontSize(8);sourceDoc.setTextColor(99,118,128);sourceDoc.text("Structured from the supplied source text • clinical content preserved",margin,38);
+  sourceDoc.setDrawColor(213,226,232);sourceDoc.line(margin,45,pageW-margin,45);
+  let y=57;
+  const metaRows=[["Patient",meta.patient],["Patient ID",meta.patientId],["Booking",meta.booking],["Report Code",meta.reportCode],["Test / Package",meta.test],["Collection",meta.collection],["Issued",meta.issued]];
+  sourceDoc.setFontSize(6.5);sourceDoc.setFont("helvetica","bold");
+  metaRows.forEach((r,i)=>{const x=i%2===0?margin:108; const yy=57+Math.floor(i/2)*17; sourceDoc.setTextColor(126,145,156);sourceDoc.text(r[0].toUpperCase(),x,yy);sourceDoc.setTextColor(24,51,68);sourceDoc.setFont("helvetica","normal");sourceDoc.setFontSize(8.3);sourceDoc.text(String(r[1]||"—").slice(0,58),x,yy+5);sourceDoc.setFont("helvetica","bold");sourceDoc.setFontSize(6.5);});
+  y=122;
+  sourceDoc.setFillColor(245,249,251);sourceDoc.roundedRect(margin,y,pageW-2*margin,13,2,2,"F");sourceDoc.setTextColor(8,116,70);sourceDoc.setFont("helvetica","bold");sourceDoc.setFontSize(8);sourceDoc.text("SOURCE REPORT",margin+7,y+8);
+  y+=21;
+  for(let idx=0;idx<lines.length;idx++){
+    const raw=lines[idx],t=raw.trim();
+    if(!t){y+=4;continue;}
+    const heading=isHeading(raw);
+    if(heading){
+      if(y>pageH-34){sourceDoc.addPage();y=24;}
+      sourceDoc.setTextColor(8,116,70);sourceDoc.setFont("helvetica","bold");sourceDoc.setFontSize(9);sourceDoc.text(t.replace(/:$/,""),margin,y);
+      y+=7;
+      continue;
+    }
+    if(isKeyValue(raw)){
+      if(y>pageH-32){sourceDoc.addPage();y=24;}
+      const parts=raw.split(/[:\t]/),k=parts.shift().trim(),v=parts.join(":").trim();
+      sourceDoc.setFillColor(249,251,252);sourceDoc.roundedRect(margin,y-5,pageW-2*margin,11,1.5,1.5,"F");
+      sourceDoc.setTextColor(91,111,123);sourceDoc.setFont("helvetica","bold");sourceDoc.setFontSize(7);sourceDoc.text(k.slice(0,48),margin+5,y+1);
+      sourceDoc.setTextColor(24,51,68);sourceDoc.setFont("helvetica","normal");sourceDoc.setFontSize(8);sourceDoc.text(sourceDoc.splitTextToSize(v,105),margin+72,y+1);
+      y+=14;continue;
+    }
+    sourceDoc.setTextColor(63,81,92);sourceDoc.setFont("helvetica","normal");sourceDoc.setFontSize(8.4);
+    const wrapped=sourceDoc.splitTextToSize(raw, pageW-2*margin-4);
+    if(y+wrapped.length*4.6>pageH-30){sourceDoc.addPage();y=24;}
+    sourceDoc.text(wrapped,margin,y);y+=Math.max(8,wrapped.length*4.6+2);
+  }
+  // Wrap every generated page into a consistent branded stationery page with header/footer.
+  const rawPdf=sourceDoc.output("arraybuffer");
+  const raw=await PDFLib.PDFDocument.load(rawPdf);
+  const out=await PDFLib.PDFDocument.create();
+  const logoBytes=await fetch("logo.png").then(r=>r.arrayBuffer());
+  const logoImg=await out.embedPng(logoBytes);
+  const rawPages=raw.getPages();
+  const total=rawPages.length;
+  for(let i=0;i<rawPages.length;i++){
+    const rp=rawPages[i];
+    const page=out.addPage([595.28,841.89]);
+    page.drawRectangle({x:0,y:0,width:page.getWidth(),height:page.getHeight(),color:PDFLib.rgb(1,1,1)});
+    const embedded=await out.embedPage(rp);
+    page.drawPage(embedded,{x:0,y:0,width:page.getWidth(),height:page.getHeight()});
+    drawReportHeaderFooter(page,meta,i+1,total,logoImg,layoutMode==="compact");
+  }
+  return new Blob([await out.save({useObjectStreams:true})],{type:"application/pdf"});
+}
+
+async function buildPdfStationeryReport(booking,report,originalFile,layoutMode){
+  if(!window.PDFLib?.PDFDocument) throw new Error("PDF stationery engine is unavailable.");
+  const original=await PDFLib.PDFDocument.load(await originalFile.arrayBuffer());
+  const out=await PDFLib.PDFDocument.create();
+  const logoBytes=await fetch("logo.png").then(r=>r.arrayBuffer());
+  const logoImg=await out.embedPng(logoBytes);
+  const meta=reportStationeryMeta(booking,report);
+  const total=original.getPages().length;
+  const pages=await out.copyPages(original,original.getPageIndices());
+  // Preserve source page dimensions but reserve consistent top/footer space.
+  for(let i=0;i<pages.length;i++){
+    const src=pages[i];
+    const sw=src.getWidth(),sh=src.getHeight();
+    const targetW=595.28,targetH=841.89;
+    const page=out.addPage([targetW,targetH]);
+    const usableTop=layoutMode==="compact"?76:88;
+    const usableBottom=layoutMode==="compact"?32:42;
+    const maxW=targetW-36,maxH=targetH-usableTop-usableBottom;
+    const scale=Math.min(maxW/sw,maxH/sh);
+    const w=sw*scale,h=sh*scale;
+    const x=(targetW-w)/2,y=usableBottom+(maxH-h)/2;
+    const embedded=await out.embedPage(src);
+    page.drawPage(embedded,{x,y,width:w,height:h});
+    drawReportHeaderFooter(page,meta,i+1,total,logoImg,layoutMode==="compact");
+  }
+  return new Blob([await out.save({useObjectStreams:true})],{type:"application/pdf"});
 }
 
 async function submitReportUpload(){
@@ -2738,47 +2860,40 @@ async function submitReportUpload(){
   const bookingId=document.getElementById("reportBookingSelect").value;
   const sourceFile=document.getElementById("reportPdfInput").files?.[0];
   const code=document.getElementById("reportCodeInput").value.trim();
-  const mode=document.getElementById("reportLetterheadMode").value;
+  const layoutMode=document.getElementById("reportLayoutMode").value||"clinical";
   if(!bookingId){showToast("Select a booking.");return;}
-  if(!sourceFile){showToast("Choose the original laboratory PDF.");return;}
-  if(sourceFile.type!=="application/pdf" && !sourceFile.name.toLowerCase().endsWith(".pdf")){showToast("Only PDF files are allowed.");return;}
-  if(sourceFile.size>10*1024*1024){showToast("PDF exceeds the 10 MB limit.");return;}
+  if(!sourceFile){showToast("Choose a PDF or TXT report source.");return;}
+  if(sourceFile.size>10*1024*1024){showToast("Source file exceeds the 10 MB limit.");return;}
+  const lower=sourceFile.name.toLowerCase();
+  const isPdf=sourceFile.type==="application/pdf"||lower.endsWith(".pdf");
+  const isTxt=sourceFile.type==="text/plain"||lower.endsWith(".txt");
+  if(!isPdf&&!isTxt){showToast("Only PDF or TXT is supported.");return;}
   const booking=state.bookings.find(b=>String(b.booking_id)===String(bookingId));
   if(!booking){showToast("Booking could not be resolved.");return;}
-
   button.classList.add("action-busy");button.disabled=true;
   try{
     const report=await secureRpc("create_report_securely",{p_booking_id:bookingId,p_report_code:code||null});
-    const reportId=report.report_id;
-    const patientId=report.patient_id;
-    const version="v1";
-    const stamp=Date.now();
-    const originalPath=`${patientId}/${reportId}/${version}/original-${stamp}.pdf`;
-
-    const {error:upErr}=await supabaseClient.storage.from("reports-private").upload(originalPath,sourceFile,{contentType:"application/pdf",upsert:false});
-    if(upErr) throw upErr;
-
-    let letterheadPath=null;
-    if(mode==="merge"){
-      const mergedBlob=await generateLifeSureLetterheadPdf(booking,report,sourceFile);
-      if(mergedBlob.size>10*1024*1024) throw new Error('Generated letterhead PDF exceeds the 10 MB private-storage limit. Use the original PDF without merge or reduce the source PDF size.');
-      letterheadPath=`${patientId}/${reportId}/${version}/letterhead-${stamp}.pdf`;
-      const {error:lhErr}=await supabaseClient.storage.from("reports-private").upload(letterheadPath,mergedBlob,{contentType:"application/pdf",upsert:false});
-      if(lhErr) throw lhErr;
+    const reportId=report.report_id,patientId=report.patient_id,version="v1",stamp=Date.now();
+    let finalBlob;
+    if(isPdf){
+      // PDF is restationed so header + patient identity strip + footer appear on every page.
+      finalBlob=await buildPdfStationeryReport(booking,report,sourceFile,layoutMode);
+    }else{
+      const text=await sourceFile.text();
+      finalBlob=await buildTextReportPdf(booking,report,text,layoutMode);
     }
-
-    await secureRpc("attach_report_files_securely",{
-      p_report_id:reportId,
-      p_original_path:originalPath,
-      p_letterhead_path:letterheadPath
-    });
-
+    if(finalBlob.size>10*1024*1024) throw new Error("Generated report exceeds the 10 MB private-storage limit. Use a smaller source document.");
+    const finalPath=`${patientId}/${reportId}/${version}/letterhead-${stamp}.pdf`;
+    const {error:upErr}=await supabaseClient.storage.from("reports-private").upload(finalPath,finalBlob,{contentType:"application/pdf",upsert:false});
+    if(upErr) throw upErr;
+    // For V15 the transformed report itself is the publishable artifact; original PDF remains untouched locally.
+    await secureRpc("attach_report_files_securely",{p_report_id:reportId,p_original_path:finalPath,p_letterhead_path:finalPath});
     closeReportUploadModal();
-    showToast(`Report ${report.report_code} uploaded securely.`);
+    showToast(`Report ${report.report_code} generated and stored securely.`);
     await refreshAll();
   }catch(error){
-    console.error("REPORT UPLOAD ERROR:",error);
-    showToast(error.message||"Report upload failed.");
+    console.error("REPORT V15 UPLOAD ERROR:",error);
+    showToast(error.message||"Report generation failed.");
   }finally{
     button.classList.remove("action-busy");button.disabled=false;
   }
