@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
+
 Disallow: /admin.html
 Disallow: /login.html
-Disallow: /_next/
+
+Sitemap: https://YOUR-DOMAIN.com/sitemap.xml
