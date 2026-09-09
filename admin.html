@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#061d2d">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="referrer" content="same-origin">
 <title>LifeSure Diagnostics | Secure Command Center</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -852,6 +854,22 @@ body{overflow-x:hidden}
 .ls-preview-brand{display:flex;align-items:center;gap:10px}.ls-preview-brand img{width:58px;height:42px;object-fit:contain;background:#fff;border-radius:9px;padding:4px;border:1px solid #e1eaee}.ls-preview-brand b{display:block;font:800 12px "Plus Jakarta Sans";color:#082f49}.ls-preview-brand small{display:block;margin-top:2px;font-size:6px;letter-spacing:1.4px;color:#0b8d55;font-weight:900}.ls-preview-brand em{display:block;margin-top:2px;font-size:6.5px;color:#607381;font-style:normal}.ls-preview-contact{text-align:right}.ls-preview-contact b{display:block;font-size:7px;color:#082f49}.ls-preview-contact span{display:block;margin-top:2px;font-size:6px;color:#64748b}.ls-preview-verify{display:grid;place-items:center;gap:3px}.qr-placeholder{width:34px;height:34px;border:2px solid #0b3d54;border-radius:6px;display:grid;place-items:center;color:#0b3d54;font-size:7px;font-weight:900;background:#fff}.ls-preview-verify span{font-size:5px;font-weight:900;letter-spacing:1px;color:#0b8d55}.ls-preview-rule{height:3px;background:linear-gradient(90deg,#0b3d54 0%,#075985 52%,#16a765 100%)}.ls-preview-identity{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:9px 13px;background:#fff;border-bottom:1px solid #e8eef2}.ls-preview-identity div{min-width:0}.ls-preview-identity span{display:block;font-size:5px;text-transform:uppercase;letter-spacing:.9px;color:#8ba0ab;font-weight:900}.ls-preview-identity b{display:block;margin-top:2px;font-size:6.5px;color:#193546;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ls-preview-body{padding:14px}.ls-preview-body h4{margin:0;font:900 13px "Plus Jakarta Sans";color:#082f49;letter-spacing:.1px}.fake-title{margin:4px 0 10px;font-size:8px;font-weight:800;color:#075985}.fake-table,.fake-rows{display:grid;grid-template-columns:1.5fr .8fr .7fr 1.2fr .7fr}.fake-table div{padding:6px 5px;background:#0b3d54;color:#fff;font-size:5.5px;font-weight:900}.fake-rows{border:1px solid #dfe8ec;border-top:0}.fake-rows span{padding:6px 5px;border-right:1px solid #e6edf1;border-bottom:1px solid #e6edf1;font-size:5.5px;color:#4d6270}.fake-rows span:nth-child(5n){border-right:0;color:#087443;font-weight:800}.ls-preview-bottom{display:flex;justify-content:space-between;gap:10px;padding:8px 13px;background:#062b3f;color:#d7e6ec;font-size:5.5px}.ls-preview-bottom strong{color:#fff;white-space:nowrap}.pro-stationery-preview .letterhead-footer{padding:8px 13px;background:#f4f8fb;color:#6b7f8b;font-size:6px!important;border-top:1px solid #e3ebef}
 @media(max-width:850px){.ls-preview-top{grid-template-columns:1fr}.ls-preview-contact{text-align:left}.ls-preview-identity{grid-template-columns:1fr 1fr}}
 </style>
+
+<style>
+/* V16 — Security hardening + report artifact controls */
+.security-lock{position:fixed;inset:0;z-index:7000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(2,15,24,.78);backdrop-filter:blur(16px)}
+.security-lock.show{display:flex}
+.security-lock-card{width:min(440px,100%);border:1px solid rgba(255,255,255,.12);border-radius:22px;background:linear-gradient(180deg,#0a2b3e,#061c2b);color:#fff;box-shadow:0 35px 100px rgba(0,0,0,.4);padding:26px}
+.security-lock-top{display:flex;align-items:center;gap:12px}.security-lock-logo{width:52px;height:42px;border-radius:11px;background:#fff;display:grid;place-items:center;overflow:hidden}.security-lock-logo img{width:100%;height:100%;object-fit:contain;padding:4px}.security-lock-title{font:800 17px "Plus Jakarta Sans"}.security-lock-sub{margin-top:3px;color:#9bb6c2;font-size:8px;line-height:1.5}
+.security-lock-badge{margin:18px 0 14px;padding:10px 11px;border:1px solid rgba(110,228,167,.18);border-radius:11px;background:rgba(110,228,167,.07);color:#bfead2;font-size:8px;line-height:1.5}
+.security-lock-field{margin-top:10px}.security-lock-field label{display:block;color:#9bb6c2;font-size:8px;text-transform:uppercase;letter-spacing:1px;font-weight:800;margin-bottom:6px}.security-lock-field input{width:100%;height:45px;padding:0 12px;border-radius:11px;border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.06);color:#fff;outline:none}.security-lock-field input:focus{border-color:#65d7a2;box-shadow:0 0 0 3px rgba(101,215,162,.11)}
+.security-lock-actions{display:flex;gap:8px;margin-top:14px}.security-lock-actions button{flex:1;min-height:42px;border:0;border-radius:10px;font-size:9px;font-weight:800}.security-lock-actions .unlock{background:linear-gradient(135deg,#16a765,#0b8d55);color:#fff}.security-lock-actions .signout{background:rgba(255,255,255,.08);color:#d7e6ec;border:1px solid rgba(255,255,255,.12)}
+.security-lock-error{min-height:17px;margin-top:8px;color:#fca5a5;font-size:8px;font-weight:800}
+.report-artifact-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}.report-artifact{padding:10px 11px;border:1px solid #dce8ed;border-radius:12px;background:#fbfdfe}.report-artifact b{display:block;font-size:9px;color:var(--navy)}.report-artifact span{display:block;margin-top:3px;color:var(--muted);font-size:7px;line-height:1.45}.report-artifact-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}.report-artifact-actions .btn{font-size:8px;padding:8px 10px}
+.top-btn.lock-btn{color:#7c2d12;background:#fff7ed;border-color:#fed7aa}
+@media(max-width:620px){.security-lock-card{padding:20px}.report-artifact-grid{grid-template-columns:1fr}.security-lock-actions{flex-direction:column}}
+</style>
+
 </head>
 
 <body class="booting">
@@ -919,9 +937,24 @@ body{overflow-x:hidden}
   <div class="top-actions">
     <button class="top-btn" onclick="refreshAll()">↻ Refresh</button>
     <button class="top-btn" onclick="showView('analytics')">Analytics</button>
+    <button class="top-btn lock-btn" type="button" onclick="lockWorkspace('manual')" title="Lock protected workspace">🔒 Lock</button>
     <div id="adminAvatar" class="avatar pulse-ring">LS</div>
   </div>
 </header>
+
+
+<div class="security-lock" id="securityLock" aria-hidden="true">
+  <div class="security-lock-card" role="dialog" aria-modal="true" aria-labelledby="securityLockTitle">
+    <div class="security-lock-top">
+      <div class="security-lock-logo"><img src="logo.png" alt="LifeSure Diagnostics"></div>
+      <div><div class="security-lock-title" id="securityLockTitle">Workspace Locked</div><div class="security-lock-sub">Sensitive operational data is hidden until your credentials are re-verified.</div></div>
+    </div>
+    <div class="security-lock-badge"><b>Security control active</b><br>Unlock requires the authenticated LifeSure account password. The workspace automatically locks after prolonged inactivity.</div>
+    <div class="security-lock-field"><label for="unlockPassword">Account password</label><input id="unlockPassword" type="password" autocomplete="current-password" placeholder="Enter your password"></div>
+    <div class="security-lock-error" id="unlockError" aria-live="polite"></div>
+    <div class="security-lock-actions"><button class="unlock" id="unlockButton" type="button" onclick="unlockWorkspace()">Unlock securely</button><button class="signout" type="button" onclick="logout()">Sign out</button></div>
+  </div>
+</div>
 
 <div class="command-overlay" id="commandOverlay" onclick="if(event.target===this)closeCommandPalette()">
   <div class="command-box" role="dialog" aria-modal="true" aria-label="LifeSure quick actions">
@@ -2476,21 +2509,80 @@ function renderPatients(){
  : `<tr><td colspan="5"><div class="empty"><div class="big">♙</div><b>No patients</b><span>Patient records will appear here.</span></div></td></tr>`;
 }
 
-async function openSecureReportPdf(reportId, preferLetterhead=false){
+async function getSecureReportRecord(reportId){
+  if(!(await assertLiveSession())) return null;
+  const report=state.reports.find(x=>String(x.id)===String(reportId));
+  if(!report) throw new Error("Report not found.");
+  if(String(report.status||'').toLowerCase()!="published") throw new Error("Only published reports can be accessed.");
+  return report;
+}
+async function getSignedReportUrl(path){
+  if(!path) throw new Error("No report artifact is attached to this record.");
+  const {data,error}=await supabaseClient.storage.from("reports-private").createSignedUrl(path,300);
+  if(error||!data?.signedUrl) throw error||new Error("Unable to create secure report link.");
+  return data.signedUrl;
+}
+function reportSourceExtension(path){
+  const m=String(path||'').toLowerCase().match(/\.([a-z0-9]+)(?:\?|$)/); return m?m[1]:'';
+}
+function downloadFileName(report,kind,ext){
+  const code=(report?.report_code||'report').replace(/[^a-z0-9_-]+/gi,'-');
+  return `LifeSure-${code}-${kind}.${ext}`;
+}
+async function openSecureReportPdf(reportId, preferLetterhead=true){
   try{
-    if(!(await assertLiveSession())) return;
-    const report=state.reports.find(x=>String(x.id)===String(reportId));
-    if(!report){showToast("Report not found.");return;}
-    if(String(report.status).toLowerCase()!=="published"){showToast("Only published reports can be opened.");return;}
+    const report=await getSecureReportRecord(reportId); if(!report)return;
     const path=(preferLetterhead && report.letterhead_path) ? report.letterhead_path : (report.original_path||report.letterhead_path);
-    if(!path){showToast("No report PDF is attached to this record.");return;}
-    const {data,error}=await supabaseClient.storage.from("reports-private").createSignedUrl(path,300);
-    if(error||!data?.signedUrl) throw error||new Error("Unable to create secure report link.");
-    window.open(data.signedUrl,"_blank","noopener,noreferrer");
-  }catch(error){
-    console.error("SECURE REPORT OPEN ERROR:",error);
-    showToast(error.message||"Report access was blocked.");
+    if(!path) throw new Error("No report PDF is attached to this record.");
+    if(preferLetterhead && !report.letterhead_path) throw new Error("Final letterhead report is not available.");
+    const signedUrl=await getSignedReportUrl(path);
+    window.open(signedUrl,"_blank","noopener,noreferrer");
+  }catch(error){console.error("SECURE REPORT OPEN ERROR:",error);showToast(error.message||"Report access was blocked.");}
+}
+async function downloadSecureReportFile(reportId,preferLetterhead=true){
+  try{
+    const report=await getSecureReportRecord(reportId); if(!report)return;
+    const path=(preferLetterhead && report.letterhead_path) ? report.letterhead_path : report.original_path;
+    if(!path) throw new Error(preferLetterhead?"Final letterhead report is unavailable.":"Original source is unavailable.");
+    if(preferLetterhead && !report.letterhead_path) throw new Error("Final letterhead report is unavailable.");
+    const ext=reportSourceExtension(path)||'pdf';
+    const signedUrl=await getSignedReportUrl(path);
+    const controller=new AbortController(); const timer=setTimeout(()=>controller.abort(),45000);
+    const response=await fetch(signedUrl,{signal:controller.signal,cache:'no-store'}); clearTimeout(timer);
+    if(!response.ok) throw new Error(`Secure file download failed (${response.status}).`);
+    const blob=await response.blob();
+    const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=downloadFileName(report,preferLetterhead?'Final-Letterhead':'Source',ext); document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),1500);
+    showToast(preferLetterhead?'Final report downloaded securely.':'Original source downloaded securely.');
+  }catch(error){console.error("SECURE REPORT DOWNLOAD ERROR:",error);showToast(error.name==='AbortError'?"Download timed out. Please retry.":(error.message||"Report download was blocked."));}
+}
+async function buildPlainTextPdfDownload(report,text){
+  if(!window.jspdf?.jsPDF) throw new Error("PDF generation engine is unavailable.");
+  const {jsPDF}=window.jspdf; const doc=new jsPDF({unit:'mm',format:'a4',compress:true});
+  const margin=18,W=210,H=297; let y=22;
+  doc.setTextColor(6,43,63); doc.setFont('helvetica','bold'); doc.setFontSize(15); doc.text('LifeSure Diagnostics',margin,y); y+=7;
+  doc.setFontSize(9); doc.setTextColor(7,89,133); doc.text('Diagnostic Report • Source Copy (No Letterhead)',margin,y); y+=9;
+  doc.setDrawColor(214,226,232); doc.line(margin,y,W-margin,y); y+=9;
+  doc.setFont('helvetica','normal'); doc.setFontSize(8.2); doc.setTextColor(54,73,84);
+  const lines=String(text||'').replace(/\r/g,'').split('\n');
+  for(const raw of lines){
+    const t=raw.trim(); if(!t){y+=3;continue;}
+    const wrapped=doc.splitTextToSize(t,W-2*margin);
+    if(y+wrapped.length*4.5>H-18){doc.addPage();y=20;doc.setTextColor(6,43,63);doc.setFont('helvetica','bold');doc.setFontSize(8);doc.text(`LifeSure Diagnostics • Source Copy • ${report?.report_code||''}`,margin,y);y+=8;doc.setFont('helvetica','normal');doc.setFontSize(8.2);doc.setTextColor(54,73,84);}
+    doc.text(wrapped,margin,y); y+=Math.max(5,wrapped.length*4.5+2);
   }
+  return doc.output('blob');
+}
+async function downloadReportNoLetterhead(reportId){
+  try{
+    const report=await getSecureReportRecord(reportId); if(!report)return;
+    const path=report.original_path;
+    if(!path) throw new Error("Original source is unavailable.");
+    const ext=reportSourceExtension(path);
+    if(ext!=='txt') return downloadSecureReportFile(reportId,false);
+    const signedUrl=await getSignedReportUrl(path); const response=await fetch(signedUrl,{cache:'no-store'}); if(!response.ok)throw new Error('Unable to read the private source file.');
+    const text=await response.text(); const blob=await buildPlainTextPdfDownload(report,text);
+    const url=URL.createObjectURL(blob); const a=document.createElement('a');a.href=url;a.download=downloadFileName(report,'No-Letterhead','pdf');document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);showToast('No-letterhead PDF generated securely.');
+  }catch(error){console.error('NO LETTERHEAD REPORT ERROR:',error);showToast(error.message||'Unable to generate no-letterhead PDF.');}
 }
 
 function renderReports(){
@@ -2504,8 +2596,14 @@ function renderReports(){
      actions.push(`<button class="btn btn-primary" type="button" onclick="openReportOps('${esc(r.id)}')">Open Ops</button>`);
    }
    if(published&&(r.original_path||r.letterhead_path)){
-     actions.push(`<button class="btn btn-light" type="button" onclick="openSecureReportPdf('${esc(r.id)}',false)">Original</button>`);
-     if(r.letterhead_path) actions.push(`<button class="btn btn-light" type="button" onclick="openSecureReportPdf('${esc(r.id)}',true)">Letterhead</button>`);
+     if(r.letterhead_path){
+       actions.push(`<button class="btn btn-light" type="button" onclick="openSecureReportPdf('${esc(r.id)}',true)">View Final</button>`);
+       actions.push(`<button class="btn btn-primary" type="button" onclick="downloadSecureReportFile('${esc(r.id)}',true)">Download Final</button>`);
+     }
+     if(r.original_path){
+       actions.push(`<button class="btn btn-light" type="button" onclick="openSecureReportPdf('${esc(r.id)}',false)">View Source</button>`);
+       actions.push(`<button class="btn btn-light" type="button" onclick="downloadReportNoLetterhead('${esc(r.id)}')">Download No Letterhead</button>`);
+     }
    }
    return `<tr><td class="id">${esc(r.report_code||r.id)}</td><td>${esc(r.booking_id||"—")}</td><td class="person">${esc(r.patient_id||"—")}</td>
  <td>${statusBadge(r.status)}</td><td>${esc(r.version||1)}</td><td>${fmtDate(r.published_at)}</td>
@@ -2595,8 +2693,14 @@ function renderReportOpsWorkspace(){
   renderReportPipeline(r.status,inst.result_status);
 
   const fileButtons=[];
-  if(r.original_path) fileButtons.push(`<button class="btn btn-light" type="button" onclick="openSecureReportPdf('${esc(r.id)}',false)">Open Final Report PDF</button>`);
-  if(r.letterhead_path) fileButtons.push(`<button class="btn btn-light" type="button" onclick="openSecureReportPdf('${esc(r.id)}',true)">Open Final Letterhead PDF</button>`);
+  if(r.letterhead_path){
+    fileButtons.push(`<button class="btn btn-light" type="button" onclick="openSecureReportPdf('${esc(r.id)}',true)">View Final PDF</button>`);
+    fileButtons.push(`<button class="btn btn-primary" type="button" onclick="downloadSecureReportFile('${esc(r.id)}',true)">Download Final PDF</button>`);
+  }
+  if(r.original_path){
+    fileButtons.push(`<button class="btn btn-light" type="button" onclick="openSecureReportPdf('${esc(r.id)}',false)">View Source</button>`);
+    fileButtons.push(`<button class="btn btn-light" type="button" onclick="downloadReportNoLetterhead('${esc(r.id)}')">Download No-Letterhead PDF</button>`);
+  }
 
   const resultRows=params.length ? params.map((p)=>{
     const id=reportParamId(p); const v=findValue(vals,id);
@@ -2630,6 +2734,10 @@ function renderReportOpsWorkspace(){
       <div class="report-meta-item"><span>Published</span><b>${esc(r.published_at?fmtDate(r.published_at):'Not published')}</b></div>
     </div>
     <div class="report-action-bar">${fileButtons.join('')}${actions}</div>
+    <div class="report-artifact-grid">
+      <div class="report-artifact"><b>Final branded report</b><span>LifeSure letterhead + patient identity + QR verification + footer on every page.</span><div class="report-artifact-actions">${r.letterhead_path?`<button class="btn btn-primary" type="button" onclick="downloadSecureReportFile('${esc(r.id)}',true)">↓ Download Final PDF</button>`:'<span class="muted">Not generated yet</span>'}</div></div>
+      <div class="report-artifact"><b>Source / no-letterhead copy</b><span>Original source remains privately preserved. PDF sources download unchanged; TXT sources can be rendered as a clean no-letterhead PDF.</span><div class="report-artifact-actions">${r.original_path?`<button class="btn btn-light" type="button" onclick="downloadReportNoLetterhead('${esc(r.id)}')">↓ Download No-Letterhead</button>`:'<span class="muted">No source attached</span>'}</div></div>
+    </div>
     <div class="report-result-panel">
       <div class="report-result-head"><h4>Result entry workspace</h4><span style="font-size:9px;color:#8396a0">${params.length} parameter${params.length===1?'':'s'}</span></div>
       <div class="report-result-list">${params.length?resultRows:''}</div>
@@ -2746,6 +2854,7 @@ function reportStationeryMeta(booking,report){
     patientId:booking?.patient_id||booking?.patient_code||"—",
     booking:booking?.booking_code||booking?.booking_id||"—",
     reportCode:report?.report_code||"—",
+    verificationToken:report?.verification_token||"",
     test:booking?.test_name||booking?.package_name||"Diagnostic test",
     collection:booking?.collection_type||"Centre",
     issued:new Date().toLocaleString("en-IN",{dateStyle:"medium",timeStyle:"short"}),
@@ -2812,11 +2921,13 @@ async function drawReportHeaderFooter(page,meta,pageNo,totalPages,logoData,qrDat
   return {topPad,bottomPad};
 }
 
-async function buildReportQrData(reportCode){
+async function buildReportQrData(reportCode,verificationToken){
   try{
-    if(!window.QRCode?.toDataURL || !reportCode)return null;
-    const verifyUrl=`https://lifesurediagnostics.vercel.app/verify.html?report=${encodeURIComponent(reportCode)}`;
-    const dataUrl=await QRCode.toDataURL(verifyUrl,{width:180,margin:1,errorCorrectionLevel:"M"});
+    if(!window.QRCode?.toDataURL || !reportCode || !verificationToken)return null;
+    const base=new URL("verify.html",window.location.href);
+    base.searchParams.set("report",reportCode);
+    base.searchParams.set("token",verificationToken);
+    const dataUrl=await QRCode.toDataURL(base.toString(),{width:220,margin:1,errorCorrectionLevel:"Q"});
     return dataUrl;
   }catch(err){
     console.warn("QR generation unavailable:",err);
@@ -2880,7 +2991,7 @@ async function buildTextReportPdf(booking,report,text,layoutMode){
   const out=await PDFLib.PDFDocument.create();
   const logoBytes=await fetch("logo.png").then(r=>r.arrayBuffer());
   const logoImg=await out.embedPng(logoBytes);
-  const qrDataUrl=await buildReportQrData(meta.reportCode);
+  const qrDataUrl=await buildReportQrData(meta.reportCode,meta.verificationToken);
   const qrImg=qrDataUrl?await out.embedPng(await dataUrlToUint8Array(qrDataUrl)):null;
   const rawPages=raw.getPages();
   const total=rawPages.length;
@@ -2902,7 +3013,7 @@ async function buildPdfStationeryReport(booking,report,originalFile,layoutMode){
   const logoBytes=await fetch("logo.png").then(r=>r.arrayBuffer());
   const logoImg=await out.embedPng(logoBytes);
   const meta=reportStationeryMeta(booking,report);
-  const qrDataUrl=await buildReportQrData(meta.reportCode);
+  const qrDataUrl=await buildReportQrData(meta.reportCode,meta.verificationToken);
   const qrImg=qrDataUrl?await out.embedPng(await dataUrlToUint8Array(qrDataUrl)):null;
   const total=original.getPages().length;
   const pages=await out.copyPages(original,original.getPageIndices());
@@ -3192,7 +3303,42 @@ async function addExpense(payload){
    showToast(error.message||"Expense could not be recorded");
  }
 }
-function logout(){try{sessionStorage.removeItem('lifesure:credential-handoff')}catch(_){} supabaseClient?.auth?.signOut({scope:'local'}).finally(()=>window.location.replace("login.html"))}
+let workspaceIdleTimer=null;
+let workspaceLocked=false;
+const WORKSPACE_IDLE_MS=30*60*1000;
+function clearWorkspaceIdleTimer(){if(workspaceIdleTimer)clearTimeout(workspaceIdleTimer);workspaceIdleTimer=null;}
+function resetWorkspaceIdleTimer(){if(workspaceLocked||!state.user)return;clearWorkspaceIdleTimer();workspaceIdleTimer=setTimeout(()=>lockWorkspace('inactivity'),WORKSPACE_IDLE_MS);}
+function showLockModal(reason='manual'){
+  workspaceLocked=true; clearWorkspaceIdleTimer();
+  document.getElementById('securityLock')?.classList.add('show');
+  document.getElementById('securityLock')?.setAttribute('aria-hidden','false');
+  const el=document.getElementById('unlockPassword'); if(el){el.value='';setTimeout(()=>el.focus(),60);}
+  const err=document.getElementById('unlockError'); if(err) err.textContent=reason==='inactivity'?'Workspace locked after 30 minutes without activity.':'';
+}
+function lockWorkspace(reason='manual'){showLockModal(reason);}
+async function unlockWorkspace(){
+  if(!supabaseClient?.auth||!state.profile?.email)return;
+  const input=document.getElementById('unlockPassword'); const button=document.getElementById('unlockButton'); const err=document.getElementById('unlockError');
+  const password=input?.value||''; if(!password){if(err)err.textContent='Enter your password to unlock.';return;}
+  button.disabled=true;button.textContent='Verifying…'; if(err)err.textContent='';
+  try{
+    const {data,error}=await withTimeout(supabaseClient.auth.signInWithPassword({email:state.profile.email,password}),10000,'Unlock request timed out.');
+    if(error||!data?.session)throw error||new Error('Unlock verification failed.');
+    workspaceLocked=false;
+    document.getElementById('securityLock')?.classList.remove('show');
+    document.getElementById('securityLock')?.setAttribute('aria-hidden','true');
+    showToast('Workspace unlocked securely.'); resetWorkspaceIdleTimer();
+  }catch(e){console.error('WORKSPACE UNLOCK ERROR:',e);if(err)err.textContent=e?.message||'Password verification failed.';}
+  finally{button.disabled=false;button.textContent='Unlock securely';}
+}
+function installWorkspaceSecurity(){
+  const events=['pointerdown','keydown','mousemove','scroll','touchstart'];
+  events.forEach(name=>document.addEventListener(name,()=>resetWorkspaceIdleTimer(),{passive:true}));
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)return; if(!workspaceLocked)resetWorkspaceIdleTimer();});
+  resetWorkspaceIdleTimer();
+}
+
+function logout(){clearWorkspaceIdleTimer();workspaceLocked=false;try{sessionStorage.removeItem('lifesure:credential-handoff')}catch(_){} supabaseClient?.auth?.signOut({scope:'local'}).finally(()=>window.location.replace("login.html"))}
 async function init(){
   try{
     await ensureRuntime();
@@ -3209,6 +3355,7 @@ async function init(){
     document.body.classList.add('ready');
     document.getElementById('securityGate')?.classList.add('hidden');
     commandCenterBooting=false;
+    installWorkspaceSecurity();
 
     // Load operational data in the background. Individual module failures are
     // non-fatal and are surfaced through the UI instead of forcing logout.
