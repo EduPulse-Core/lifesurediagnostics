@@ -14,6 +14,7 @@
 <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 
 <style>
@@ -834,6 +835,7 @@ body{overflow-x:hidden}
 .report-v15-filebox .left{min-width:0}
 .report-v15-filebox .left b{display:block;font-size:9px;color:#163449}
 .report-v15-filebox .left span{display:block;margin-top:3px;font-size:7px;color:#6d8491;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ .report-source-insights{margin-top:8px;padding:9px 11px;border:1px solid #dcebe5;border-radius:10px;background:#f7fcf9;color:#2f5f4f;font-size:7.5px;line-height:1.45}.report-source-insights b{color:#075985}
 .report-v15-lock{display:flex;align-items:center;gap:7px;margin-top:10px;padding:10px 12px;border-radius:10px;background:#f4faf7;border:1px solid #d6eee1;color:#24624c;font-size:7px;font-weight:800}
 .report-v15-lock i{color:#16a765}
 .report-v15-layout{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
@@ -846,6 +848,17 @@ body{overflow-x:hidden}
 .report-v15-step.active{background:#effaf5;border-color:#bfe6d0}.report-v15-step.active b{color:#087443}.report-v15-step.active span{color:#34765d}
 .report-v15-source-note{margin-top:10px;padding:9px 10px;border-radius:9px;background:#fff8eb;border:1px solid #f6ddb0;color:#8a5b14;font-size:7px;line-height:1.5}
 @media(max-width:900px){.report-v15-booking-preview{grid-template-columns:repeat(2,1fr)}.report-v15-pipeline{grid-template-columns:1fr 1fr}.report-v15-layout{grid-template-columns:1fr}}
+
+/* =========================================================
+   LIFESURE REPORT STUDIO V22
+   ========================================================= */
+.report-direct-actions{display:flex;align-items:center;gap:10px;margin-top:7px;flex-wrap:wrap}
+.report-ai-command-row{display:flex;gap:8px;margin-top:9px}.report-ai-command-row .input{flex:1;min-width:200px}
+.report-ai-response{margin-top:9px;padding:10px 12px;border:1px solid #dcebee;border-radius:10px;background:#f6fbfd;color:#244253;font-size:8.5px;line-height:1.55}.report-ai-response.ok{background:#f2fbf6;border-color:#cbe8d7}.report-ai-response.warn{background:#fff9ef;border-color:#f5dfb6}
+.report-analysis-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}.report-analysis-stat{padding:9px;border:1px solid #ddebed;border-radius:10px;background:#fff}.report-analysis-stat b{display:block;font-size:13px;color:#082f49}.report-analysis-stat span{display:block;margin-top:2px;font-size:7px;color:#718594;text-transform:uppercase;letter-spacing:.7px}
+.report-analysis-preview{margin-top:8px;border-top:1px solid #e7eff2;padding-top:8px}.report-analysis-row{display:grid;grid-template-columns:1.5fr .8fr .7fr 1fr .7fr;gap:6px;padding:5px 0;border-bottom:1px solid #edf2f4;font-size:7.8px}.report-analysis-row b{color:#0b3e56}
+.v22-auto-strip{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:9px 11px;border:1px solid #dcefe5;border-radius:10px;background:#f4fbf7}.v22-auto-strip strong{font-size:8px;color:#087a4b}.v22-badge{padding:4px 7px;border-radius:999px;background:#e8f7ef;color:#0b7e4d;font-size:7px;font-weight:800}.v22-badge.warn{background:#fff5df;color:#a36300}
+@media(max-width:800px){.report-analysis-grid{grid-template-columns:repeat(2,1fr)}.report-ai-command-row{flex-direction:column}.report-analysis-row{grid-template-columns:1fr 1fr}.report-analysis-row span:nth-child(n+4){grid-column:span 2}}
 </style>
 
 <style>
@@ -1580,7 +1593,7 @@ body{overflow-x:hidden}
   <div class="report-modal-card">
     <div class="report-modal-head">
       <div>
-        <div style="font-size:7px;letter-spacing:1.4px;text-transform:uppercase;color:#7be0ae;font-weight:900">REPORT OPERATIONS V15</div>
+        <div style="font-size:7px;letter-spacing:1.4px;text-transform:uppercase;color:#7be0ae;font-weight:900">REPORT OPERATIONS V21</div>
         <h3>New Diagnostic Report</h3>
         <p>Choose the booking once. Patient and order details are linked automatically. Import PDF or TXT and produce a consistent LifeSure report document.</p>
       </div>
@@ -1611,21 +1624,46 @@ body{overflow-x:hidden}
         </div>
         <div class="report-field full">
           <label>Source report</label>
-          <input id="reportPdfInput" type="file" accept="application/pdf,.pdf,text/plain,.txt" hidden>
+          <input id="reportPdfInput" type="file" accept="application/pdf,.pdf,text/plain,.txt,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.docx,text/csv,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.xlsx,application/json,.json,application/xml,text/xml,.xml,application/rtf,.rtf" hidden>
           <div class="file-drop" onclick="document.getElementById('reportPdfInput').click()">
-            <strong>Choose PDF or TXT source</strong>
-            <span>PDF/TXT ≤ 10 MB • PDF text is parsed when machine-readable; image-only PDFs stay visually intact • TXT becomes structured into the LifeSure report layout • original clinical text preserved in the generated report.</span>
+            <strong>Upload PDF, DOCX, TXT, CSV, XLSX, JSON, XML or RTF</strong>
+            <span>Up to 10 MB • automatic document analysis • tables, headings and diagnostic rows are normalized • original source remains privately preserved • final LifeSure report is generated separately.</span>
           </div>
           <div class="file-chip" id="reportFileChip" hidden><span id="reportFileType">FILE</span><b id="reportFileName"></b><span id="reportFileSize"></span></div>
+          <div id="reportSourceInsights" class="report-source-insights" hidden></div>
         </div>
         <div class="report-field full">
           <div class="report-v15-lock"><i>✓</i><span><b>LifeSure stationery locked:</b> branded header + patient identity strip + professional footer will be applied on <u>every page</u> of the final report.</span></div>
-          <div class="report-v15-source-note"><b>Source integrity:</b> provided clinical text is reformatted for readability only. The system must not invent, infer, or silently change clinical values.</div>
+          <div class="report-v15-source-note"><b>Source integrity:</b> clinical values are never invented or silently changed. Original PDF sources are preserved byte-for-byte; TXT/DOCX sources are converted into a secure no-letterhead source PDF because the private report bucket accepts PDF artifacts.</div>
         </div>
+      </div>
+      <div class="report-field full">
+        <label>Or type / paste report data directly</label>
+        <textarea id="reportDirectText" rows="8" placeholder="CBC
+Hemoglobin | 13.8 | g/dL | 13.0 - 17.0 | Normal
+WBC | 7200 | /uL | 4000 - 11000 | Normal
+Platelets | 2.45 | lakh/uL | 1.5 - 4.5 | Normal
+
+Remarks: Source text provided by laboratory."></textarea>
+        <div class="report-direct-actions">
+          <button class="btn btn-dark" type="button" onclick="analyzeReportSourceV22()">Analyze Source</button>
+          <span id="reportAnalysisStatusV22" class="muted">Upload a file or paste text. LifeSure will analyze it before generation.</span>
+        </div>
+        <div id="reportAnalysisPanelV22" class="report-source-insights" hidden></div>
+      </div>
+      <div class="report-field full">
+        <div class="report-v15-lock"><i>AI</i><span><b>LifeSure Report Copilot:</b> assists with source analysis, missing-field checks and safe administrative report edits. Clinical values are never silently invented or changed.</span></div>
+        <div class="report-ai-command-row">
+          <input id="reportAiCommandV22" class="input" placeholder="Try: check missing fields • change doctor to Dr. Sharma • generate final">
+          <button class="btn btn-dark" type="button" onclick="runReportCopilotV22()">Run Copilot</button>
+        </div>
+        <div id="reportAiResponseV22" class="report-ai-response" hidden></div><div class="muted" style="margin-top:6px">AI server endpoint is optional and uses a server-side secret when configured; without it, the safe local Copilot remains available.</div>
+      </div>
+      <div class="v22-auto-strip" style="margin-top:12px"><strong>Automated workflow</strong><span class="v22-badge">Analyze</span><span class="v22-badge">Structure</span><span class="v22-badge">Generate</span><span class="v22-badge">Preview</span><span class="v22-badge">Verify</span><span class="v22-badge">Publish</span><span class="v22-badge">Deliver</span></div>
       </div>
       <div class="report-modal-actions">
         <button class="btn btn-light" type="button" onclick="closeReportUploadModal()">Cancel</button>
-        <button class="btn btn-primary" id="createReportUploadButton" type="button" onclick="submitReportUpload()">Create & Generate Secure Report</button>
+        <button class="btn btn-primary" id="createReportUploadButton" type="button" onclick="submitReportUploadV22()">Analyze & Generate Professional Report</button>
       </div>
     </div>
   </div>
@@ -2805,14 +2843,16 @@ async function buildPlainTextPdfDownload(report,text){
 async function downloadReportNoLetterhead(reportId){
   try{
     const report=await getSecureReportRecord(reportId); if(!report)return;
-    const path=report.original_path;
-    if(!path) throw new Error("Original source is unavailable.");
-    const ext=reportSourceExtension(path);
-    if(ext!=='txt') return downloadSecureReportFile(reportId,false);
-    const signedUrl=await getSignedReportUrl(path); const response=await fetch(signedUrl,{cache:'no-store'}); if(!response.ok)throw new Error('Unable to read the private source file.');
-    const text=await response.text(); const booking=state.bookings.find(b=>String(b.booking_id)===String(report.booking_id))||{}; const blob=await buildTextReportPdf(booking,report,text,"clinical",{},false);
-    const url=URL.createObjectURL(blob); const a=document.createElement('a');a.href=url;a.download=downloadFileName(report,'No-Letterhead','pdf');document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);showToast('No-letterhead PDF generated securely.');
-  }catch(error){console.error('NO LETTERHEAD REPORT ERROR:',error);showToast(error.message||'Unable to generate no-letterhead PDF.');}
+    const path=report.original_path; if(!path) throw new Error("Source copy is unavailable.");
+    const signedUrl=await getSignedReportUrl(path);
+    const controller=new AbortController(); const timer=setTimeout(()=>controller.abort(),45000);
+    const response=await fetch(signedUrl,{signal:controller.signal,cache:"no-store"}); clearTimeout(timer);
+    if(!response.ok) throw new Error(`Secure source download failed (${response.status}).`);
+    const blob=await response.blob();
+    const url=URL.createObjectURL(blob),a=document.createElement("a"); a.href=url; a.download=downloadFileName(report,"No-Letterhead","pdf");
+    document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);
+    showToast("No-letterhead source PDF downloaded securely.");
+  }catch(error){console.error("NO LETTERHEAD REPORT ERROR:",error);showToast(error.name==="AbortError"?"Download timed out. Please retry.":(error.message||"Unable to download source copy."));}
 }
 
 function renderReports(){
@@ -3157,19 +3197,35 @@ function openReportUploadModal(){
   document.getElementById("reportUploadModal")?.classList.add("show");
 }
 
-document.getElementById("reportPdfInput")?.addEventListener("change",e=>{
+document.getElementById("reportPdfInput")?.addEventListener("change",async e=>{
   const file=e.target.files?.[0];
-  const chip=document.getElementById("reportFileChip");
-  if(!file){chip?.setAttribute("hidden","");return;}
+  const chip=document.getElementById("reportFileChip"), insights=document.getElementById("reportSourceInsights");
+  if(!file){chip?.setAttribute("hidden","");insights?.setAttribute("hidden","");return;}
   const lower=file.name.toLowerCase();
   const isPdf=file.type==="application/pdf"||lower.endsWith(".pdf");
   const isTxt=file.type==="text/plain"||lower.endsWith(".txt");
-  if(!isPdf&&!isTxt){e.target.value="";chip?.setAttribute("hidden","");showToast("Only PDF or TXT files are supported in V17.");return;}
-  if(file.size>10*1024*1024){e.target.value="";chip?.setAttribute("hidden","");showToast("Source file exceeds the 10 MB limit.");return;}
-  document.getElementById("reportFileType").textContent=isPdf?"PDF":"TXT";
+  const isDocx=file.type==="application/vnd.openxmlformats-officedocument.wordprocessingml.document"||lower.endsWith(".docx");
+  if(!isPdf&&!isTxt&&!isDocx){e.target.value="";chip?.setAttribute("hidden","");insights?.setAttribute("hidden","");showToast("Only PDF, TXT or DOCX files are supported.");return;}
+  if(file.size>10*1024*1024){e.target.value="";chip?.setAttribute("hidden","");insights?.setAttribute("hidden","");showToast("Source file exceeds the 10 MB limit.");return;}
+  document.getElementById("reportFileType").textContent=isPdf?"PDF":isDocx?"DOCX":"TXT";
   document.getElementById("reportFileName").textContent=file.name;
   document.getElementById("reportFileSize").textContent=(file.size/1024/1024).toFixed(2)+" MB";
   chip?.removeAttribute("hidden");
+  if(insights){insights.hidden=false;insights.innerHTML="<b>Source analysis:</b> Reading document structure…";}
+  try{
+    let text="";
+    if(isTxt) text=await file.text();
+    else if(isDocx) text=await extractDocxText(file);
+    else text=await extractPdfText(file);
+    const parsed=parseDiagnosticText(text||"");
+    const rows=parsed.sections.reduce((n,x)=>n+x.rows.length,0);
+    const sections=parsed.sections.filter(x=>x.title&&x.title!=="Report Content").length;
+    const chars=(text||"").replace(/\s/g,"").length;
+    if(insights) insights.innerHTML=`<b>Source analysis:</b> ${rows} structured result row(s) • ${sections} section(s) • ${chars.toLocaleString("en-IN")} content characters detected. ${isDocx?"DOCX tables/headings will be converted into the LifeSure report layout.":isPdf?"Machine-readable PDF text will be structured where possible.":"TXT content will be structured into report sections."}`;
+  }catch(err){
+    console.warn("SOURCE ANALYSIS ERROR:",err);
+    if(insights) insights.innerHTML="<b>Source analysis:</b> Preview unavailable. The source can still be preserved and reviewed after generation.";
+  }
 });
 
 async function imageToDataUrl(src){
@@ -3361,6 +3417,28 @@ function drawStructuredSection(doc,section,ctx){
   }
   ctx.y=y+7; return ctx;
 }
+async function extractDocxText(file){
+  if(!window.mammoth?.convertToHtml){
+    try{await loadScriptOnce("https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js",()=>!!window.mammoth?.convertToHtml,9000);}catch(_){}
+  }
+  if(!window.mammoth?.convertToHtml) throw new Error("DOCX reader is unavailable.");
+  const result=await window.mammoth.convertToHtml({arrayBuffer:await file.arrayBuffer()});
+  const wrapper=document.createElement("div"); wrapper.innerHTML=result.value||"";
+  const lines=[];
+  for(const node of Array.from(wrapper.children)){
+    const tag=node.tagName.toLowerCase();
+    if(tag==="table"){
+      for(const tr of Array.from(node.querySelectorAll("tr"))){
+        const cells=Array.from(tr.children).map(c=>String(c.textContent||"").replace(/\s+/g," ").trim()).filter(Boolean);
+        if(cells.length) lines.push(cells.join(" | "));
+      }
+    }else{
+      const text=String(node.textContent||"").replace(/\s+/g," ").trim();
+      if(text) lines.push(text);
+    }
+  }
+  return lines.join("\n").trim();
+}
 async function extractPdfText(file){
   if(!window.pdfjsLib?.getDocument) return "";
   try{
@@ -3444,12 +3522,13 @@ async function submitReportUpload(){
   const code=document.getElementById("reportCodeInput").value.trim();
   const layoutMode=document.getElementById("reportLayoutMode").value||"clinical";
   if(!bookingId){showToast("Select a booking.");return;}
-  if(!sourceFile){showToast("Choose a PDF or TXT report source.");return;}
+  if(!sourceFile){showToast("Choose a PDF, TXT or DOCX report source.");return;}
   if(sourceFile.size>10*1024*1024){showToast("Source file exceeds the 10 MB limit.");return;}
   const lower=sourceFile.name.toLowerCase();
   const isPdf=sourceFile.type==="application/pdf"||lower.endsWith(".pdf");
   const isTxt=sourceFile.type==="text/plain"||lower.endsWith(".txt");
-  if(!isPdf&&!isTxt){showToast("Only PDF or TXT is supported.");return;}
+  const isDocx=sourceFile.type==="application/vnd.openxmlformats-officedocument.wordprocessingml.document"||lower.endsWith(".docx");
+  if(!isPdf&&!isTxt&&!isDocx){showToast("Only PDF, TXT or DOCX is supported.");return;}
   const booking=state.bookings.find(b=>String(b.booking_id)===String(bookingId));
   if(!booking){showToast("Booking could not be resolved.");return;}
   button.classList.add("action-busy");button.disabled=true;
@@ -3459,50 +3538,37 @@ async function submitReportUpload(){
     const {data:reportRecord,error:reportRecordError}=await supabaseClient.from("reports").select("*").eq("id",reportId).single();
     if(reportRecordError||!reportRecord) throw reportRecordError||new Error("The created report record could not be reloaded securely.");
     const renderReport={...report,...reportRecord};
-    const ext=isPdf?"pdf":"txt";
-    const originalPath=`${patientId}/${reportId}/${version}/original-${stamp}.${ext}`;
-    const finalPath=`${patientId}/${reportId}/${version}/letterhead-${stamp}.pdf`;
 
-    // Preserve the exact source artifact separately. It is never transformed or overwritten.
-    const {error:originalErr}=await supabaseClient.storage
-      .from("reports-private")
-      .upload(originalPath,sourceFile,{contentType:isPdf?"application/pdf":"text/plain",upsert:false});
+    let sourceText="";
+    if(isTxt) sourceText=await sourceFile.text();
+    else if(isDocx) sourceText=await extractDocxText(sourceFile);
+    else sourceText=await extractPdfText(sourceFile);
+    if(!isPdf && !sourceText.trim()) throw new Error("The uploaded document did not contain readable text or tables.");
+
+    // reports-private currently accepts PDF artifacts only. Exact PDF sources remain byte-for-byte unchanged.
+    // TXT/DOCX are normalized into a secure no-letterhead source PDF so the source can still be reviewed/downloaded.
+    const originalPath=`${patientId}/${reportId}/${version}/source-original-${stamp}.pdf`;
+    const sourceBlob=isPdf?sourceFile:await buildTextReportPdf(booking,renderReport,sourceText,layoutMode,{},false);
+    const {error:originalErr}=await supabaseClient.storage.from("reports-private").upload(originalPath,sourceBlob,{contentType:"application/pdf",upsert:false});
     if(originalErr) throw originalErr;
 
-    let finalBlob;
-    if(isPdf){
-      const extracted=await extractPdfText(sourceFile);
-      if(extracted && extracted.replace(/\s/g,"").length>60){
-        finalBlob=await buildTextReportPdf(booking,renderReport,extracted,layoutMode);
-      }else{
-        finalBlob=await buildPdfStationeryReport(booking,renderReport,sourceFile,layoutMode);
-      }
-    }else{
-      const text=await sourceFile.text();
-      finalBlob=await buildTextReportPdf(booking,renderReport,text,layoutMode);
-    }
-    if(finalBlob.size>10*1024*1024) throw new Error("Generated report exceeds the 10 MB private-storage limit. Use a smaller source document.");
+    const finalBlob=(isPdf && (!sourceText || sourceText.replace(/\s/g,"").length<=60))
+      ? await buildPdfStationeryReport(booking,renderReport,sourceFile,layoutMode)
+      : await buildTextReportPdf(booking,renderReport,sourceText,layoutMode);
+    if(finalBlob.size>10*1024*1024) throw new Error("Generated report exceeds the 10 MB private-storage limit.");
 
-    const {error:finalErr}=await supabaseClient.storage
-      .from("reports-private")
-      .upload(finalPath,finalBlob,{contentType:"application/pdf",upsert:false});
+    const finalPath=`${patientId}/${reportId}/${version}/letterhead-${stamp}.pdf`;
+    const {error:finalErr}=await supabaseClient.storage.from("reports-private").upload(finalPath,finalBlob,{contentType:"application/pdf",upsert:false});
     if(finalErr) throw finalErr;
 
-    await secureRpc("attach_report_files_securely",{
-      p_report_id:reportId,
-      p_original_path:originalPath,
-      p_letterhead_path:finalPath
-    });
-    try{
-      await secureRpc("create_report_instance_securely",{p_report_id:reportId,p_template_id:null});
-    }catch(instanceError){
-      console.warn("AUTO RESULT WORKSPACE:",instanceError);
-    }
+    await secureRpc("attach_report_files_securely",{p_report_id:reportId,p_original_path:originalPath,p_letterhead_path:finalPath});
+    try{await secureRpc("create_report_instance_securely",{p_report_id:reportId,p_template_id:null});}catch(instanceError){console.warn("AUTO RESULT WORKSPACE:",instanceError);}
+
     closeReportUploadModal();
     showToast(`Report ${report.report_code} generated and stored securely.`);
     await refreshAll();
   }catch(error){
-    console.error("REPORT V17 UPLOAD ERROR:",error);
+    console.error("REPORT V21 UPLOAD ERROR:",error);
     showToast(error.message||"Report generation failed.");
   }finally{
     button.classList.remove("action-busy");button.disabled=false;
@@ -4171,5 +4237,63 @@ window.regenerateFinalFromSavedResults=regenerateFinalFromSavedResults;
 window.autoImportSaveAndRegenerate=autoImportSaveAndRegenerate;
 </script>
 
+
+<script>
+/* =========================================================
+   LIFESURE REPORT STUDIO V22
+   ========================================================= */
+let v22SourceFile=null,v22SourceText='',v22SourceKind='',v22Analysis=null,v22Busy=false;
+function v22Kind(file){const n=String(file?.name||'').toLowerCase(),t=String(file?.type||'').toLowerCase();if(n.endsWith('.pdf')||t==='application/pdf')return 'pdf';if(n.endsWith('.docx')||t.includes('wordprocessingml'))return 'docx';if(n.endsWith('.txt')||t==='text/plain')return 'txt';if(n.endsWith('.csv')||t==='text/csv')return 'csv';if(n.endsWith('.xlsx')||t.includes('spreadsheetml'))return 'xlsx';if(n.endsWith('.json')||t==='application/json')return 'json';if(n.endsWith('.xml')||t.includes('xml'))return 'xml';if(n.endsWith('.rtf')||t==='application/rtf')return 'rtf';return '';}
+function v22Split(line){const s=String(line||'').trim();if(s.includes('|'))return s.split('|').map(x=>x.trim()).filter(Boolean);if(s.includes('\t'))return s.split('\t').map(x=>x.trim()).filter(Boolean);const c=s.split(',').map(x=>x.trim());if(c.length>=3)return c;return s.split(/\s{2,}/).map(x=>x.trim()).filter(Boolean);}
+function v22LooksValue(s){return /(?:\b\d+(?:\.\d+)?\b|<|>|positive|negative|reactive|non[- ]reactive|normal|abnormal|detected|not detected|trace|present|absent)/i.test(String(s||''));}
+function v22Row(line){const s=String(line||'').trim(),c=v22Split(s),header=/^(parameter|test|investigation|analyte|examination|result|value)$/i;if(c.length>=3&&c.length<=7&&!header.test(c[0])&&v22LooksValue(c[1]))return {parameter:c[0],result:c[1],unit:c[2]||'',reference:c[3]||'',flag:c[4]||''};const m=s.match(/^(.+?)\s+([<>]?[-+]?\d+(?:[.,]\d+)?|positive|negative|normal|abnormal|reactive|non[- ]reactive|detected|not detected|trace)\s+([A-Za-z%µ\/0-9._-]+)?\s*(?:(\d+(?:\.\d+)?\s*(?:-|–|to)\s*\d+(?:\.\d+)?)\s*)?(normal|abnormal|high|low)?$/i);return m?{parameter:m[1].trim(),result:m[2].replace(',',''),unit:(m[3]||'').trim(),reference:(m[4]||'').trim(),flag:(m[5]||'').trim()}:null;}
+function parseDiagnosticTextV22(text){const lines=String(text||'').replace(/\r/g,'').split('\n'),sections=[];let cur={title:'Report Content',rows:[],meta:[],paragraphs:[]};const push=()=>{if(cur.rows.length||cur.meta.length||cur.paragraphs.length)sections.push(cur);cur={title:'',rows:[],meta:[],paragraphs:[]};};for(const raw of lines){const s=String(raw||'').trim();if(!s)continue;if(/^#{1,6}\s+/.test(s)){if(cur.title||cur.rows.length||cur.meta.length||cur.paragraphs.length)push();cur.title=s.replace(/^#{1,6}\s+/,'').trim();continue;}if(/^[A-Z0-9][A-Z0-9 .&()\/_-]{3,}$/.test(s)&&!/^(PATIENT|NAME|AGE|GENDER|DATE|REPORT|ID|PHONE|SAMPLE|SPECIMEN|COLLECTION|DOCTOR)\s*:/i.test(s)){if(cur.title||cur.rows.length||cur.meta.length||cur.paragraphs.length)push();cur.title=s;continue;}const kv=s.match(/^([^:\t]{1,70})\s*[:\t]\s*(.+)$/);if(kv&&!/^(parameter|test|investigation|analyte|result|value)$/i.test(kv[1])){cur.meta.push({key:kv[1].trim(),value:kv[2].trim()});continue;}const row=v22Row(s);if(row){cur.rows.push(row);continue;}if(/^(parameter|result|unit|reference range|flag)$/i.test(s))continue;cur.paragraphs.push(s);}push();return {sections,title:(sections.find(x=>x.rows.length)||sections[0]||{}).title||'Diagnostic Report',rawText:String(text||''),hasRows:sections.some(x=>x.rows.length),rowCount:sections.reduce((n,x)=>n+x.rows.length,0),sectionCount:sections.length,metaCount:sections.reduce((n,x)=>n+x.meta.length,0)};}
+window.parseDiagnosticText=parseDiagnosticTextV22;
+async function extractXlsxTextV22(file){if(!window.XLSX?.read)await loadScriptOnce('https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js',()=>!!window.XLSX?.read,9000);if(!window.XLSX?.read)throw new Error('XLSX reader is unavailable. Use CSV or TXT.');const wb=window.XLSX.read(await file.arrayBuffer(),{type:'array'}),lines=[];for(const name of wb.SheetNames){lines.push(name);const rows=window.XLSX.utils.sheet_to_json(wb.Sheets[name],{header:1,raw:false,defval:''});for(const row of rows){const vals=row.map(v=>String(v??'').trim()).filter(Boolean);if(vals.length)lines.push(vals.join(' | '));}}return lines.join('\n');}
+async function extractStructuredSourceV22(file){const kind=v22Kind(file);if(!kind)throw new Error('Unsupported file format.');if(kind==='txt'||kind==='csv')return await file.text();if(kind==='docx')return await extractDocxText(file);if(kind==='xlsx')return await extractXlsxTextV22(file);if(kind==='json'){const obj=JSON.parse(await file.text()),out=[];const walk=(v,k)=>{if(v==null)return;if(Array.isArray(v)){v.forEach(x=>walk(x,k));return;}if(typeof v==='object'){Object.entries(v).forEach(([kk,vv])=>walk(vv,k?`${k}.${kk}`:kk));return;}out.push(`${k||'value'}: ${v}`);};walk(obj,'');return out.join('\n');}if(kind==='xml'){const xml=new DOMParser().parseFromString(await file.text(),'application/xml');if(xml.querySelector('parsererror'))throw new Error('XML could not be parsed.');return Array.from(xml.querySelectorAll('*')).filter(el=>!el.children.length).map(el=>`${el.tagName}: ${String(el.textContent||'').trim()}`).filter(Boolean).join('\n');}if(kind==='rtf')return (await file.text()).replace(/\\par[d]?/g,'\n').replace(/\\'[0-9a-fA-F]{2}/g,'').replace(/\\[a-zA-Z]+\d* ?/g,'').replace(/[{}]/g,'').trim();return await extractPdfText(file);}
+function v22RenderAnalysis(parsed){const box=document.getElementById('reportAnalysisPanelV22'),status=document.getElementById('reportAnalysisStatusV22');if(!box||!parsed)return;const rows=(parsed.sections||[]).flatMap(s=>(s.rows||[]).map(r=>Object.assign({section:s.title||'Results'},r)));box.hidden=false;box.innerHTML=`<div class="report-analysis-grid"><div class="report-analysis-stat"><b>${parsed.sectionCount||0}</b><span>Sections</span></div><div class="report-analysis-stat"><b>${parsed.rowCount||0}</b><span>Result rows</span></div><div class="report-analysis-stat"><b>${parsed.metaCount||0}</b><span>Metadata fields</span></div><div class="report-analysis-stat"><b>${rows.filter(r=>r.flag).length}</b><span>Flags found</span></div></div>${rows.length?`<div class="report-analysis-preview"><b style="font-size:8px;color:#0b3e56">Detected content</b>${rows.slice(0,16).map(r=>`<div class="report-analysis-row"><b>${esc(r.parameter)}</b><span>${esc(r.result)}</span><span>${esc(r.unit||'-')}</span><span>${esc(r.reference||'-')}</span><span>${esc(r.flag||'-')}</span></div>`).join('')}</div>`:'<div class="report-ai-response warn">No structured result rows detected. The source can still be preserved, and values can be entered manually.</div>'}`;if(status)status.textContent=`Analysis ready - ${rows.length} structured result row${rows.length===1?'':'s'} detected.`;}
+async function analyzeReportSourceV22(){const file=document.getElementById('reportPdfInput')?.files?.[0]||v22SourceFile,direct=(document.getElementById('reportDirectText')?.value||'').trim();try{let text=direct,kind='typed-text';if(!text&&file){kind=v22Kind(file);text=await extractStructuredSourceV22(file);}if(!text.trim())throw new Error('Upload a source file or paste report data first.');v22SourceFile=file||null;v22SourceText=text;v22SourceKind=kind;v22Analysis=parseDiagnosticTextV22(text);v22RenderAnalysis(v22Analysis);showToast(`Source analyzed: ${v22Analysis.rowCount||0} result rows found.`);return v22Analysis;}catch(e){console.error('V22 ANALYSIS',e);showToast(e.message||'Source analysis failed.');const s=document.getElementById('reportAnalysisStatusV22');if(s)s.textContent=e.message||'Source analysis failed.';return null;}}
+async function runReportCopilotV22(){
+  const box=document.getElementById('reportAiResponseV22');
+  const cmd=(document.getElementById('reportAiCommandV22')?.value||'').trim();
+  if(!cmd){if(box){box.hidden=false;box.className='report-ai-response warn';box.textContent='Enter a command for the Report Copilot.';}return;}
+  if(box){box.hidden=false;box.className='report-ai-response';box.textContent='Analyzing with LifeSure Copilot...';}
+  try{
+    const booking=getReportSelectedBooking?.()||{};
+    const endpoint='https://evzgfprzxsgxsymvwsip.supabase.co/functions/v1/lifesure-report-ai';
+    let remote=null;
+    try{
+      const session=await supabaseClient.auth.getSession();
+      const token=session?.data?.session?.access_token;
+      if(token && (v22SourceText || document.getElementById('reportDirectText')?.value?.trim())){
+        const source=(v22SourceText || document.getElementById('reportDirectText')?.value || '').trim();
+        const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},body:JSON.stringify({text:source,command:cmd,booking:{patient_name:booking.patient_name||'',patient_id:booking.patient_id||'',test_name:booking.test_name||booking.package_name||'',booking_code:booking.booking_code||booking.booking_id||''}})});
+        if(response.ok){const payload=await response.json();if(payload?.success)remote=payload.result;}
+      }
+    }catch(remoteError){console.warn('SERVER AI UNAVAILABLE; using local safe copilot.',remoteError);}
+    if(remote){
+      const rows=(remote.sections||[]).reduce((n,s)=>n+(s.rows||[]).length,0);
+      const summary=`AI analysis complete. ${remote.sections?.length||0} sections and ${rows} result rows identified.`;
+      if(remote.requested_metadata_changes?.patient_display_name){const el=document.getElementById('reportDirectText');if(el)el.dataset.aiPatient=remote.requested_metadata_changes.patient_display_name;}
+      if(remote.requested_metadata_changes?.doctor_display_name){const el=document.getElementById('reportDirectText');if(el)el.dataset.aiDoctor=remote.requested_metadata_changes.doctor_display_name;}
+      if(box){box.className=(remote.warnings?.length?'report-ai-response warn':'report-ai-response ok');box.innerHTML=`${esc(summary)}${remote.missing_fields?.length?'<br>Missing: '+esc(remote.missing_fields.join(', ')):''}${remote.warnings?.length?'<br>Review: '+esc(remote.warnings.join(' | ')):''}<br><br><b>AI does not publish automatically.</b> Authorized staff review remains required.`;}
+      v22Analysis=parseDiagnosticTextV22(v22SourceText||'');
+      return;
+    }
+    const q=cmd.toLowerCase(); let reply;
+    if(/check|missing|complete|validate/.test(q))reply={type:'ok',text:`Safe local copilot check: ${v22Analysis?.sectionCount||0} sections, ${v22Analysis?.rowCount||0} structured result rows. Patient/booking data stays linked from the selected booking.`};
+    else if(/generate|final|create|make/.test(q))reply={type:'ok',text:'Ready to generate the professional A4 report from the analyzed file or typed data. The final PDF will include LifeSure stationery on every page.'};
+    else{const pm=cmd.match(/change\s+(?:the\s+)?patient(?:\s+name)?\s+to\s+(.+)/i);const dm=cmd.match(/(?:change\s+)?(?:doctor|referring doctor)\s+to\s+(.+)/i);if(pm){document.getElementById('reportDirectText').dataset.aiPatient=pm[1].trim();reply={type:'ok',text:`Prepared patient display update: ${pm[1].trim()}. The database patient record will not be changed.`};}else if(dm){document.getElementById('reportDirectText').dataset.aiDoctor=dm[1].trim();reply={type:'ok',text:`Prepared doctor display update: ${dm[1].trim()}.`};}else reply={type:'warn',text:'Server AI is not connected yet. Safe local Copilot is active. Try: check missing fields, generate final, change patient name to ..., or change doctor to ...'};}
+    if(box){box.hidden=false;box.className=`report-ai-response ${reply.type}`;box.textContent=reply.text;}
+  }catch(e){console.error('COPILOT ERROR',e);if(box){box.hidden=false;box.className='report-ai-response warn';box.textContent='Copilot could not complete the command. The report workflow is still available without AI.';}}
+}
+
+async function submitReportUploadV22(){if(v22Busy)return;const btn=document.getElementById('createReportUploadButton'),bookingId=document.getElementById('reportBookingSelect')?.value,file=document.getElementById('reportPdfInput')?.files?.[0]||v22SourceFile,direct=(document.getElementById('reportDirectText')?.value||'').trim(),code=(document.getElementById('reportCodeInput')?.value||'').trim(),layout=document.getElementById('reportLayoutMode')?.value||'clinical';if(!bookingId){showToast('Select a booking first.');return;}if(!file&&!direct){showToast('Upload a source file or paste report data.');return;}if(file&&file.size>10*1024*1024){showToast('Source file exceeds 10 MB.');return;}const booking=state.bookings.find(b=>String(b.booking_id)===String(bookingId));if(!booking){showToast('Booking could not be resolved.');return;}v22Busy=true;btn.disabled=true;btn.classList.add('action-busy');try{if(direct){v22SourceText=direct;v22SourceKind='typed-text';v22Analysis=parseDiagnosticTextV22(direct);}else if(!v22SourceText||v22SourceFile!==file){v22SourceFile=file;v22SourceKind=v22Kind(file);v22SourceText=await extractStructuredSourceV22(file);v22Analysis=parseDiagnosticTextV22(v22SourceText);}if(!v22SourceText.trim())throw new Error('No readable report content found.');const report=await secureRpc('create_report_securely',{p_booking_id:bookingId,p_report_code:code||null});const reportId=report.report_id,patientId=report.patient_id,stamp=Date.now(),version='v1';const {data:record,error:recErr}=await supabaseClient.from('reports').select('*').eq('id',reportId).single();if(recErr||!record)throw recErr||new Error('Created report could not be reloaded.');const rr=Object.assign({},report,record);const originalPath=`${patientId}/${reportId}/${version}/source-original-${stamp}.pdf`;const originalBlob=(v22SourceKind==='pdf'&&file)?file:await buildTextReportPdf(booking,rr,v22SourceText,layout,{},false);const {error:oe}=await supabaseClient.storage.from('reports-private').upload(originalPath,originalBlob,{contentType:'application/pdf',upsert:false});if(oe)throw oe;const overrides={},directEl=document.getElementById('reportDirectText');if(directEl?.dataset?.aiPatient)overrides.patient=directEl.dataset.aiPatient;if(directEl?.dataset?.aiDoctor)overrides.doctor=directEl.dataset.aiDoctor;const finalBlob=await buildTextReportPdf(booking,rr,v22SourceText,layout,overrides,true);if(finalBlob.size>10*1024*1024)throw new Error('Generated final report exceeds 10 MB.');const finalPath=`${patientId}/${reportId}/${version}/letterhead-${stamp}.pdf`;const {error:fe}=await supabaseClient.storage.from('reports-private').upload(finalPath,finalBlob,{contentType:'application/pdf',upsert:false});if(fe)throw fe;await secureRpc('attach_report_files_securely',{p_report_id:reportId,p_original_path:originalPath,p_letterhead_path:finalPath});try{await secureRpc('create_report_instance_securely',{p_report_id:reportId,p_template_id:null});}catch(e){console.warn('RESULT INSTANCE AUTO-CREATE',e);}closeReportUploadModal();showToast(`Professional report ${report.report_code} generated.`);await refreshAll();setTimeout(()=>openReportOps(reportId),250);}catch(e){console.error('V22 PIPELINE',e);showToast(e.message||'Report generation failed.');}finally{btn.disabled=false;btn.classList.remove('action-busy');v22Busy=false;}}
+(function installV22Input(){const old=document.getElementById('reportPdfInput');if(!old)return;const fresh=old.cloneNode(true);old.replaceWith(fresh);fresh.addEventListener('change',async()=>{const file=fresh.files?.[0];if(!file)return;const kind=v22Kind(file);if(!kind){fresh.value='';showToast('Unsupported file format.');return;}if(file.size>10*1024*1024){fresh.value='';showToast('Source file exceeds 10 MB.');return;}v22SourceFile=file;const chip=document.getElementById('reportFileChip');if(chip){document.getElementById('reportFileType').textContent=kind.toUpperCase();document.getElementById('reportFileName').textContent=file.name;document.getElementById('reportFileSize').textContent=(file.size/1024/1024).toFixed(2)+' MB';chip.removeAttribute('hidden');}await analyzeReportSourceV22();});})();
+document.getElementById('reportDirectText')?.addEventListener('input',()=>{const v=document.getElementById('reportDirectText')?.value||'';if(v.trim().length>8)clearTimeout(window.v22InputTimer),window.v22InputTimer=setTimeout(()=>analyzeReportSourceV22(),250);});
+window.submitReportUpload=submitReportUploadV22;
+const prevClose=window.closeReportUploadModal;window.closeReportUploadModal=function(){try{prevClose?.();}catch(_){}document.getElementById('reportDirectText')?.setAttribute('value','');const t=document.getElementById('reportDirectText');if(t)t.value='';};
+window.openSecureReportPdf=async function(reportId,preferLetterhead=true){try{const report=await getSecureReportRecord(reportId);if(!report)return;const path=(preferLetterhead&&report.letterhead_path)?report.letterhead_path:(report.original_path||report.letterhead_path);if(!path)throw new Error('No report artifact is available yet.');const url=await getSignedReportUrl(path);window.open(url,'_blank','noopener,noreferrer');}catch(e){console.error('V22 PREVIEW',e);showToast(e.message||'Report preview failed.');}};
+</script>
 </body>
 </html>
