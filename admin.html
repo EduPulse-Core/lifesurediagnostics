@@ -13,6 +13,7 @@
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 
 <style>
@@ -851,7 +852,48 @@ body{overflow-x:hidden}
 /* V15.1 — LifeSure Report Stationery System */
 .pro-stationery-preview{padding:0!important;background:#fff;overflow:hidden;border:1px solid #d9e6eb!important;border-radius:16px;box-shadow:0 16px 36px rgba(6,29,45,.07)}
 .ls-preview-top{display:grid;grid-template-columns:1.35fr 1fr auto;gap:12px;align-items:center;padding:16px;background:linear-gradient(135deg,#fbfeff,#f1faf6)}
-.ls-preview-brand{display:flex;align-items:center;gap:10px}.ls-preview-brand img{width:58px;height:42px;object-fit:contain;background:#fff;border-radius:9px;padding:4px;border:1px solid #e1eaee}.ls-preview-brand b{display:block;font:800 12px "Plus Jakarta Sans";color:#082f49}.ls-preview-brand small{display:block;margin-top:2px;font-size:6px;letter-spacing:1.4px;color:#0b8d55;font-weight:900}.ls-preview-brand em{display:block;margin-top:2px;font-size:6.5px;color:#607381;font-style:normal}.ls-preview-contact{text-align:right}.ls-preview-contact b{display:block;font-size:7px;color:#082f49}.ls-preview-contact span{display:block;margin-top:2px;font-size:6px;color:#64748b}.ls-preview-verify{display:grid;place-items:center;gap:3px}.qr-placeholder{width:34px;height:34px;border:2px solid #0b3d54;border-radius:6px;display:grid;place-items:center;color:#0b3d54;font-size:7px;font-weight:900;background:#fff}.ls-preview-verify span{font-size:5px;font-weight:900;letter-spacing:1px;color:#0b8d55}.ls-preview-rule{height:3px;background:linear-gradient(90deg,#0b3d54 0%,#075985 52%,#16a765 100%)}.ls-preview-identity{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:9px 13px;background:#fff;border-bottom:1px solid #e8eef2}.ls-preview-identity div{min-width:0}.ls-preview-identity span{display:block;font-size:5px;text-transform:uppercase;letter-spacing:.9px;color:#8ba0ab;font-weight:900}.ls-preview-identity b{display:block;margin-top:2px;font-size:6.5px;color:#193546;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ls-preview-body{padding:14px}.ls-preview-body h4{margin:0;font:900 13px "Plus Jakarta Sans";color:#082f49;letter-spacing:.1px}.fake-title{margin:4px 0 10px;font-size:8px;font-weight:800;color:#075985}.fake-table,.fake-rows{display:grid;grid-template-columns:1.5fr .8fr .7fr 1.2fr .7fr}.fake-table div{padding:6px 5px;background:#0b3d54;color:#fff;font-size:5.5px;font-weight:900}.fake-rows{border:1px solid #dfe8ec;border-top:0}.fake-rows span{padding:6px 5px;border-right:1px solid #e6edf1;border-bottom:1px solid #e6edf1;font-size:5.5px;color:#4d6270}.fake-rows span:nth-child(5n){border-right:0;color:#087443;font-weight:800}.ls-preview-bottom{display:flex;justify-content:space-between;gap:10px;padding:8px 13px;background:#062b3f;color:#d7e6ec;font-size:5.5px}.ls-preview-bottom strong{color:#fff;white-space:nowrap}.pro-stationery-preview .letterhead-footer{padding:8px 13px;background:#f4f8fb;color:#6b7f8b;font-size:6px!important;border-top:1px solid #e3ebef}
+.ls-preview-brand{display:flex;align-items:center;gap:10px}.ls-preview-brand img{width:58px;height:42px;object-fit:contain;background:#fff;border-radius:9px;padding:4px;border:1px solid #e1eaee}.ls-preview-brand b{display:block;font:800 12px "Plus Jakarta Sans";color:#082f49}.ls-preview-brand small{display:block;margin-top:2px;font-size:6px;letter-spacing:1.4px;color:#0b8d55;font-weight:900}.ls-preview-brand em{display:block;margin-top:2px;font-size:6.5px;color:#607381;font-style:normal}.ls-preview-contact{text-align:right}.ls-preview-contact b{display:block;font-size:7px;color:#082f49}.ls-preview-contact span{display:block;margin-top:2px;font-size:6px;color:#64748b}.ls-preview-verify{display:grid;place-items:center;gap:3px}.qr-placeholder{width:34px;height:34px;border:2px solid #0b3d54;border-radius:6px;display:grid;place-items:center;color:#0b3d54;font-size:7px;font-weight:900;background:#fff}.ls-preview-verify span{font-size:5px;font-weight:900;letter-spacing:1px;color:#0b8d55}.ls-preview-rule{height:3px;background:linear-gradient(90deg,#0b3d54 0%,#075985 52%,#16a765 100%)}.ls-preview-identity{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:9px 13px;background:#fff;border-bottom:1px solid #e8eef2}.ls-preview-identity div{min-width:0}.ls-preview-identity span{display:block;font-size:5px;text-transform:uppercase;letter-spacing:.9px;color:#8ba0ab;font-weight:900}.ls-preview-identity b{display:block;margin-top:2px;font-size:6.5px;color:#193546;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ls-preview-body{padding:14px}.ls-preview-body h4{margin:0;font:900 13px "Plus Jakarta Sans";color:#082f49;letter-spacing:.1px}.fake-title{margin:4px 0 10px;font-size:8px;font-weight:800;color:#075985}.fake-table,.fake-rows{display:grid;grid-template-columns:1.5fr .8fr .7fr 1.2fr .7fr}.fake-table div{padding:6px 5px;background:#0b3d54;color:#fff;font-size:5.5px;font-weight:900}.fake-rows{border:1px solid #dfe8ec;border-top:0}.fake-rows span{padding:6px 5px;border-right:1px solid #e6edf1;border-bottom:1px solid #e6edf1;font-size:5.5px;color:#4d6270}.fake-rows span:nth-child(5n){border-right:0;color:#087443;font-weight:800}.ls-preview-bottom{display:flex;justify-content:space-between;gap:10px;padding:8px 13px;background:#062b3f;color:#d7e6ec;font-size:5.5px}.ls-preview-bottom strong{color:#fff;white-space:nowrap}
+
+/* =========================================================
+   V17 — SMART REPORT BUILDER / EDITOR
+========================================================= */
+.report-smart-card{border:1px solid #dce8ed;border-radius:14px;background:linear-gradient(135deg,#f8fcfd,#eef9f4);padding:13px;margin-top:12px}
+.report-smart-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.report-smart-head h4{margin:0;font-size:10px;color:#082f49}
+.report-smart-head span{font-size:7px;color:#087443;font-weight:800;text-transform:uppercase;letter-spacing:.7px}
+.report-smart-note{margin-top:6px;font-size:7px;line-height:1.55;color:#607381}
+.report-ai-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.report-ai-edit-modal{width:min(760px,100%);background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 35px 100px rgba(0,0,0,.28)}
+.report-ai-head{padding:18px 20px;background:linear-gradient(135deg,#06283e,#075985 55%,#0b8d55);color:#fff;display:flex;justify-content:space-between;gap:15px}
+.report-ai-head h3{margin:0;font:800 16px "Plus Jakarta Sans"}
+.report-ai-head p{margin:4px 0 0;color:#cfe3ea;font-size:8px;line-height:1.45}
+.report-ai-body{padding:18px}
+.report-ai-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.report-ai-field{display:flex;flex-direction:column;gap:5px}
+.report-ai-field.full{grid-column:1/-1}
+.report-ai-field label{font-size:7px;text-transform:uppercase;letter-spacing:1px;font-weight:900;color:#64748b}
+.report-ai-field textarea,.report-ai-field input{width:100%;border:1px solid #dce8ed;background:#f8fbfc;border-radius:10px;padding:10px 11px;outline:none;font-size:9px;color:#102235}
+.report-ai-field textarea{min-height:92px;resize:vertical;line-height:1.55}
+.report-ai-field textarea:focus,.report-ai-field input:focus{background:#fff;border-color:#6bcf9d;box-shadow:0 0 0 3px rgba(22,167,101,.08)}
+.report-ai-preview{margin-top:12px;border:1px solid #e1ebef;border-radius:12px;overflow:hidden}
+.report-ai-preview-head{padding:9px 11px;background:#f7fafb;font-size:8px;font-weight:900;color:#082f49;border-bottom:1px solid #e6edf2}
+.report-ai-change{display:flex;justify-content:space-between;gap:12px;padding:9px 11px;border-top:1px solid #edf2f5;font-size:8px}
+.report-ai-change:first-of-type{border-top:0}
+.report-ai-change span{color:#7b8e98}
+.report-ai-change b{color:#0b3d54;text-align:right}
+.report-ai-warning{margin-top:10px;padding:10px 11px;border-radius:10px;background:#fff7ed;border:1px solid #fde0be;color:#9a5a10;font-size:7px;line-height:1.55}
+.report-ai-footer{display:flex;justify-content:flex-end;gap:8px;padding:13px 18px;border-top:1px solid #e6edf2;background:#fbfdfe}
+.report-preflight{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.report-check{padding:9px;border:1px solid #e2ebef;border-radius:10px;background:#fbfdfe}
+.report-check b{display:block;font-size:7px;color:#082f49}
+.report-check span{display:block;margin-top:3px;font-size:7px;color:#64748b}
+.report-check.ok{border-color:#cfe9db;background:#f4fcf7}
+.report-check.ok b{color:#087443}
+.report-check.bad{border-color:#f3d1d1;background:#fff8f8}
+.report-check.bad b{color:#b91c1c}
+.report-structured-note{padding:9px 11px;border-radius:10px;background:#eef8fb;border:1px solid #d7eaef;color:#416879;font-size:7px;line-height:1.5;margin-top:10px}
+@media(max-width:700px){.report-ai-grid,.report-preflight{grid-template-columns:1fr}.report-ai-field.full{grid-column:auto}}
+.pro-stationery-preview .letterhead-footer{padding:8px 13px;background:#f4f8fb;color:#6b7f8b;font-size:6px!important;border-top:1px solid #e3ebef}
 @media(max-width:850px){.ls-preview-top{grid-template-columns:1fr}.ls-preview-contact{text-align:left}.ls-preview-identity{grid-template-columns:1fr 1fr}}
 </style>
 
@@ -868,6 +910,26 @@ body{overflow-x:hidden}
 .report-artifact-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}.report-artifact{padding:10px 11px;border:1px solid #dce8ed;border-radius:12px;background:#fbfdfe}.report-artifact b{display:block;font-size:9px;color:var(--navy)}.report-artifact span{display:block;margin-top:3px;color:var(--muted);font-size:7px;line-height:1.45}.report-artifact-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}.report-artifact-actions .btn{font-size:8px;padding:8px 10px}
 .top-btn.lock-btn{color:#7c2d12;background:#fff7ed;border-color:#fed7aa}
 @media(max-width:620px){.security-lock-card{padding:20px}.report-artifact-grid{grid-template-columns:1fr}.security-lock-actions{flex-direction:column}}
+
+/* V18 REPORT INTELLIGENCE + COMMUNICATIONS */
+.report-v18-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.report-v18-toolbar .input,.report-v18-toolbar .select{min-width:140px}
+.report-auto-banner{margin:12px 18px;padding:12px 14px;border:1px solid #d6ebe0;background:linear-gradient(135deg,#f3fbf7,#f6fafc);border-radius:12px;display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap}
+.report-auto-banner strong{font-size:9px;color:#0b6d46}.report-auto-banner span{font-size:8px;color:#617988}
+.report-ai-map{margin-top:10px;padding:10px;border:1px dashed #cfe0e7;border-radius:10px;background:#fbfdfe}
+.report-ai-map-grid{display:grid;grid-template-columns:1.2fr .9fr .6fr;gap:7px;align-items:center}
+.report-ai-map-grid div{font-size:8px}.report-ai-map-grid .src{font-weight:800;color:#315263}.report-ai-map-grid .dst{color:#16764d;font-weight:800}.report-ai-map-grid .conf{text-align:right;color:#718692}
+.report-send-card{margin-top:12px;padding:14px;border:1px solid #dbe8ed;border-radius:14px;background:#fbfdfe}
+.report-send-card h4{margin:0;color:#153b4e;font-size:10px}.report-send-card p{margin:5px 0 0;color:#718491;font-size:8px;line-height:1.5}
+.report-send-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+.report-automation-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.report-automation-card{padding:13px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.report-automation-card b{font-size:9px;color:var(--navy)} .report-automation-card span{display:block;margin-top:4px;color:var(--muted);font-size:7px;line-height:1.45}
+.report-import-summary{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.report-import-pill{padding:6px 8px;border-radius:999px;background:#eff8f3;color:#16764d;font-size:7px;font-weight:800}
+.report-import-pill.warn{background:#fff7ed;color:#b45309}
+.report-edit-log{margin-top:10px;padding:9px 11px;border-left:3px solid #16a765;background:#f7fbf9;color:#5f7480;font-size:7px;line-height:1.5}
+@media(max-width:900px){.report-automation-grid{grid-template-columns:1fr}.report-v18-toolbar .input{min-width:170px}}
 </style>
 
 </head>
@@ -1045,8 +1107,17 @@ body{overflow-x:hidden}
           <h3>Report Operations</h3>
           <div class="card-sub">V15 • Smart PDF/TXT import, patient-linked stationery and controlled publication</div>
         </div>
-        <div class="report-toolbar">
+        <div class="report-v18-toolbar">
           <span class="report-kicker"><i></i> Private PDF storage</span>
+          <input id="reportSearch" class="input" placeholder="Search report, booking, patient..." oninput="renderReports()">
+          <select id="reportStatusFilter" class="select" onchange="renderReports()">
+            <option value="">All statuses</option>
+            <option value="not_ready">Not ready</option>
+            <option value="uploaded">Uploaded</option>
+            <option value="under_review">Under review</option>
+            <option value="published">Published</option>
+            <option value="replaced">Replaced</option>
+          </select>
           <button class="btn btn-primary" onclick="openReportUploadModal()">+ New Report</button>
         </div>
       </div>
@@ -1057,7 +1128,14 @@ body{overflow-x:hidden}
       <div class="card"><div class="card-head"><div><h3>LifeSure Letterhead</h3><div class="card-sub">Professional first page generated from the booking</div></div></div>
         <div class="letterhead-preview"><div class="letterhead-inner pro-stationery-preview"><div class="ls-preview-top"><div class="ls-preview-brand"><img src="logo.png" alt="LifeSure Diagnostics logo" onerror="this.style.display='none'"><div><b>LifeSure Diagnostics</b><small>CARE • PRECISION • TRUST</small><em>Diagnostic &amp; Pathology Services</em></div></div><div class="ls-preview-contact"><b>Geeta Nagar, Colaba, Mumbai</b><span>7266925657 • lifesurediagnostics@gmail.com</span><span>lifesurediagnostics.vercel.app</span></div><div class="ls-preview-verify"><div class="qr-placeholder">QR</div><span>VERIFY</span></div></div><div class="ls-preview-rule"></div><div class="ls-preview-identity"><div><span>Patient</span><b>Generated per booking</b></div><div><span>Report No.</span><b>LS-RPT-XXXXXXXX</b></div><div><span>Booking ID</span><b>LS-BKG-XXXXXXXX</b></div><div><span>Status</span><b>FINAL</b></div></div><div class="ls-preview-body"><h4>DIAGNOSTIC REPORT</h4><div class="fake-title">Complete Blood Count (CBC)</div><div class="fake-table"><div>Parameter</div><div>Result</div><div>Unit</div><div>Reference Range</div><div>Flag</div></div><div class="fake-rows"><span>Hemoglobin</span><span>13.8</span><span>g/dL</span><span>13.0–17.0</span><span>Normal</span><span>Total WBC</span><span>7,200</span><span>/µL</span><span>4,000–11,000</span><span>Normal</span></div></div><div class="ls-preview-bottom"><span>Confidential medical document • Please verify through the official LifeSure verification service.</span><strong>Page 1 of 1</strong></div><div class="letterhead-footer">Original source remains preserved privately; the branded report is generated as a separate controlled artifact.</div></div></div>
       </div>
-      <div class="card"><div class="card-head"><div><h3>Controlled workflow</h3><div class="card-sub">No direct report-table browser writes</div></div></div><div class="pad" style="padding:18px"><div class="insight-list"><div class="insight"><div class="insight-icon">1</div><div><b>Create report</b><p>Link the report to an existing LifeSure booking.</p></div></div><div class="insight"><div class="insight-icon">2</div><div><b>Upload source PDF</b><p>Private Storage path is validated against the report and patient.</p></div></div><div class="insight"><div class="insight-icon">3</div><div><b>Generate letterhead copy</b><p>Optional LifeSure-branded cover is merged with the source PDF.</p></div></div><div class="insight"><div class="insight-icon">4</div><div><b>Publish securely</b><p>Existing authorization and payment controls remain the final publication gate.</p></div></div></div></div></div>
+      <div class="card"><div class="card-head"><div><h3>Production automation</h3><div class="card-sub">Source parsing, report generation and customer delivery</div></div></div><div class="pad" style="padding:18px">
+        <div class="report-automation-grid">
+          <div class="report-automation-card"><b>Smart Import</b><span>Parse PDF/TXT tables and map source values to configured parameters.</span></div>
+          <div class="report-automation-card"><b>Auto Regenerate</b><span>Saved result values can immediately regenerate the final LifeSure PDF.</span></div>
+          <div class="report-automation-card"><b>Customer Delivery</b><span>After publication, create a time-limited secure link and send via WhatsApp or email.</span></div>
+        </div>
+        <div class="insight-list" style="margin-top:8px"><div class="insight"><div class="insight-icon">1</div><div><b>Import & map</b><p>Clinical values are extracted from the supplied source; ambiguous rows stay for review.</p></div></div><div class="insight"><div class="insight-icon">2</div><div><b>Review & verify</b><p>Authorized staff confirm the structured report before customer-facing publication.</p></div></div><div class="insight"><div class="insight-icon">3</div><div><b>Publish & deliver</b><p>Payment/publication gates remain enforced by the backend; the final PDF is then shareable.</p></div></div></div>
+      </div></div>
       </div>
     </div>
   </div>
@@ -1358,6 +1436,96 @@ body{overflow-x:hidden}
   </div>
 </div>
 
+
+
+<!-- REPORT SEND MODAL — V18 -->
+<div class="modal" id="reportSendModal">
+  <div class="report-ai-edit-modal" style="max-width:620px">
+    <div class="report-ai-head">
+      <div>
+        <div style="font-size:7px;letter-spacing:1.3px;text-transform:uppercase;color:#7be0ae;font-weight:900">SECURE CUSTOMER DELIVERY V18</div>
+        <h3>Send published report</h3>
+        <p>Generate a time-limited secure report link, then open WhatsApp or email with a ready-to-send message. The original report stays private.</p>
+      </div>
+      <button class="close" type="button" onclick="closeReportSendModal()">×</button>
+    </div>
+    <div class="report-ai-body">
+      <div class="report-ai-grid">
+        <div class="report-ai-field"><label>Customer / Patient</label><input id="sendPatientName" readonly></div>
+        <div class="report-ai-field"><label>Report Code</label><input id="sendReportCode" readonly></div>
+        <div class="report-ai-field"><label>Phone</label><input id="sendPhone" placeholder="+91..."></div>
+        <div class="report-ai-field"><label>Email</label><input id="sendEmail" type="email" placeholder="customer@example.com"></div>
+        <div class="report-ai-field full"><label>Message</label><textarea id="sendMessage" rows="4"></textarea></div>
+      </div>
+      <div class="report-ai-warning"><b>Security:</b> the share URL is time-limited. Do not post medical report links publicly. Customer-facing delivery is available only for published reports.</div>
+    </div>
+    <div class="report-ai-footer">
+      <button class="btn btn-light" type="button" onclick="copyReportShareLink()">Copy secure link</button>
+      <button class="btn btn-light" type="button" onclick="sendReportEmail()">Email</button>
+      <button class="btn btn-primary" type="button" onclick="sendReportWhatsApp()">WhatsApp</button>
+    </div>
+  </div>
+</div>
+
+<!-- REPORT SMART EDITOR — V17 -->
+<div class="modal" id="reportSmartEditModal">
+  <div class="report-ai-edit-modal">
+    <div class="report-ai-head">
+      <div>
+        <div style="font-size:7px;letter-spacing:1.3px;text-transform:uppercase;color:#7be0ae;font-weight:900">SMART REPORT EDITOR V17</div>
+        <h3>Update report details safely</h3>
+        <p>Use a natural-language instruction to change report metadata and regenerate the branded PDF. Clinical results are never rewritten by this editor.</p>
+      </div>
+      <button class="close" type="button" onclick="closeSmartReportEdit()">×</button>
+    </div>
+    <div class="report-ai-body">
+      <div class="report-ai-grid">
+        <div class="report-ai-field full">
+          <label>Smart instruction</label>
+          <textarea id="reportAiCommand" placeholder="Example: change patient name to Rahul Sharma and doctor to Dr. A. Mehta"></textarea>
+        </div>
+        <div class="report-ai-field">
+          <label>Patient name</label>
+          <input id="aiPatientName" placeholder="Keep linked booking value">
+        </div>
+        <div class="report-ai-field">
+          <label>Test / package</label>
+          <input id="aiTestName" placeholder="Keep linked booking value">
+        </div>
+        <div class="report-ai-field">
+          <label>Patient ID</label>
+          <input id="aiPatientId" placeholder="Keep linked booking value">
+        </div>
+        <div class="report-ai-field">
+          <label>Referring doctor</label>
+          <input id="aiDoctor" placeholder="Optional">
+        </div>
+        <div class="report-ai-field">
+          <label>Collection</label>
+          <input id="aiCollection" placeholder="Centre / Home collection">
+        </div>
+        <div class="report-ai-field">
+          <label>Report code</label>
+          <input id="aiReportCode" placeholder="Keep existing report code">
+        </div>
+      </div>
+      <div class="report-ai-actions">
+        <button class="btn btn-dark" type="button" onclick="interpretSmartReportCommand()">Interpret instruction</button>
+        <button class="btn btn-light" type="button" onclick="resetSmartReportOverrides()">Reset</button>
+      </div>
+      <div id="reportAiPreview" class="report-ai-preview" hidden>
+        <div class="report-ai-preview-head">Pending changes</div>
+        <div id="reportAiChanges"></div>
+      </div>
+      <div class="report-ai-warning"><b>Safety rule:</b> this editor can update presentation/administrative metadata such as name, patient ID, test label, doctor, collection and report code. It does not generate, infer, or alter clinical results, reference ranges or medical interpretation.</div>
+    </div>
+    <div class="report-ai-footer">
+      <button class="btn btn-light" type="button" onclick="closeSmartReportEdit()">Cancel</button>
+      <button class="btn btn-primary" id="applySmartEditButton" type="button" onclick="applySmartReportEditAndRegenerate()">Apply & Regenerate Final PDF</button>
+    </div>
+  </div>
+</div>
+
 <!-- REPORT UPLOAD MODAL — V15 -->
 <div class="modal" id="reportUploadModal">
   <div class="report-modal-card">
@@ -1397,7 +1565,7 @@ body{overflow-x:hidden}
           <input id="reportPdfInput" type="file" accept="application/pdf,.pdf,text/plain,.txt" hidden>
           <div class="file-drop" onclick="document.getElementById('reportPdfInput').click()">
             <strong>Choose PDF or TXT source</strong>
-            <span>PDF ≤ 10 MB • TXT converted automatically into the LifeSure report layout • original clinical text preserved in the generated report.</span>
+            <span>PDF/TXT ≤ 10 MB • PDF text is parsed when machine-readable; image-only PDFs stay visually intact • TXT becomes structured into the LifeSure report layout • original clinical text preserved in the generated report.</span>
           </div>
           <div class="file-chip" id="reportFileChip" hidden><span id="reportFileType">FILE</span><b id="reportFileName"></b><span id="reportFileSize"></span></div>
         </div>
@@ -2513,7 +2681,8 @@ async function getSecureReportRecord(reportId){
   if(!(await assertLiveSession())) return null;
   const report=state.reports.find(x=>String(x.id)===String(reportId));
   if(!report) throw new Error("Report not found.");
-  if(String(report.status||'').toLowerCase()!="published") throw new Error("Only published reports can be accessed.");
+  const role=state.profile?.role||"";
+  if(!["super_admin","management","lab_staff"].includes(role)) throw new Error("Report access is restricted to authorized staff.");
   return report;
 }
 async function getSignedReportUrl(path){
@@ -2580,7 +2749,7 @@ async function downloadReportNoLetterhead(reportId){
     const ext=reportSourceExtension(path);
     if(ext!=='txt') return downloadSecureReportFile(reportId,false);
     const signedUrl=await getSignedReportUrl(path); const response=await fetch(signedUrl,{cache:'no-store'}); if(!response.ok)throw new Error('Unable to read the private source file.');
-    const text=await response.text(); const blob=await buildPlainTextPdfDownload(report,text);
+    const text=await response.text(); const booking=state.bookings.find(b=>String(b.booking_id)===String(report.booking_id))||{}; const blob=await buildTextReportPdf(booking,report,text,"clinical",{},false);
     const url=URL.createObjectURL(blob); const a=document.createElement('a');a.href=url;a.download=downloadFileName(report,'No-Letterhead','pdf');document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);showToast('No-letterhead PDF generated securely.');
   }catch(error){console.error('NO LETTERHEAD REPORT ERROR:',error);showToast(error.message||'Unable to generate no-letterhead PDF.');}
 }
@@ -2718,7 +2887,7 @@ function renderReportOpsWorkspace(){
   if(inst.id && canEnter && ['draft','entered'].includes(String(inst.result_status||'').toLowerCase())) actions+=`<button class="btn btn-primary" type="button" onclick="saveAllReportResults()">Save Results</button>`;
   if(inst.id && canEnter && ['entered','draft'].includes(String(inst.result_status||'').toLowerCase())) actions+=`<button class="btn btn-light" type="button" onclick="submitReportReviewFromOps()">Submit for Review</button>`;
   if(inst.id && canVerify && String(inst.result_status||'').toLowerCase()==='under_review') actions+=`<button class="btn btn-light" type="button" onclick="verifyReportFromOps()">Verify Report</button>`;
-  if(canPublish && ['under_review','verified'].includes(String(r.status||'').toLowerCase())) actions+=`<button class="btn btn-primary" type="button" onclick="publishReportFromOps()">Publish Securely</button>`;
+  if(canPublish && ['uploaded','under_review'].includes(String(r.status||'').toLowerCase())) actions+=`<button class="btn btn-primary" type="button" onclick="publishReportFromOps()">Publish Securely</button>`;
 
   document.getElementById('reportOpsBody').innerHTML=`
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
@@ -2728,12 +2897,18 @@ function renderReportOpsWorkspace(){
     <div class="report-meta-grid">
       <div class="report-meta-item"><span>Patient</span><b>${esc(r.patient_id||'—')}</b></div>
       <div class="report-meta-item"><span>Booking</span><b>${esc(r.booking_id||'—')}</b></div>
-      <div class="report-meta-item"><span>Instance</span><b>${esc(inst.id||'Not created')}</b></div>
+      <div class="report-meta-item"><span>Instance</span><b>${esc(inst.id||'Auto-create pending')}</b></div>
       <div class="report-meta-item"><span>Result status</span><b>${esc(String(inst.result_status||'Not started').replaceAll('_',' '))}</b></div>
       <div class="report-meta-item"><span>Version</span><b>${esc(r.version||inst.version||1)}</b></div>
       <div class="report-meta-item"><span>Published</span><b>${esc(r.published_at?fmtDate(r.published_at):'Not published')}</b></div>
     </div>
+    <div class="report-preflight">
+      <div class="report-check ${r.original_path?'ok':'bad'}"><b>${r.original_path?'✓':'!'} Source preserved</b><span>Private original artifact</span></div>
+      <div class="report-check ${r.letterhead_path?'ok':'bad'}"><b>${r.letterhead_path?'✓':'!'} Final PDF ready</b><span>LifeSure stationery artifact</span></div>
+      <div class="report-check ${inst.id?'ok':'bad'}"><b>${inst.id?'✓':'!'} Result workspace</b><span>${inst.id?'Ready for review':'Will be created automatically'}</span></div>
+    </div>
     <div class="report-action-bar">${fileButtons.join('')}${actions}</div>
+    <div class="report-smart-card"><div class="report-smart-head"><h4>Smart Report Editor</h4><span>Metadata-safe automation</span></div><div class="report-smart-note">Update administrative details in natural language, regenerate the final branded PDF, and keep the original source untouched.</div><div class="report-ai-actions"><button class="btn btn-dark" type="button" onclick="openSmartReportEdit()">Smart Edit</button><span class="muted">Clinical values are never modified by this tool.</span></div></div>
     <div class="report-artifact-grid">
       <div class="report-artifact"><b>Final branded report</b><span>LifeSure letterhead + patient identity + QR verification + footer on every page.</span><div class="report-artifact-actions">${r.letterhead_path?`<button class="btn btn-primary" type="button" onclick="downloadSecureReportFile('${esc(r.id)}',true)">↓ Download Final PDF</button>`:'<span class="muted">Not generated yet</span>'}</div></div>
       <div class="report-artifact"><b>Source / no-letterhead copy</b><span>Original source remains privately preserved. PDF sources download unchanged; TXT sources can be rendered as a clean no-letterhead PDF.</span><div class="report-artifact-actions">${r.original_path?`<button class="btn btn-light" type="button" onclick="downloadReportNoLetterhead('${esc(r.id)}')">↓ Download No-Letterhead</button>`:'<span class="muted">No source attached</span>'}</div></div>
@@ -2742,7 +2917,7 @@ function renderReportOpsWorkspace(){
       <div class="report-result-head"><h4>Result entry workspace</h4><span style="font-size:9px;color:#8396a0">${params.length} parameter${params.length===1?'':'s'}</span></div>
       <div class="report-result-list">${params.length?resultRows:''}</div>
     </div>
-    <div style="margin-top:12px" class="report-workspace-banner"><strong>Integrity:</strong><span>Values are saved through the secure report RPC; direct browser table writes are not used.</span></div>`;
+    <div style="margin-top:12px" class="report-workspace-banner"><strong>Integrity:</strong><span>Values are saved through the secure report RPC; direct browser table writes are not used. Authorized staff can preview private artifacts before publication; patient/public access remains publication-gated.</span></div>`;
 }
 
 async function createReportInstanceFromOps(){
@@ -2779,10 +2954,107 @@ async function verifyReportFromOps(){
 }
 
 async function publishReportFromOps(){
-  try{await secureRpc('publish_report_securely',{p_report_id:activeReportOpsId});showToast('Report published securely.');await openReportOps(activeReportOpsId);await refreshAll();}catch(error){console.error(error);showToast(error.message||'Report publication failed.');}
+  try{
+    if(!activeReportOpsId) return;
+    const w=normalizeReportWorkspace(await secureRpc('get_report_workspace_securely',{p_report_id:activeReportOpsId}));
+    const r=w.report||{}; const checks=[];
+    checks.push({label:'Final PDF',ok:!!r.letterhead_path});
+    checks.push({label:'Source file',ok:!!r.original_path});
+    let billing=null;
+    try{billing=await getAdminBookingBilling(r.booking_id);}catch(e){console.warn('Publish billing preflight unavailable; backend will enforce payment gate.',e)}
+    if(billing){
+      const invoice=billing?.invoice||{}; const booking=billing?.booking||{};
+      const balance=Number(invoice.balance_amount ?? invoice.net_amount ?? booking.net_charge ?? 0);
+      const paid=String(booking.payment_status||'').toLowerCase()==='paid' && String(invoice.status||'').toLowerCase()==='paid' && Math.abs(balance)<0.005;
+      checks.push({label:'Payment settled',ok:paid});
+    }
+    const msg=checks.filter(x=>!x.ok).map(x=>x.label).join(', ');
+    if(msg) throw new Error(`Publish blocked. Complete: ${msg}.`);
+    const result=await secureRpc('publish_report_securely',{p_report_id:activeReportOpsId});
+    showToast(result?.already_published?'Report was already published.':'Report published securely.');
+    await openReportOps(activeReportOpsId); await refreshAll();
+  }catch(error){console.error('REPORT PUBLISH ERROR:',error);showToast(error.message||'Report publication failed.');}
 }
 
 document.getElementById('reportOpsModal')?.addEventListener('click',e=>{if(e.target.id==='reportOpsModal')closeReportOps()});
+
+
+let activeSmartReportContext=null;
+let activeSmartReportOverrides={};
+function baseSmartReportValues(){
+  const w=activeReportWorkspace||{}; const r=w.report||{}; const booking=state.bookings.find(b=>String(b.booking_id)===String(r.booking_id))||{};
+  return {
+    patient:booking.patient_name||'', patientId:booking.patient_id||booking.patient_code||'', test:booking.test_name||booking.package_name||'',
+    doctor:'', collection:booking.collection_type||'Centre', reportCode:r.report_code||''
+  };
+}
+function openSmartReportEdit(){
+  if(!activeReportOpsId){showToast('Open a report workspace first.');return;}
+  const w=activeReportWorkspace||{};const r=w.report||{};const booking=state.bookings.find(b=>String(b.booking_id)===String(r.booking_id))||{};
+  activeSmartReportContext={report:r,booking}; activeSmartReportOverrides={};
+  const vals=baseSmartReportValues();
+  document.getElementById('aiPatientName').value=vals.patient;document.getElementById('aiPatientId').value=vals.patientId;document.getElementById('aiTestName').value=vals.test;document.getElementById('aiDoctor').value='';document.getElementById('aiCollection').value=vals.collection;document.getElementById('aiReportCode').value=vals.reportCode;document.getElementById('reportAiCommand').value='';document.getElementById('reportAiPreview').hidden=true;
+  document.getElementById('reportSmartEditModal')?.classList.add('show');
+}
+function closeSmartReportEdit(){document.getElementById('reportSmartEditModal')?.classList.remove('show');activeSmartReportContext=null;}
+function resetSmartReportOverrides(){
+  if(!activeSmartReportContext)return; const vals=baseSmartReportValues();
+  document.getElementById('aiPatientName').value=vals.patient;document.getElementById('aiPatientId').value=vals.patientId;document.getElementById('aiTestName').value=vals.test;document.getElementById('aiDoctor').value='';document.getElementById('aiCollection').value=vals.collection;document.getElementById('aiReportCode').value=vals.reportCode;activeSmartReportOverrides={};document.getElementById('reportAiPreview').hidden=true;
+}
+function extractQuotedValue(command,patterns){
+  for(const p of patterns){const m=command.match(p);if(m&&m[1])return m[1].trim().replace(/^['"]|['"]$/g,'').trim();} return '';
+}
+function interpretSmartReportCommand(){
+  const c=document.getElementById('reportAiCommand').value.trim();if(!c){showToast('Enter an instruction first.');return;}
+  const lower=c.toLowerCase(); const vals=baseSmartReportValues(); const edits={};
+  const patient=extractQuotedValue(c,[/(?:change|update|set)\s+(?:the\s+)?(?:patient\s+)?(?:name|patient name)\s+(?:to|as)\s+["']?(.+?)["']?(?:\s+and\s+|\s*$)/i,/(?:patient name)\s*[:=-]\s*["']?(.+?)["']?$/i]); if(patient)edits.patient=patient;
+  const test=extractQuotedValue(c,[/(?:change|update|set)\s+(?:the\s+)?(?:test|package|test name)\s+(?:to|as)\s+["']?(.+?)["']?(?:\s+and\s+|\s*$)/i]); if(test)edits.test=test;
+  const pid=extractQuotedValue(c,[/(?:change|update|set)\s+(?:the\s+)?(?:patient id|patient code)\s+(?:to|as)\s+["']?(.+?)["']?(?:\s+and\s+|\s*$)/i]); if(pid)edits.patientId=pid;
+  const doctor=extractQuotedValue(c,[/(?:change|update|set)\s+(?:the\s+)?(?:doctor|ref(?:erring)? doctor)\s+(?:to|as)\s+["']?(.+?)["']?(?:\s+and\s+|\s*$)/i]); if(doctor)edits.doctor=doctor;
+  const collection=extractQuotedValue(c,[/(?:change|update|set)\s+(?:the\s+)?collection\s+(?:to|as)\s+["']?(.+?)["']?(?:\s+and\s+|\s*$)/i]); if(collection)edits.collection=collection;
+  const code=extractQuotedValue(c,[/(?:change|update|set)\s+(?:the\s+)?report\s+code\s+(?:to|as)\s+["']?(.+?)["']?(?:\s+and\s+|\s*$)/i]); if(code)edits.reportCode=code;
+  // Useful single-field shortcuts.
+  if(!edits.patient && /(rename|set name|patient name)/i.test(lower)) edits.patient=extractQuotedValue(c,[/(?:rename|set name|patient name)[^:]*[:=]?\s*["']?(.+)["']?$/i]);
+  if(!Object.keys(edits).length) throw new Error('I could not safely map that instruction. Use “change patient name to …” or edit the fields directly.');
+  activeSmartReportOverrides={...activeSmartReportOverrides,...edits};
+  for(const [id,key] of [['aiPatientName','patient'],['aiPatientId','patientId'],['aiTestName','test'],['aiDoctor','doctor'],['aiCollection','collection'],['aiReportCode','reportCode']]) if(edits[key]) document.getElementById(id).value=edits[key];
+  const preview=document.getElementById('reportAiPreview'), changes=document.getElementById('reportAiChanges'); preview.hidden=false;
+  const labels={patient:'Patient name',patientId:'Patient ID',test:'Test / package',doctor:'Referring doctor',collection:'Collection',reportCode:'Report code'};
+  changes.innerHTML=Object.entries(activeSmartReportOverrides).map(([k,v])=>`<div class="report-ai-change"><span>${esc(labels[k]||k)}</span><b>${esc(v)}</b></div>`).join('');
+}
+async function readReportSourceForRegeneration(report,booking,overrides){
+  if(!report?.original_path) throw new Error('Original source is unavailable.');
+  const url=await getSignedReportUrl(report.original_path);const res=await fetch(url,{cache:'no-store'});if(!res.ok)throw new Error('Unable to read the private source report.');
+  const blob=await res.blob();const ext=reportSourceExtension(report.original_path);const sourceFile=new File([blob],`source.${ext||'pdf'}`,{type:ext==='txt'?'text/plain':'application/pdf'});
+  return {sourceFile,ext};
+}
+async function applySmartReportEditAndRegenerate(){
+  try{
+    if(!activeSmartReportContext?.report) throw new Error('Report context is missing.');
+    // Sync direct field edits.
+    activeSmartReportOverrides={
+      patient:document.getElementById('aiPatientName').value.trim(),
+      patientId:document.getElementById('aiPatientId').value.trim(),
+      test:document.getElementById('aiTestName').value.trim(),
+      doctor:document.getElementById('aiDoctor').value.trim(),
+      collection:document.getElementById('aiCollection').value.trim(),
+      reportCode:document.getElementById('aiReportCode').value.trim()
+    };
+    const meaningful=Object.fromEntries(Object.entries(activeSmartReportOverrides).filter(([_,v])=>v));
+    if(!Object.keys(meaningful).length) throw new Error('Add at least one report detail to change.');
+    const btn=document.getElementById('applySmartEditButton');btn.classList.add('action-busy');btn.disabled=true;
+    const {report,booking}=activeSmartReportContext; const {sourceFile,ext}=await readReportSourceForRegeneration(report,booking,meaningful); const layout=document.getElementById('reportLayoutMode')?.value||'clinical';
+    let finalBlob;
+    if(ext==='txt') finalBlob=await buildTextReportPdf(booking,report,await sourceFile.text(),layout,meaningful);
+    else {const extracted=await extractPdfText(sourceFile);finalBlob=extracted&&extracted.replace(/\s/g,'').length>60?await buildTextReportPdf(booking,report,extracted,layout,meaningful):await buildPdfStationeryReport(booking,report,sourceFile,layout,meaningful);}
+    if(finalBlob.size>10*1024*1024) throw new Error('Generated final report exceeds the 10 MB storage limit.');
+    const stamp=Date.now();const version=`v${Number(report.version||1)}`;const path=`${report.patient_id}/${report.id}/${version}/letterhead-${stamp}.pdf`;
+    const {error:upErr}=await supabaseClient.storage.from('reports-private').upload(path,finalBlob,{contentType:'application/pdf',upsert:false});if(upErr)throw upErr;
+    await secureRpc('attach_report_files_securely',{p_report_id:report.id,p_original_path:report.original_path,p_letterhead_path:path});
+    closeSmartReportEdit();showToast('Updated final report regenerated securely. Original source preserved.');await refreshAll();await openReportOps(report.id);
+  }catch(error){console.error('SMART REPORT EDIT ERROR:',error);showToast(error.message||'Could not regenerate final report.');}
+  finally{const btn=document.getElementById('applySmartEditButton');if(btn){btn.classList.remove('action-busy');btn.disabled=false;}}
+}
 
 function closeReportUploadModal(){
   document.getElementById("reportUploadModal")?.classList.remove("show");
@@ -2831,7 +3103,7 @@ document.getElementById("reportPdfInput")?.addEventListener("change",e=>{
   const lower=file.name.toLowerCase();
   const isPdf=file.type==="application/pdf"||lower.endsWith(".pdf");
   const isTxt=file.type==="text/plain"||lower.endsWith(".txt");
-  if(!isPdf&&!isTxt){e.target.value="";chip?.setAttribute("hidden","");showToast("Only PDF or TXT files are supported in V15.");return;}
+  if(!isPdf&&!isTxt){e.target.value="";chip?.setAttribute("hidden","");showToast("Only PDF or TXT files are supported in V17.");return;}
   if(file.size>10*1024*1024){e.target.value="";chip?.setAttribute("hidden","");showToast("Source file exceeds the 10 MB limit.");return;}
   document.getElementById("reportFileType").textContent=isPdf?"PDF":"TXT";
   document.getElementById("reportFileName").textContent=file.name;
@@ -2848,22 +3120,23 @@ async function imageToDataUrl(src){
   });
 }
 
-function reportStationeryMeta(booking,report){
+function reportStationeryMeta(booking,report,overrides={}){
   return {
-    patient:booking?.patient_name||"Patient",
-    patientId:booking?.patient_id||booking?.patient_code||"—",
+    patient:overrides.patient||booking?.patient_name||"Patient",
+    patientId:overrides.patientId||booking?.patient_id||booking?.patient_code||"—",
     booking:booking?.booking_code||booking?.booking_id||"—",
-    reportCode:report?.report_code||"—",
+    reportCode:overrides.reportCode||report?.report_code||"—",
     verificationToken:report?.verification_token||"",
-    test:booking?.test_name||booking?.package_name||"Diagnostic test",
-    collection:booking?.collection_type||"Centre",
-    issued:new Date().toLocaleString("en-IN",{dateStyle:"medium",timeStyle:"short"}),
+    test:overrides.test||booking?.test_name||booking?.package_name||"Diagnostic test",
+    collection:overrides.collection||booking?.collection_type||"Centre",
+    issued:overrides.issued||new Date().toLocaleString("en-IN",{dateStyle:"medium",timeStyle:"short"}),
     address:"Geeta Nagar, Colaba, Mumbai, Maharashtra, India",
     phone:"7266925657",
     email:"lifesurediagnostics@gmail.com",
     website:"lifesurediagnostics.vercel.app",
     tagline:"CARE • PRECISION • TRUST",
-    descriptor:"Diagnostic & Pathology Services"
+    descriptor:"Diagnostic & Pathology Services",
+    doctor:overrides.doctor||""
   };
 }
 
@@ -2939,80 +3212,147 @@ async function dataUrlToUint8Array(dataUrl){
   return new Uint8Array(await res.arrayBuffer());
 }
 
-async function buildTextReportPdf(booking,report,text,layoutMode){
+function normalizeReportLines(text){
+  return String(text||"").replace(/\u0000/g,"").replace(/\r/g,"").split("\n").map(s=>s.replace(/\t+/g,"\t").trimEnd());
+}
+function looksLikeHeading(line){
+  const t=String(line||"").trim(); if(!t||t.length>90)return false;
+  if(/^\s*(patient|name|age|gender|dob|id|phone|contact|doctor|ref|sample|specimen|collection|received|report|date)\s*:/i.test(t))return false;
+  return /^[A-Z0-9][A-Z0-9 .&()\/-]{3,}$/.test(t) || /:$/.test(t);
+}
+function splitReportColumns(line){
+  if(line.includes("|")) return line.split("|").map(x=>x.trim()).filter(Boolean);
+  if(line.includes("\t")) return line.split("\t").map(x=>x.trim()).filter(Boolean);
+  return line.split(/\s{2,}/).map(x=>x.trim()).filter(Boolean);
+}
+function parseDiagnosticText(text){
+  const lines=normalizeReportLines(text); const sections=[]; let current={title:"Report Content",rows:[],meta:[],paragraphs:[]};
+  const pushCurrent=()=>{ if(current.rows.length||current.meta.length||current.paragraphs.length) sections.push(current); current={title:"",rows:[],meta:[],paragraphs:[]}; };
+  for(let i=0;i<lines.length;i++){
+    const raw=lines[i], t=raw.trim(); if(!t){continue;}
+    if(looksLikeHeading(t)){
+      if(current.title||current.rows.length||current.meta.length||current.paragraphs.length) pushCurrent();
+      current.title=t.replace(/:$/,'').trim(); continue;
+    }
+    const kv=t.match(/^([^:\t]{1,70})\s*[:\t]\s*(.+)$/);
+    if(kv && !/^parameter\b/i.test(kv[1])){ current.meta.push({key:kv[1].trim(),value:kv[2].trim()}); continue; }
+    const cols=splitReportColumns(raw);
+    if(cols.length>=3 && cols.length<=6){
+      const first=cols[0], second=cols[1];
+      const isHeader=/^(parameter|test|investigation|analyte|examination|result|value)$/i.test(first);
+      if(!isHeader && first && second && (/[0-9<>]/.test(second)||/^(positive|negative|reactive|non[- ]reactive|normal|abnormal|detected|not detected|trace|present|absent)$/i.test(second))){
+        current.rows.push({parameter:first,result:second,unit:cols[2]||"",reference:cols[3]||"",flag:cols[4]||""}); continue;
+      }
+      if(/parameter|test|investigation/i.test(first) && /result|value/i.test(second)){ continue; }
+    }
+    current.paragraphs.push(t);
+  }
+  pushCurrent();
+  const allText=sections.flatMap(s=>s.paragraphs).join(" ");
+  const titleCandidate=(sections.find(s=>s.rows.length)?.title||sections[0]?.title||"Diagnostic Report");
+  return {sections,title:titleCandidate||"Diagnostic Report",rawText:String(text||""),hasRows:sections.some(s=>s.rows.length),paragraphText:allText};
+}
+function addPdfText(doc, text, x, y, maxW, opts={}){
+  const size=opts.size||8, color=opts.color||[63,81,92], font=opts.bold?'bold':'normal';
+  doc.setFont("helvetica",font); doc.setFontSize(size); doc.setTextColor(...color);
+  const lines=doc.splitTextToSize(String(text||""),maxW); doc.text(lines,x,y); return Math.max(1,lines.length)*((size||8)*0.55);
+}
+function drawStructuredSection(doc,section,ctx){
+  const {pageW,margin,pageH}=ctx; let {y}=ctx;
+  if(y>pageH-48){doc.addPage();y=34;}
+  doc.setFillColor(244,249,251); doc.roundedRect(margin,y,pageW-2*margin,9,1.8,1.8,"F");
+  doc.setTextColor(8,89,133); doc.setFont("helvetica","bold"); doc.setFontSize(8); doc.text(String(section.title||"Section").slice(0,80),margin+6,y+6);
+  y+=15;
+  if(section.meta.length){
+    for(let j=0;j<section.meta.length;j+=2){
+      const pair=section.meta.slice(j,j+2); const colW=(pageW-2*margin-8)/2;
+      pair.forEach((m,k)=>{
+        const x=margin+k*(colW+8);
+        doc.setTextColor(111,130,141);doc.setFont("helvetica","bold");doc.setFontSize(6.4);doc.text(String(m.key||"").toUpperCase().slice(0,38),x,y);
+        doc.setTextColor(25,50,71);doc.setFont("helvetica","normal");doc.setFontSize(7.6);doc.text(doc.splitTextToSize(String(m.value||"—"),colW),x,y+5);
+      });
+      y+=16; if(y>pageH-48){doc.addPage();y=34;}
+    }
+  }
+  if(section.rows.length){
+    const cols=[margin,margin+70,margin+101,margin+132,margin+180];
+    doc.setFillColor(8,61,84);doc.roundedRect(margin,y,pageW-2*margin,9,1.5,1.5,"F");
+    doc.setTextColor(1,1,1);doc.setFont("helvetica","bold");doc.setFontSize(6.4);
+    ["Parameter","Result","Unit","Reference Range","Flag"].forEach((h,idx)=>doc.text(h,cols[idx]+(idx?3:5),y+6));
+    y+=10;
+    section.rows.forEach((r,idx)=>{
+      if(y>pageH-44){doc.addPage();y=34;}
+      if(idx%2===0){doc.setFillColor(249,251,252);doc.rect(margin,y,pageW-2*margin,11,"F");}
+      doc.setDrawColor(226,234,238);doc.rect(margin,y,pageW-2*margin,11,"S");
+      doc.setTextColor(33,57,72);doc.setFont("helvetica","normal");doc.setFontSize(6.8);doc.text(doc.splitTextToSize(String(r.parameter||""),65),cols[0]+5,y+7);
+      doc.setFont("helvetica","bold");doc.text(String(r.result||"—").slice(0,20),cols[1]+3,y+7);
+      doc.setFont("helvetica","normal");doc.text(String(r.unit||"—").slice(0,20),cols[2]+3,y+7);doc.text(String(r.reference||"—").slice(0,28),cols[3]+3,y+7);
+      doc.setFont("helvetica","bold");doc.setTextColor(/high|low|abnormal/i.test(String(r.flag||""))?[185,28,28]:[8,116,70]);doc.text(String(r.flag||"—").slice(0,14),cols[4]+3,y+7);
+      y+=12;
+    });
+  }
+  if(section.paragraphs.length){
+    y+=2;
+    for(const para of section.paragraphs){
+      if(y>pageH-38){doc.addPage();y=34;}
+      y+=addPdfText(doc,para,margin,y,pageW-2*margin,{size:7.6})+4;
+    }
+  }
+  ctx.y=y+7; return ctx;
+}
+async function extractPdfText(file){
+  if(!window.pdfjsLib?.getDocument) return "";
+  try{
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js";
+    const bytes=await file.arrayBuffer(); const pdf=await window.pdfjsLib.getDocument({data:bytes}).promise; let out=[];
+    for(let i=1;i<=pdf.numPages;i++){
+      const page=await pdf.getPage(i); const content=await page.getTextContent();
+      const text=content.items.map(it=>it.str).join(" "); out.push(text);
+    }
+    return out.join("\n\n").trim();
+  }catch(err){ console.warn("PDF text extraction unavailable",err); return ""; }
+}
+async function buildTextReportPdf(booking,report,text,layoutMode,overrides={},withStationery=true){
   if(!window.jspdf?.jsPDF) throw new Error("PDF generation engine is unavailable.");
   if(!window.PDFLib?.PDFDocument) throw new Error("PDF stationery engine is unavailable.");
-  const {jsPDF}=window.jspdf;
-  const sourceDoc=new jsPDF({unit:"mm",format:"a4",compress:true});
-  const pageW=210,pageH=297,margin=18;
-  const meta=reportStationeryMeta(booking,report);
-  const lines=String(text||"").replace(/\r/g,"").split("\n");
-  const isHeading=(line)=>{
-    const t=line.trim();
-    return !!t && t.length<90 && ((/^[A-Z0-9][A-Z0-9 .&\/-]{3,}$/.test(t)&&/[A-Z]/.test(t)) || /:$/.test(t));
-  };
-  const isKeyValue=(line)=>/^\s*[^:\t]{1,60}\s*[:\t]\s*.+$/.test(line);
-  sourceDoc.setTextColor(17,47,65);sourceDoc.setFont("helvetica","bold");sourceDoc.setFontSize(17);sourceDoc.text("Diagnostic Report",margin,31);
-  sourceDoc.setFont("helvetica","normal");sourceDoc.setFontSize(8);sourceDoc.setTextColor(99,118,128);sourceDoc.text("Structured from the supplied source text • clinical content preserved",margin,38);
-  sourceDoc.setDrawColor(213,226,232);sourceDoc.line(margin,45,pageW-margin,45);
+  const {jsPDF}=window.jspdf; const doc=new jsPDF({unit:"mm",format:"a4",compress:true});
+  const pageW=210,pageH=297,margin=18; const parsed=parseDiagnosticText(text); const meta=reportStationeryMeta(booking,report,overrides);
+  doc.setTextColor(6,43,63);doc.setFont("helvetica","bold");doc.setFontSize(20);doc.text("DIAGNOSTIC REPORT",margin,31);
+  doc.setTextColor(7,89,133);doc.setFontSize(10);doc.text(String(parsed.title||meta.test||"Diagnostic Report").slice(0,85),margin,39);
+  doc.setDrawColor(211,225,232);doc.setLineWidth(.5);doc.line(margin,45,pageW-margin,45);
   let y=57;
-  const metaRows=[["Patient",meta.patient],["Patient ID",meta.patientId],["Booking",meta.booking],["Report Code",meta.reportCode],["Test / Package",meta.test],["Collection",meta.collection],["Issued",meta.issued]];
-  sourceDoc.setFontSize(6.5);sourceDoc.setFont("helvetica","bold");
-  metaRows.forEach((r,i)=>{const x=i%2===0?margin:108; const yy=57+Math.floor(i/2)*17; sourceDoc.setTextColor(126,145,156);sourceDoc.text(r[0].toUpperCase(),x,yy);sourceDoc.setTextColor(24,51,68);sourceDoc.setFont("helvetica","normal");sourceDoc.setFontSize(8.3);sourceDoc.text(String(r[1]||"—").slice(0,58),x,yy+5);sourceDoc.setFont("helvetica","bold");sourceDoc.setFontSize(6.5);});
-  y=122;
-  sourceDoc.setFillColor(245,249,251);sourceDoc.roundedRect(margin,y,pageW-2*margin,13,2,2,"F");sourceDoc.setTextColor(8,116,70);sourceDoc.setFont("helvetica","bold");sourceDoc.setFontSize(8);sourceDoc.text("SOURCE REPORT",margin+7,y+8);
-  y+=21;
-  for(let idx=0;idx<lines.length;idx++){
-    const raw=lines[idx],t=raw.trim();
-    if(!t){y+=4;continue;}
-    const heading=isHeading(raw);
-    if(heading){
-      if(y>pageH-34){sourceDoc.addPage();y=24;}
-      sourceDoc.setTextColor(8,116,70);sourceDoc.setFont("helvetica","bold");sourceDoc.setFontSize(9);sourceDoc.text(t.replace(/:$/,""),margin,y);
-      y+=7;
-      continue;
-    }
-    if(isKeyValue(raw)){
-      if(y>pageH-32){sourceDoc.addPage();y=24;}
-      const parts=raw.split(/[:\t]/),k=parts.shift().trim(),v=parts.join(":").trim();
-      sourceDoc.setFillColor(249,251,252);sourceDoc.roundedRect(margin,y-5,pageW-2*margin,11,1.5,1.5,"F");
-      sourceDoc.setTextColor(91,111,123);sourceDoc.setFont("helvetica","bold");sourceDoc.setFontSize(7);sourceDoc.text(k.slice(0,48),margin+5,y+1);
-      sourceDoc.setTextColor(24,51,68);sourceDoc.setFont("helvetica","normal");sourceDoc.setFontSize(8);sourceDoc.text(sourceDoc.splitTextToSize(v,105),margin+72,y+1);
-      y+=14;continue;
-    }
-    sourceDoc.setTextColor(63,81,92);sourceDoc.setFont("helvetica","normal");sourceDoc.setFontSize(8.4);
-    const wrapped=sourceDoc.splitTextToSize(raw, pageW-2*margin-4);
-    if(y+wrapped.length*4.6>pageH-30){sourceDoc.addPage();y=24;}
-    sourceDoc.text(wrapped,margin,y);y+=Math.max(8,wrapped.length*4.6+2);
+  const patientRows=[
+    ["Patient",meta.patient],["Patient ID",meta.patientId],["Report No.",meta.reportCode],["Booking",meta.booking],
+    ["Test / Package",meta.test],["Collection",meta.collection],["Report Date",meta.issued],["Ref. Doctor",overrides.doctor||"—"]
+  ];
+  for(let i=0;i<patientRows.length;i+=2){
+    const pair=patientRows.slice(i,i+2); const colW=(pageW-2*margin-8)/2;
+    pair.forEach((r,k)=>{const x=margin+k*(colW+8);doc.setFillColor(248,251,252);doc.roundedRect(x,y-5,colW,15,1.8,1.8,"F");doc.setTextColor(126,145,156);doc.setFont("helvetica","bold");doc.setFontSize(6.4);doc.text(r[0].toUpperCase(),x+5,y);doc.setTextColor(25,50,71);doc.setFont("helvetica","normal");doc.setFontSize(7.6);doc.text(doc.splitTextToSize(String(r[1]||"—"),colW-10),x+5,y+5);});
+    y+=19;
   }
-  // Wrap every generated page into a consistent branded stationery page with header/footer.
-  const rawPdf=sourceDoc.output("arraybuffer");
-  const raw=await PDFLib.PDFDocument.load(rawPdf);
-  const out=await PDFLib.PDFDocument.create();
-  const logoBytes=await fetch("logo.png").then(r=>r.arrayBuffer());
-  const logoImg=await out.embedPng(logoBytes);
-  const qrDataUrl=await buildReportQrData(meta.reportCode,meta.verificationToken);
-  const qrImg=qrDataUrl?await out.embedPng(await dataUrlToUint8Array(qrDataUrl)):null;
-  const rawPages=raw.getPages();
-  const total=rawPages.length;
-  for(let i=0;i<rawPages.length;i++){
-    const rp=rawPages[i];
-    const page=out.addPage([595.28,841.89]);
-    page.drawRectangle({x:0,y:0,width:page.getWidth(),height:page.getHeight(),color:PDFLib.rgb(1,1,1)});
-    const embedded=await out.embedPage(rp);
-    page.drawPage(embedded,{x:0,y:0,width:page.getWidth(),height:page.getHeight()});
-    drawReportHeaderFooter(page,meta,i+1,total,logoImg,qrImg,layoutMode==="compact");
+  y+=2;
+  const ctx={pageW,pageH,margin,y};
+  if(parsed.sections.length){ for(const section of parsed.sections) drawStructuredSection(doc,section,ctx); }
+  if(!parsed.hasRows){
+    ctx.y+=3; doc.setFillColor(255,249,239);doc.roundedRect(margin,ctx.y,pageW-2*margin,18,2,2,"F");doc.setTextColor(154,90,16);doc.setFont("helvetica","bold");doc.setFontSize(7);doc.text("SOURCE CONTENT",margin+6,ctx.y+7);doc.setFont("helvetica","normal");doc.setFontSize(6.7);doc.text(doc.splitTextToSize("The supplied source did not expose machine-readable result columns. The source text has been preserved and laid out without clinical inference.",pageW-2*margin-12),margin+6,ctx.y+12);ctx.y+=24;
   }
+  const rawPdf=doc.output("arraybuffer");
+  if(!withStationery) return new Blob([rawPdf],{type:"application/pdf"});
+  const raw=await PDFLib.PDFDocument.load(rawPdf); const out=await PDFLib.PDFDocument.create();
+  const logoBytes=await fetch("logo.png").then(r=>r.arrayBuffer()); const logoImg=await out.embedPng(logoBytes);
+  const qrDataUrl=await buildReportQrData(meta.reportCode,meta.verificationToken); const qrImg=qrDataUrl?await out.embedPng(await dataUrlToUint8Array(qrDataUrl)):null;
+  const rawPages=raw.getPages(); const total=rawPages.length;
+  for(let i=0;i<rawPages.length;i++){const rp=rawPages[i];const page=out.addPage([595.28,841.89]);page.drawRectangle({x:0,y:0,width:page.getWidth(),height:page.getHeight(),color:PDFLib.rgb(1,1,1)});const embedded=await out.embedPage(rp);page.drawPage(embedded,{x:0,y:0,width:page.getWidth(),height:page.getHeight()});await drawReportHeaderFooter(page,meta,i+1,total,logoImg,qrImg,layoutMode==="compact");}
   return new Blob([await out.save({useObjectStreams:true})],{type:"application/pdf"});
 }
 
-async function buildPdfStationeryReport(booking,report,originalFile,layoutMode){
+async function buildPdfStationeryReport(booking,report,originalFile,layoutMode,overrides={}){
   if(!window.PDFLib?.PDFDocument) throw new Error("PDF stationery engine is unavailable.");
   const original=await PDFLib.PDFDocument.load(await originalFile.arrayBuffer());
   const out=await PDFLib.PDFDocument.create();
   const logoBytes=await fetch("logo.png").then(r=>r.arrayBuffer());
   const logoImg=await out.embedPng(logoBytes);
-  const meta=reportStationeryMeta(booking,report);
+  const meta=reportStationeryMeta(booking,report,overrides);
   const qrDataUrl=await buildReportQrData(meta.reportCode,meta.verificationToken);
   const qrImg=qrDataUrl?await out.embedPng(await dataUrlToUint8Array(qrDataUrl)):null;
   const total=original.getPages().length;
@@ -3055,6 +3395,9 @@ async function submitReportUpload(){
   try{
     const report=await secureRpc("create_report_securely",{p_booking_id:bookingId,p_report_code:code||null});
     const reportId=report.report_id,patientId=report.patient_id,version="v1",stamp=Date.now();
+    const {data:reportRecord,error:reportRecordError}=await supabaseClient.from("reports").select("*").eq("id",reportId).single();
+    if(reportRecordError||!reportRecord) throw reportRecordError||new Error("The created report record could not be reloaded securely.");
+    const renderReport={...report,...reportRecord};
     const ext=isPdf?"pdf":"txt";
     const originalPath=`${patientId}/${reportId}/${version}/original-${stamp}.${ext}`;
     const finalPath=`${patientId}/${reportId}/${version}/letterhead-${stamp}.pdf`;
@@ -3067,10 +3410,15 @@ async function submitReportUpload(){
 
     let finalBlob;
     if(isPdf){
-      finalBlob=await buildPdfStationeryReport(booking,report,sourceFile,layoutMode);
+      const extracted=await extractPdfText(sourceFile);
+      if(extracted && extracted.replace(/\s/g,"").length>60){
+        finalBlob=await buildTextReportPdf(booking,renderReport,extracted,layoutMode);
+      }else{
+        finalBlob=await buildPdfStationeryReport(booking,renderReport,sourceFile,layoutMode);
+      }
     }else{
       const text=await sourceFile.text();
-      finalBlob=await buildTextReportPdf(booking,report,text,layoutMode);
+      finalBlob=await buildTextReportPdf(booking,renderReport,text,layoutMode);
     }
     if(finalBlob.size>10*1024*1024) throw new Error("Generated report exceeds the 10 MB private-storage limit. Use a smaller source document.");
 
@@ -3084,11 +3432,16 @@ async function submitReportUpload(){
       p_original_path:originalPath,
       p_letterhead_path:finalPath
     });
+    try{
+      await secureRpc("create_report_instance_securely",{p_report_id:reportId,p_template_id:null});
+    }catch(instanceError){
+      console.warn("AUTO RESULT WORKSPACE:",instanceError);
+    }
     closeReportUploadModal();
     showToast(`Report ${report.report_code} generated and stored securely.`);
     await refreshAll();
   }catch(error){
-    console.error("REPORT V15 UPLOAD ERROR:",error);
+    console.error("REPORT V17 UPLOAD ERROR:",error);
     showToast(error.message||"Report generation failed.");
   }finally{
     button.classList.remove("action-busy");button.disabled=false;
@@ -3345,6 +3698,7 @@ async function init(){
     initPaymentModal();
     document.getElementById("detailModal")?.addEventListener("click",e=>{if(e.target.id==="detailModal")closeModal()});
     document.getElementById("reportUploadModal")?.addEventListener("click",e=>{if(e.target.id==="reportUploadModal")closeReportUploadModal()});
+document.getElementById("reportSmartEditModal")?.addEventListener("click",e=>{if(e.target.id==="reportSmartEditModal")closeSmartReportEdit()});
 
     const ok=await guard();
     if(!ok)return;
@@ -3380,5 +3734,324 @@ window.addEventListener('unhandledrejection',event=>{
 
 init();
 </script>
+
+<script>
+/* =========================================================
+   LIFESURE REPORT INTELLIGENCE V18
+   ========================================================= */
+let activeReportSendId=null;
+let activeReportSendUrl=null;
+let activeImportedRows=[];
+let activeImportedMappings=[];
+
+function normalizeMatchValue(v){
+  return String(v||'').toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g,' ').trim();
+}
+function similarityScore(a,b){
+  const A=normalizeMatchValue(a), B=normalizeMatchValue(b);
+  if(!A||!B)return 0;
+  if(A===B)return 1;
+  if(A.includes(B)||B.includes(A))return .92;
+  const aa=new Set(A.split(/\s+/)), bb=new Set(B.split(/\s+/));
+  const inter=[...aa].filter(x=>bb.has(x)).length;
+  return inter/Math.max(1,new Set([...aa,...bb]).size);
+}
+function parseSourceRowsForImport(text){
+  const parsed=parseDiagnosticText(text);
+  const rows=[];
+  for(const s of parsed.sections||[]) for(const r of s.rows||[]) rows.push({...r,section:s.title||'Results'});
+  return {parsed,rows};
+}
+function autoMapRowsToParameters(rows,params){
+  return rows.map(row=>{
+    let best=null,bestScore=0;
+    for(const p of params){
+      const score=similarityScore(row.parameter,reportParamLabel(p));
+      if(score>bestScore){bestScore=score;best=p;}
+    }
+    return {row,param:best,score:bestScore};
+  });
+}
+async function readPrivateReportSource(report){
+  if(!report?.original_path) throw new Error('Original source is unavailable.');
+  const url=await getSignedReportUrl(report.original_path);
+  const response=await fetch(url,{cache:'no-store'});
+  if(!response.ok)throw new Error(`Unable to read private source (${response.status}).`);
+  return {blob:await response.blob(),ext:reportSourceExtension(report.original_path)};
+}
+async function extractSourceTextForImport(report){
+  const {blob,ext}=await readPrivateReportSource(report);
+  if(ext==='txt') return await blob.text();
+  const file=new File([blob],`source.${ext||'pdf'}`,{type:'application/pdf'});
+  const text=await extractPdfText(file);
+  if(text&&text.replace(/\s/g,'').length>30)return text;
+  return '';
+}
+async function autoImportReportValues(){
+  try{
+    const w=activeReportWorkspace||{};
+    const params=w.parameters||[];
+    if(!params.length) throw new Error('No configured report parameters are available for automatic mapping.');
+    const text=await extractSourceTextForImport(w.report);
+    if(!text) throw new Error('The source PDF does not expose machine-readable text. Enter values manually or keep the original source as the report content.');
+    const {rows}=parseSourceRowsForImport(text);
+    if(!rows.length) throw new Error('No structured result rows were detected in the source.');
+    activeImportedRows=rows;
+    activeImportedMappings=autoMapRowsToParameters(rows,params);
+    const mapped=activeImportedMappings.filter(x=>x.param&&x.score>=.62);
+    const unmapped=activeImportedMappings.length-mapped.length;
+    const reportOpsBody=document.getElementById('reportOpsBody');
+    let box=reportOpsBody?.querySelector('#v18ImportSummary');
+    if(!box){
+      box=document.createElement('div'); box.id='v18ImportSummary'; reportOpsBody?.appendChild(box);
+    }
+    box.className='report-import-summary';
+    box.innerHTML=`<span class="report-import-pill">${mapped.length} mapped</span><span class="report-import-pill warn">${unmapped} needs review</span><button class="btn btn-dark" type="button" onclick="applyImportedValuesToForm()">Apply mapped values</button>`;
+    const mapBox=document.getElementById('v18ImportMap');
+    if(mapBox) mapBox.innerHTML=activeImportedMappings.map(m=>`<div class="report-ai-map-grid"><div class="src">${esc(m.row.parameter)} → ${esc(m.row.result)}</div><div class="dst">${m.param&&m.score>=.62?esc(reportParamLabel(m.param)):'Needs review'}</div><div class="conf">${Math.round(m.score*100)}%</div></div>`).join('');
+    showToast(`Source parsed: ${mapped.length} values mapped.`);
+  }catch(error){
+    console.error('AUTO IMPORT ERROR:',error);
+    showToast(error.message||'Automatic source import failed.');
+  }
+}
+function applyImportedValuesToForm(){
+  const w=activeReportWorkspace||{},params=w.parameters||[];
+  let applied=0;
+  for(const m of activeImportedMappings){
+    if(!m.param||m.score<.62)continue;
+    const id=reportParamId(m.param);
+    const row=document.querySelector(`#reportOpsBody .result-row[data-parameter-id="${CSS.escape(String(id))}"]`);
+    if(!row)continue;
+    const input=row.querySelector('.report-result-text');
+    if(input){input.value=m.row.result||'';input.dataset.sourceImported='true';applied++;}
+    const flag=row.querySelector('.report-result-flag');
+    if(flag && m.row.flag) flag.value=m.row.flag;
+  }
+  showToast(`${applied} source values applied for review.`);
+}
+async function regenerateFinalFromSavedResults(){
+  try{
+    const w=activeReportWorkspace||{}, r=w.report||{}, inst=w.instance||{};
+    const params=w.parameters||[], vals=w.values||[];
+    if(!params.length || !vals.length) throw new Error('No saved structured results are available yet.');
+    const booking=state.bookings.find(b=>String(b.booking_id)===String(r.booking_id))||{};
+    const lines=[String(booking.test_name||booking.package_name||'Diagnostic Results'),'Parameter\tResult\tUnit\tReference Range\tFlag'];
+    const valueById=new Map(vals.map(v=>[String(v.parameter_id||v.parameterId),v]));
+    for(const p of params){
+      const id=reportParamId(p), v=valueById.get(String(id));
+      if(!v)continue;
+      lines.push([
+        reportParamLabel(p),
+        v.result_text??v.result_numeric??'',
+        reportParamUnit(p),
+        p.reference_range||p.ref_range||p.reference||'',
+        v.flag||''
+      ].join('\t'));
+    }
+    const text=lines.join('\n');
+    const blob=await buildTextReportPdf(booking,r,text,'clinical',{},true);
+    if(blob.size>10*1024*1024)throw new Error('Generated final report exceeds the 10 MB storage limit.');
+    const version=`v${Number(r.version||1)}`, stamp=Date.now();
+    const path=`${r.patient_id}/${r.id}/${version}/letterhead-${stamp}.pdf`;
+    const {error}=await supabaseClient.storage.from('reports-private').upload(path,blob,{contentType:'application/pdf',upsert:false});
+    if(error)throw error;
+    await secureRpc('attach_report_files_securely',{p_report_id:r.id,p_original_path:r.original_path,p_letterhead_path:path});
+    showToast('Final LifeSure report regenerated from saved results.');
+    await refreshAll(); await openReportOps(r.id);
+  }catch(error){
+    console.error('REGENERATE STRUCTURED REPORT ERROR:',error);
+    showToast(error.message||'Could not regenerate the final report.');
+  }
+}
+
+/* More reliable structured save: numeric results are stored as numeric where possible. */
+async function saveAllReportResults(){
+  try{
+    const inst=activeReportWorkspace?.instance;
+    if(!inst?.id){showToast('Create the result workspace first.');return;}
+    const rows=[...document.querySelectorAll('#reportOpsBody .result-row')];
+    if(!rows.length){showToast('No configured report parameters found.');return;}
+    for(const row of rows){
+      const parameterId=row.dataset.parameterId;
+      const text=(row.querySelector('.report-result-text')?.value||'').trim();
+      const flag=(row.querySelector('.report-result-flag')?.value||'').trim()||null;
+      const notes=(row.querySelector('.report-result-notes')?.value||'').trim()||null;
+      const numericCandidate=text.replace(/,/g,'').match(/^-?(?:\d+\.?\d*|\.\d+)$/);
+      await secureRpc('save_report_result_securely',{
+        p_report_instance_id:inst.id,
+        p_parameter_id:parameterId,
+        p_result_text:numericCandidate?null:(text||null),
+        p_result_numeric:numericCandidate?Number(numericCandidate[0]):null,
+        p_result_json:null,
+        p_flag:flag,
+        p_notes:notes
+      });
+    }
+    showToast(`Saved ${rows.length} result${rows.length===1?'':'s'} securely.`);
+    await openReportOps(activeReportOpsId);
+  }catch(error){
+    console.error('SAVE REPORT RESULTS ERROR:',error);
+    showToast(error.message||'Some results could not be saved.');
+  }
+}
+
+/* Enhanced report workspace */
+const _renderReportOpsWorkspaceV17=renderReportOpsWorkspace;
+renderReportOpsWorkspace=function(){
+  _renderReportOpsWorkspaceV17();
+  const body=document.getElementById('reportOpsBody');
+  if(!body || !activeReportWorkspace)return;
+  const r=activeReportWorkspace.report||{}, role=state.profile?.role||'';
+  const params=activeReportWorkspace.parameters||[], inst=activeReportWorkspace.instance||{};
+  const footer=body.querySelector('.report-smart-card');
+  if(footer && !document.getElementById('v18SmartImportActions')){
+    footer.insertAdjacentHTML('beforeend',`
+      <div id="v18SmartImportActions" class="report-send-card">
+        <h4>Smart source import</h4>
+        <p>Parse the original PDF/TXT, map matching parameters, and place detected values into the result workspace for staff review.</p>
+        <div class="report-send-actions">
+          <button class="btn btn-dark" type="button" onclick="autoImportReportValues()">Auto-import source values</button>
+          ${inst.id&&params.length?`<button class="btn btn-primary" type="button" onclick="autoImportSaveAndRegenerate()">Auto-import + Save + Regenerate</button>`:''}
+          ${inst.id&&params.length?`<button class="btn btn-light" type="button" onclick="regenerateFinalFromSavedResults()">Regenerate Final</button>`:''}
+        </div>
+        <div id="v18ImportMap" class="report-ai-map"></div>
+      </div>
+    `);
+  }
+  if(r.status==='published'){
+    const actionBar=body.querySelector('.report-action-bar');
+    if(actionBar && !body.querySelector('[data-send-report]')){
+      actionBar.insertAdjacentHTML('beforeend',`<button class="btn btn-light" data-send-report type="button" onclick="openReportSendModal('${esc(r.id)}')">Send to Customer</button>`);
+    }
+  }
+}
+
+/* Customer delivery */
+function getPatientForReport(report){
+  const booking=state.bookings.find(b=>String(b.booking_id)===String(report?.booking_id))||{};
+  const patient=state.patients.find(p=>String(p.id)===String(report?.patient_id)||String(p.patient_id)===String(report?.patient_id))||{};
+  return {booking,patient};
+}
+async function openReportSendModal(reportId){
+  try{
+    const r=await getSecureReportRecord(reportId);
+    if(String(r.status||'').toLowerCase()!=='published')throw new Error('Customer delivery is available only after the report is published.');
+    activeReportSendId=reportId;
+    activeReportSendUrl=null;
+    document.getElementById('sendPatientName').value=r.patient_id||getPatientForReport(r).patient.full_name||getPatientForReport(r).booking.patient_name||'Customer';
+    document.getElementById('sendReportCode').value=r.report_code||'';
+    const {booking,patient}=getPatientForReport(r);
+    const phone=patient.phone||booking.phone||booking.patient_phone||'';
+    const email=patient.email||booking.email||booking.patient_email||'';
+    document.getElementById('sendPhone').value=phone;
+    document.getElementById('sendEmail').value=email;
+    document.getElementById('sendMessage').value=`Hello, your LifeSure Diagnostics report (${r.report_code||'Report'}) is ready. Please use the secure link below to access your report:\n\n[SECURE_REPORT_LINK]\n\nLifeSure Diagnostics`;
+    document.getElementById('reportSendModal').classList.add('show');
+    await createReportShareLink();
+  }catch(error){console.error(error);showToast(error.message||'Unable to prepare report delivery.');}
+}
+function closeReportSendModal(){document.getElementById('reportSendModal')?.classList.remove('show');activeReportSendId=null;activeReportSendUrl=null;}
+async function createReportShareLink(){
+  if(!activeReportSendId)return '';
+  const r=await getSecureReportRecord(activeReportSendId);
+  if(String(r.status||'').toLowerCase()!=='published')throw new Error('Publish the report before sending it.');
+  if(!r.letterhead_path)throw new Error('Final LifeSure report is not available.');
+  activeReportSendUrl=await getSignedReportUrlLong(r.letterhead_path);
+  const msgEl=document.getElementById('sendMessage');
+  if(msgEl)msgEl.value=msgEl.value.replace('[SECURE_REPORT_LINK]',activeReportSendUrl);
+  return activeReportSendUrl;
+}
+async function getSignedReportUrlLong(path){
+  const {data,error}=await supabaseClient.storage.from('reports-private').createSignedUrl(path,3600);
+  if(error||!data?.signedUrl)throw error||new Error('Unable to create a temporary secure report link.');
+  return data.signedUrl;
+}
+async function copyReportShareLink(){
+  try{
+    const url=activeReportSendUrl||await createReportShareLink();
+    await navigator.clipboard.writeText(url);
+    showToast('Secure report link copied.');
+  }catch(error){showToast(error.message||'Could not copy secure link.');}
+}
+function buildDeliveryMessage(){
+  return document.getElementById('sendMessage')?.value.replace('[SECURE_REPORT_LINK]',activeReportSendUrl||'')||'';
+}
+function sendReportWhatsApp(){
+  const phone=(document.getElementById('sendPhone')?.value||'').replace(/\D/g,'');
+  if(!phone){showToast('Enter the customer WhatsApp number.');return;}
+  const msg=buildDeliveryMessage();
+  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`,'_blank','noopener,noreferrer');
+  showToast('WhatsApp message prepared.');
+}
+function sendReportEmail(){
+  const email=(document.getElementById('sendEmail')?.value||'').trim();
+  if(!email){showToast('Enter the customer email.');return;}
+  const msg=buildDeliveryMessage();
+  const r=state.reports.find(x=>String(x.id)===String(activeReportSendId))||{};
+  window.location.href=`mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(`LifeSure Diagnostics Report ${r.report_code||''}`)}&body=${encodeURIComponent(msg)}`;
+  showToast('Email draft prepared.');
+}
+
+/* Enhanced report list with patient-friendly searching */
+const _renderReportsV17=renderReports;
+renderReports=function(){
+  const search=(document.getElementById('reportSearch')?.value||'').toLowerCase().trim();
+  const status=(document.getElementById('reportStatusFilter')?.value||'').toLowerCase();
+  const filtered=state.reports.filter(r=>{
+    const hay=JSON.stringify(r).toLowerCase();
+    return (!search||hay.includes(search))&&(!status||String(r.status||'').toLowerCase()===status);
+  });
+  const role=state.profile?.role||'';
+  document.getElementById('reportRows').innerHTML=filtered.slice(0,150).map(r=>{
+    const st=String(r.status||'').toLowerCase(),pub=st==='published';
+    const actions=[];
+    if(['super_admin','management','lab_staff'].includes(role))actions.push(`<button class="btn btn-primary" type="button" onclick="openReportOps('${esc(r.id)}')">Open Ops</button>`);
+    if(r.letterhead_path){
+      actions.push(`<button class="btn btn-light" type="button" onclick="openSecureReportPdf('${esc(r.id)}',true)">View Final</button>`);
+      actions.push(`<button class="btn btn-primary" type="button" onclick="downloadSecureReportFile('${esc(r.id)}',true)">Download Final</button>`);
+    }
+    if(r.original_path){
+      actions.push(`<button class="btn btn-light" type="button" onclick="openSecureReportPdf('${esc(r.id)}',false)">View Source</button>`);
+      actions.push(`<button class="btn btn-light" type="button" onclick="downloadReportNoLetterhead('${esc(r.id)}')">Download No Letterhead</button>`);
+    }
+    if(pub&&r.letterhead_path){
+      actions.push(`<button class="btn btn-light" type="button" onclick="openReportSendModal('${esc(r.id)}')">Send</button>`);
+    }
+    return `<tr><td class="id">${esc(r.report_code||r.id)}</td><td>${esc(r.booking_id||'—')}</td><td class="person">${esc(r.patient_id||'—')}</td><td>${statusBadge(r.status)}</td><td>${esc(r.version||1)}</td><td>${fmtDate(r.published_at)}</td><td><div class="report-actions">${actions.join('')||'—'}</div></td></tr>`;
+  }).join('') || `<tr><td colspan="7"><div class="empty"><div class="big">▣</div><b>No reports found</b><span>Try another patient, booking or status filter.</span></div></td></tr>`;
+};
+
+
+async function autoImportSaveAndRegenerate(){
+  try{
+    if(!activeReportWorkspace?.instance?.id)throw new Error('Create the result workspace first.');
+    await autoImportReportValues();
+    const mapped=activeImportedMappings.filter(x=>x.param&&x.score>=.62);
+    if(!mapped.length)throw new Error('No high-confidence values were mapped to configured parameters.');
+    const confirmed=window.confirm(`Apply and save ${mapped.length} high-confidence source value${mapped.length===1?'':'s'} to this report, then regenerate the final PDF?`);
+    if(!confirmed){showToast('Automatic import cancelled.');return;}
+    applyImportedValuesToForm();
+    await saveAllReportResults();
+    await regenerateFinalFromSavedResults();
+    showToast('Source values imported, saved and final PDF regenerated.');
+  }catch(error){
+    console.error('AUTO IMPORT SAVE ERROR:',error);
+    showToast(error.message||'Automatic import could not be completed.');
+  }
+}
+
+/* Make openReportSendModal available globally after script evaluation. */
+window.openReportSendModal=openReportSendModal;
+window.closeReportSendModal=closeReportSendModal;
+window.copyReportShareLink=copyReportShareLink;
+window.sendReportWhatsApp=sendReportWhatsApp;
+window.sendReportEmail=sendReportEmail;
+window.autoImportReportValues=autoImportReportValues;
+window.applyImportedValuesToForm=applyImportedValuesToForm;
+window.regenerateFinalFromSavedResults=regenerateFinalFromSavedResults;
+window.autoImportSaveAndRegenerate=autoImportSaveAndRegenerate;
+</script>
+
 </body>
 </html>
