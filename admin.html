@@ -930,6 +930,29 @@ body{overflow-x:hidden}
 .report-import-pill.warn{background:#fff7ed;color:#b45309}
 .report-edit-log{margin-top:10px;padding:9px 11px;border-left:3px solid #16a765;background:#f7fbf9;color:#5f7480;font-size:7px;line-height:1.5}
 @media(max-width:900px){.report-automation-grid{grid-template-columns:1fr}.report-v18-toolbar .input{min-width:170px}}
+
+/* =========================================================
+   REPORT DELIVERY HUB V19
+========================================================= */
+.delivery-v19-grid{display:grid;grid-template-columns:1.35fr .9fr;gap:10px}
+.delivery-v19-card{padding:14px;border:1px solid #dce8ed;border-radius:14px;background:linear-gradient(145deg,#fff,#f7fbfc)}
+.delivery-v19-summary{background:linear-gradient(135deg,#f4fbf7,#f7fbfd)}
+.delivery-v19-eyebrow{font-size:7px;text-transform:uppercase;letter-spacing:1.2px;font-weight:900;color:#73909d}
+.delivery-v19-name{margin-top:5px;font:800 16px "Plus Jakarta Sans";color:#123246;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.delivery-v19-meta{margin-top:4px;font-size:8px;color:#6d8290}
+.delivery-v19-chip-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.delivery-v19-chip{padding:6px 8px;border-radius:999px;background:#ecfdf5;border:1px solid #ccebdd;color:#087443;font-size:7px;font-weight:900}
+.delivery-v19-stat{display:flex;justify-content:space-between;gap:10px;padding-top:10px;border-top:1px solid #e8eff2;margin-top:9px;font-size:8px;color:#708592}
+.delivery-v19-stat strong{color:#18394a;font-size:9px;text-align:right}
+.delivery-v19-linkbox{margin-top:11px;display:flex;align-items:center;gap:9px;padding:11px 12px;border:1px solid #d9e8ed;border-radius:12px;background:#f8fcfd}
+.delivery-v19-linkbox>div{min-width:0;flex:1}
+.delivery-v19-linkbox span{display:block;font-size:7px;text-transform:uppercase;letter-spacing:1px;color:#8195a0;font-weight:900}
+.delivery-v19-linkbox code{display:block;margin-top:4px;color:#31596b;font-size:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.delivery-v19-checks{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}
+.delivery-v19-checks>div{padding:9px 10px;border-radius:10px;background:#f7fafb;border:1px solid #e1ebee}
+.delivery-v19-checks b{display:block;font-size:8px;color:#1a6e50}
+.delivery-v19-checks span{display:block;margin-top:3px;font-size:7px;color:#7b8e99;line-height:1.4}
+@media(max-width:760px){.delivery-v19-grid{grid-template-columns:1fr}.delivery-v19-checks{grid-template-columns:1fr}.delivery-v19-linkbox{align-items:flex-start}.delivery-v19-linkbox .btn{flex:none}}
 </style>
 
 </head>
@@ -996,7 +1019,7 @@ body{overflow-x:hidden}
     </button>
     <span class="system-pill"><i></i> Protected system</span>
   </div>
-  <div class="top-actions">
+  <div class="top-actions"><span id="workspacePerformance" style="font-size:8px;color:#64748b;white-space:nowrap"></span>
     <button class="top-btn" onclick="refreshAll()">↻ Refresh</button>
     <button class="top-btn" onclick="showView('analytics')">Analytics</button>
     <button class="top-btn lock-btn" type="button" onclick="lockWorkspace('manual')" title="Lock protected workspace">🔒 Lock</button>
@@ -1438,28 +1461,54 @@ body{overflow-x:hidden}
 
 
 
-<!-- REPORT SEND MODAL — V18 -->
+<!-- REPORT SEND MODAL — V19 DELIVERY HUB -->
 <div class="modal" id="reportSendModal">
-  <div class="report-ai-edit-modal" style="max-width:620px">
+  <div class="report-ai-edit-modal" style="max-width:760px">
     <div class="report-ai-head">
       <div>
-        <div style="font-size:7px;letter-spacing:1.3px;text-transform:uppercase;color:#7be0ae;font-weight:900">SECURE CUSTOMER DELIVERY V18</div>
+        <div style="font-size:7px;letter-spacing:1.3px;text-transform:uppercase;color:#7be0ae;font-weight:900">PATIENT DELIVERY HUB V19</div>
         <h3>Send published report</h3>
-        <p>Generate a time-limited secure report link, then open WhatsApp or email with a ready-to-send message. The original report stays private.</p>
+        <p>Prepare a secure one-hour report link, review the recipient details, then send through WhatsApp or email. The private report artifact remains protected.</p>
       </div>
       <button class="close" type="button" onclick="closeReportSendModal()">×</button>
     </div>
     <div class="report-ai-body">
-      <div class="report-ai-grid">
+      <div class="delivery-v19-grid">
+        <div class="delivery-v19-card delivery-v19-summary">
+          <div class="delivery-v19-eyebrow">Recipient</div>
+          <div class="delivery-v19-name" id="deliveryRecipientTitle">Customer</div>
+          <div class="delivery-v19-meta" id="deliveryRecipientMeta">Published report</div>
+          <div class="delivery-v19-chip-row">
+            <span class="delivery-v19-chip" id="deliveryPublishChip">Published</span>
+            <span class="delivery-v19-chip" id="deliveryLinkChip">Secure link ready</span>
+          </div>
+        </div>
+        <div class="delivery-v19-card">
+          <div class="delivery-v19-eyebrow">Report</div>
+          <div class="delivery-v19-stat"><span>Report code</span><strong id="sendReportCodeView">—</strong></div>
+          <div class="delivery-v19-stat"><span>Access</span><strong>1-hour secure link</strong></div>
+        </div>
+      </div>
+      <div class="report-ai-grid" style="margin-top:12px">
         <div class="report-ai-field"><label>Customer / Patient</label><input id="sendPatientName" readonly></div>
         <div class="report-ai-field"><label>Report Code</label><input id="sendReportCode" readonly></div>
-        <div class="report-ai-field"><label>Phone</label><input id="sendPhone" placeholder="+91..."></div>
+        <div class="report-ai-field"><label>WhatsApp / Phone</label><input id="sendPhone" placeholder="+91..."></div>
         <div class="report-ai-field"><label>Email</label><input id="sendEmail" type="email" placeholder="customer@example.com"></div>
-        <div class="report-ai-field full"><label>Message</label><textarea id="sendMessage" rows="4"></textarea></div>
+        <div class="report-ai-field full"><label>Customer message</label><textarea id="sendMessage" rows="5"></textarea></div>
       </div>
-      <div class="report-ai-warning"><b>Security:</b> the share URL is time-limited. Do not post medical report links publicly. Customer-facing delivery is available only for published reports.</div>
+      <div class="delivery-v19-linkbox">
+        <div><span>Secure report link</span><code id="deliverySecureLink">Generating…</code></div>
+        <button class="btn btn-light" type="button" onclick="copyReportShareLink()">Copy</button>
+      </div>
+      <div class="delivery-v19-checks">
+        <div><b>✓ Published</b><span>Customer-facing delivery enabled</span></div>
+        <div><b>✓ Private storage</b><span>Temporary link, not public storage</span></div>
+        <div><b>✓ Final PDF</b><span>LifeSure letterhead version</span></div>
+      </div>
+      <div class="report-ai-warning"><b>Security:</b> this browser prepares WhatsApp/email actions; it does not silently send messages without the user's channel/app. Never post the secure link publicly or reuse it after expiry.</div>
     </div>
     <div class="report-ai-footer">
+      <button class="btn btn-light" type="button" onclick="downloadCurrentSendFinal()">Download Final PDF</button>
       <button class="btn btn-light" type="button" onclick="copyReportShareLink()">Copy secure link</button>
       <button class="btn btn-light" type="button" onclick="sendReportEmail()">Email</button>
       <button class="btn btn-primary" type="button" onclick="sendReportWhatsApp()">WhatsApp</button>
@@ -1970,7 +2019,7 @@ async function secureRpc(name,args={}){
   return data;
 }
 
-async function loadData() {
+async function loadDataFull() {
 
   const [
     bookings,
@@ -2722,7 +2771,19 @@ async function downloadSecureReportFile(reportId,preferLetterhead=true){
     const blob=await response.blob();
     const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=downloadFileName(report,preferLetterhead?'Final-Letterhead':'Source',ext); document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),1500);
     showToast(preferLetterhead?'Final report downloaded securely.':'Original source downloaded securely.');
-  }catch(error){console.error("SECURE REPORT DOWNLOAD ERROR:",error);showToast(error.name==='AbortError'?"Download timed out. Please retry.":(error.message||"Report download was blocked."));}
+  }catch(error){
+    console.error("SECURE REPORT DOWNLOAD ERROR:",error);
+    try{
+      const report=state.reports.find(x=>String(x.id)===String(reportId));
+      const path=(preferLetterhead&&report?.letterhead_path)?report.letterhead_path:report?.original_path;
+      if(path){
+        const fallbackUrl=await getSignedReportUrl(path);
+        const a=document.createElement('a'); a.href=fallbackUrl; a.target='_blank'; a.rel='noopener noreferrer'; a.download=downloadFileName(report,preferLetterhead?'Final-Letterhead':'Source',reportSourceExtension(path)||'pdf'); document.body.appendChild(a); a.click(); a.remove();
+        showToast('Secure download handoff opened.'); return;
+      }
+    }catch(fallbackError){console.warn('DOWNLOAD FALLBACK ERROR:',fallbackError);}
+    showToast(error.name==='AbortError'?"Download timed out. Please retry.":(error.message||"Report download was blocked."));
+  }
 }
 async function buildPlainTextPdfDownload(report,text){
   if(!window.jspdf?.jsPDF) throw new Error("PDF generation engine is unavailable.");
@@ -3615,10 +3676,52 @@ function renderAudit(){
  : `<tr><td colspan="5"><div class="empty">No audit activity recorded yet.</div></td></tr>`;
 }
 
+async function loadCoreDataFast(){
+  const role=state.profile?.role||"";
+  const [bookings,enquiries,patients,reports,financeSummary,expenses]=await Promise.all([
+    getAdminBookings(),
+    safeTable("enquiries"),
+    safeTable("patients"),
+    safeTable("reports"),
+    (["super_admin","management","accounts"].includes(role) ? getFinanceSummary() : Promise.resolve(null)),
+    (["super_admin","management","accounts"].includes(role) ? safeTable("expenses") : Promise.resolve([]))
+  ]);
+  state.bookings=(bookings||[]).sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
+  state.enquiries=(enquiries||[]).sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
+  state.patients=(patients||[]).sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
+  state.reports=(reports||[]).sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0));
+  state.financeSummary=financeSummary||null;
+  state.payments=((financeSummary&&financeSummary.latest_payments)||[]).sort((a,b)=>new Date(b.received_at||0)-new Date(a.received_at||0));
+  state.expenses=(expenses||[]).sort((a,b)=>new Date(b.expense_date||b.created_at||0)-new Date(a.expense_date||a.created_at||0));
+}
+
+async function loadSecondaryDataInBackground(){
+  const [franchises,tests,staff,attendance,payroll,inventory,audit]=await Promise.all([
+    safeTable("franchises"),safeTable("tests"),safeTable("staff"),safeTable("attendance"),
+    safeTable("salary_payments"),safeTable("inventory_items"),safeTable("audit_logs")
+  ]);
+  state.franchises=franchises||[]; state.tests=tests||[]; state.staff=staff||[];
+  state.attendance=(attendance||[]).sort((a,b)=>new Date(b.attendance_date||0)-new Date(a.attendance_date||0));
+  state.payroll=payroll||[]; state.inventory=inventory||[]; state.audit=audit||[];
+  renderFranchises();renderAnalytics();renderStaff();renderAttendance();renderPayroll();renderInventory();renderAudit();
+}
+
 async function refreshAll(){
  if(!(await assertLiveSession())) return;
- await loadData();
- renderDashboard();renderBookings();renderEnquiries();renderPatients();renderReports();renderFinance();renderExpenses();renderFranchises();renderAnalytics();renderStaff();renderAttendance();renderPayroll();renderInventory();renderAudit();
+ const started=performance.now();
+ await loadCoreDataFast();
+ renderDashboard();renderBookings();renderEnquiries();renderPatients();renderReports();renderFinance();renderExpenses();
+ const coreMs=Math.round(performance.now()-started);
+ const perf=document.getElementById('workspacePerformance');
+ if(perf) perf.textContent=`Core data ${coreMs} ms • secondary data loading`;
+ loadSecondaryDataInBackground().then(()=>{
+   const done=document.getElementById('workspacePerformance');
+   if(done) done.textContent=`Workspace ready • ${Math.round(performance.now()-started)} ms`;
+ }).catch(error=>{
+   console.warn('SECONDARY DATA LOAD ERROR:',error);
+   const done=document.getElementById('workspacePerformance');
+   if(done) done.textContent='Core workspace ready • some secondary data unavailable';
+ });
 }
 
 async function exportBookings(){
@@ -3939,14 +4042,20 @@ async function openReportSendModal(reportId){
     if(String(r.status||'').toLowerCase()!=='published')throw new Error('Customer delivery is available only after the report is published.');
     activeReportSendId=reportId;
     activeReportSendUrl=null;
-    document.getElementById('sendPatientName').value=r.patient_id||getPatientForReport(r).patient.full_name||getPatientForReport(r).booking.patient_name||'Customer';
+    const linked=getPatientForReport(r);
+    const patientName=linked.patient.full_name||linked.booking.patient_name||r.patient_id||'Customer';
+    document.getElementById('sendPatientName').value=patientName;
     document.getElementById('sendReportCode').value=r.report_code||'';
-    const {booking,patient}=getPatientForReport(r);
+    document.getElementById('sendReportCodeView').textContent=r.report_code||'—';
+    document.getElementById('deliveryRecipientTitle').textContent=patientName;
+    document.getElementById('deliveryRecipientMeta').textContent=`${linked.booking.test_name||linked.booking.package_name||'Diagnostic report'} • Published`;
+    const {booking,patient}=linked;
     const phone=patient.phone||booking.phone||booking.patient_phone||'';
     const email=patient.email||booking.email||booking.patient_email||'';
     document.getElementById('sendPhone').value=phone;
     document.getElementById('sendEmail').value=email;
-    document.getElementById('sendMessage').value=`Hello, your LifeSure Diagnostics report (${r.report_code||'Report'}) is ready. Please use the secure link below to access your report:\n\n[SECURE_REPORT_LINK]\n\nLifeSure Diagnostics`;
+    document.getElementById('sendMessage').value=`Hello ${patientName},\n\nYour LifeSure Diagnostics report (${r.report_code||'Report'}) is ready. Please use the secure link below to access your report:\n\n[SECURE_REPORT_LINK]\n\nRegards,\nLifeSure Diagnostics`;
+    const linkEl=document.getElementById('deliverySecureLink'); if(linkEl)linkEl.textContent='Generating…';
     document.getElementById('reportSendModal').classList.add('show');
     await createReportShareLink();
   }catch(error){console.error(error);showToast(error.message||'Unable to prepare report delivery.');}
@@ -3960,6 +4069,8 @@ async function createReportShareLink(){
   activeReportSendUrl=await getSignedReportUrlLong(r.letterhead_path);
   const msgEl=document.getElementById('sendMessage');
   if(msgEl)msgEl.value=msgEl.value.replace('[SECURE_REPORT_LINK]',activeReportSendUrl);
+  const linkEl=document.getElementById('deliverySecureLink');
+  if(linkEl)linkEl.textContent=activeReportSendUrl;
   return activeReportSendUrl;
 }
 async function getSignedReportUrlLong(path){
@@ -4041,12 +4152,19 @@ async function autoImportSaveAndRegenerate(){
   }
 }
 
+
+async function downloadCurrentSendFinal(){
+  if(!activeReportSendId){showToast('No report selected.');return;}
+  await downloadSecureReportFile(activeReportSendId,true);
+}
+
 /* Make openReportSendModal available globally after script evaluation. */
 window.openReportSendModal=openReportSendModal;
 window.closeReportSendModal=closeReportSendModal;
 window.copyReportShareLink=copyReportShareLink;
 window.sendReportWhatsApp=sendReportWhatsApp;
 window.sendReportEmail=sendReportEmail;
+window.downloadCurrentSendFinal=downloadCurrentSendFinal;
 window.autoImportReportValues=autoImportReportValues;
 window.applyImportedValuesToForm=applyImportedValuesToForm;
 window.regenerateFinalFromSavedResults=regenerateFinalFromSavedResults;
