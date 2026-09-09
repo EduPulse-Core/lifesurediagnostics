@@ -10,6 +10,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 
 <style>
@@ -843,6 +844,14 @@ body{overflow-x:hidden}
 .report-v15-source-note{margin-top:10px;padding:9px 10px;border-radius:9px;background:#fff8eb;border:1px solid #f6ddb0;color:#8a5b14;font-size:7px;line-height:1.5}
 @media(max-width:900px){.report-v15-booking-preview{grid-template-columns:repeat(2,1fr)}.report-v15-pipeline{grid-template-columns:1fr 1fr}.report-v15-layout{grid-template-columns:1fr}}
 </style>
+
+<style>
+/* V15.1 — LifeSure Report Stationery System */
+.pro-stationery-preview{padding:0!important;background:#fff;overflow:hidden;border:1px solid #d9e6eb!important;border-radius:16px;box-shadow:0 16px 36px rgba(6,29,45,.07)}
+.ls-preview-top{display:grid;grid-template-columns:1.35fr 1fr auto;gap:12px;align-items:center;padding:16px;background:linear-gradient(135deg,#fbfeff,#f1faf6)}
+.ls-preview-brand{display:flex;align-items:center;gap:10px}.ls-preview-brand img{width:58px;height:42px;object-fit:contain;background:#fff;border-radius:9px;padding:4px;border:1px solid #e1eaee}.ls-preview-brand b{display:block;font:800 12px "Plus Jakarta Sans";color:#082f49}.ls-preview-brand small{display:block;margin-top:2px;font-size:6px;letter-spacing:1.4px;color:#0b8d55;font-weight:900}.ls-preview-brand em{display:block;margin-top:2px;font-size:6.5px;color:#607381;font-style:normal}.ls-preview-contact{text-align:right}.ls-preview-contact b{display:block;font-size:7px;color:#082f49}.ls-preview-contact span{display:block;margin-top:2px;font-size:6px;color:#64748b}.ls-preview-verify{display:grid;place-items:center;gap:3px}.qr-placeholder{width:34px;height:34px;border:2px solid #0b3d54;border-radius:6px;display:grid;place-items:center;color:#0b3d54;font-size:7px;font-weight:900;background:#fff}.ls-preview-verify span{font-size:5px;font-weight:900;letter-spacing:1px;color:#0b8d55}.ls-preview-rule{height:3px;background:linear-gradient(90deg,#0b3d54 0%,#075985 52%,#16a765 100%)}.ls-preview-identity{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:9px 13px;background:#fff;border-bottom:1px solid #e8eef2}.ls-preview-identity div{min-width:0}.ls-preview-identity span{display:block;font-size:5px;text-transform:uppercase;letter-spacing:.9px;color:#8ba0ab;font-weight:900}.ls-preview-identity b{display:block;margin-top:2px;font-size:6.5px;color:#193546;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ls-preview-body{padding:14px}.ls-preview-body h4{margin:0;font:900 13px "Plus Jakarta Sans";color:#082f49;letter-spacing:.1px}.fake-title{margin:4px 0 10px;font-size:8px;font-weight:800;color:#075985}.fake-table,.fake-rows{display:grid;grid-template-columns:1.5fr .8fr .7fr 1.2fr .7fr}.fake-table div{padding:6px 5px;background:#0b3d54;color:#fff;font-size:5.5px;font-weight:900}.fake-rows{border:1px solid #dfe8ec;border-top:0}.fake-rows span{padding:6px 5px;border-right:1px solid #e6edf1;border-bottom:1px solid #e6edf1;font-size:5.5px;color:#4d6270}.fake-rows span:nth-child(5n){border-right:0;color:#087443;font-weight:800}.ls-preview-bottom{display:flex;justify-content:space-between;gap:10px;padding:8px 13px;background:#062b3f;color:#d7e6ec;font-size:5.5px}.ls-preview-bottom strong{color:#fff;white-space:nowrap}.pro-stationery-preview .letterhead-footer{padding:8px 13px;background:#f4f8fb;color:#6b7f8b;font-size:6px!important;border-top:1px solid #e3ebef}
+@media(max-width:850px){.ls-preview-top{grid-template-columns:1fr}.ls-preview-contact{text-align:left}.ls-preview-identity{grid-template-columns:1fr 1fr}}
+</style>
 </head>
 
 <body class="booting">
@@ -1013,7 +1022,7 @@ body{overflow-x:hidden}
     </div>
     <div class="section-grid">
       <div class="card"><div class="card-head"><div><h3>LifeSure Letterhead</h3><div class="card-sub">Professional first page generated from the booking</div></div></div>
-        <div class="letterhead-preview"><div class="letterhead-inner"><div class="letterhead-brand"><img src="logo.png" alt="LifeSure logo" onerror="this.style.display='none'"><div><b>LifeSure Diagnostics</b><small>Diagnostic Report • Confidential Medical Document</small></div></div><div class="letterhead-meta"><div><span>Patient</span><b>Generated per booking</b></div><div><span>Report Code</span><b>LifeSure controlled identifier</b></div><div><span>Booking</span><b>Linked to original order</b></div><div><span>Issued</span><b>System timestamp</b></div></div><div class="letterhead-footer">This LifeSure-branded cover is attached to the preserved original laboratory report. The source report remains unchanged in private storage.</div></div></div>
+        <div class="letterhead-preview"><div class="letterhead-inner pro-stationery-preview"><div class="ls-preview-top"><div class="ls-preview-brand"><img src="logo.png" alt="LifeSure Diagnostics logo" onerror="this.style.display='none'"><div><b>LifeSure Diagnostics</b><small>CARE • PRECISION • TRUST</small><em>Diagnostic &amp; Pathology Services</em></div></div><div class="ls-preview-contact"><b>Geeta Nagar, Colaba, Mumbai</b><span>7266925657 • lifesurediagnostics@gmail.com</span><span>lifesurediagnostics.vercel.app</span></div><div class="ls-preview-verify"><div class="qr-placeholder">QR</div><span>VERIFY</span></div></div><div class="ls-preview-rule"></div><div class="ls-preview-identity"><div><span>Patient</span><b>Generated per booking</b></div><div><span>Report No.</span><b>LS-RPT-XXXXXXXX</b></div><div><span>Booking ID</span><b>LS-BKG-XXXXXXXX</b></div><div><span>Status</span><b>FINAL</b></div></div><div class="ls-preview-body"><h4>DIAGNOSTIC REPORT</h4><div class="fake-title">Complete Blood Count (CBC)</div><div class="fake-table"><div>Parameter</div><div>Result</div><div>Unit</div><div>Reference Range</div><div>Flag</div></div><div class="fake-rows"><span>Hemoglobin</span><span>13.8</span><span>g/dL</span><span>13.0–17.0</span><span>Normal</span><span>Total WBC</span><span>7,200</span><span>/µL</span><span>4,000–11,000</span><span>Normal</span></div></div><div class="ls-preview-bottom"><span>Confidential medical document • Please verify through the official LifeSure verification service.</span><strong>Page 1 of 1</strong></div><div class="letterhead-footer">Original source remains preserved privately; the branded report is generated as a separate controlled artifact.</div></div></div>
       </div>
       <div class="card"><div class="card-head"><div><h3>Controlled workflow</h3><div class="card-sub">No direct report-table browser writes</div></div></div><div class="pad" style="padding:18px"><div class="insight-list"><div class="insight"><div class="insight-icon">1</div><div><b>Create report</b><p>Link the report to an existing LifeSure booking.</p></div></div><div class="insight"><div class="insight-icon">2</div><div><b>Upload source PDF</b><p>Private Storage path is validated against the report and patient.</p></div></div><div class="insight"><div class="insight-icon">3</div><div><b>Generate letterhead copy</b><p>Optional LifeSure-branded cover is merged with the source PDF.</p></div></div><div class="insight"><div class="insight-icon">4</div><div><b>Publish securely</b><p>Existing authorization and payment controls remain the final publication gate.</p></div></div></div></div></div>
       </div>
@@ -2739,27 +2748,84 @@ function reportStationeryMeta(booking,report){
     reportCode:report?.report_code||"—",
     test:booking?.test_name||booking?.package_name||"Diagnostic test",
     collection:booking?.collection_type||"Centre",
-    issued:new Date().toLocaleString("en-IN",{dateStyle:"medium",timeStyle:"short"})
+    issued:new Date().toLocaleString("en-IN",{dateStyle:"medium",timeStyle:"short"}),
+    address:"Geeta Nagar, Colaba, Mumbai, Maharashtra, India",
+    phone:"7266925657",
+    email:"lifesurediagnostics@gmail.com",
+    website:"lifesurediagnostics.vercel.app",
+    tagline:"CARE • PRECISION • TRUST",
+    descriptor:"Diagnostic & Pathology Services"
   };
 }
 
-function drawReportHeaderFooter(page,meta,pageNo,totalPages,logoData,compact=false){
+async function drawReportHeaderFooter(page,meta,pageNo,totalPages,logoData,qrData,compact=false){
   const W=page.getWidth(),H=page.getHeight();
   const left=28,right=W-28;
-  const topPad=compact?50:58, bottomPad=compact?38:45;
-  page.drawRectangle({x:0,y:H-8,width:W,height:8,color:PDFLib.rgb(0.024,0.141,0.224)});
-  page.drawRectangle({x:0,y:H-10,width:W,height:2,color:PDFLib.rgb(0.031,0.349,0.522)});
-  page.drawRectangle({x:0,y:H-12,width:W,height:2,color:PDFLib.rgb(0.086,0.655,0.396)});
-  page.drawImage(logoData,{x:left,y:H-45,width:30,height:23});
-  page.drawText("LifeSure Diagnostics",{x:left+37,y:H-30,size:14,font:PDFLib.StandardFonts.HelveticaBold,color:PDFLib.rgb(0.05,0.17,0.24)});
-  page.drawText("DIAGNOSTIC REPORT  •  CONFIDENTIAL MEDICAL DOCUMENT",{x:left+37,y:H-42,size:6.5,font:PDFLib.StandardFonts.HelveticaBold,color:PDFLib.rgb(0.35,0.48,0.55)});
-  page.drawLine({start:{x:left,y:H-51},end:{x:right,y:H-51},thickness:0.7,color:PDFLib.rgb(0.86,0.91,0.93)});
-  page.drawText(meta.patient,{x:left,y:H-61,size:7.5,font:PDFLib.StandardFonts.HelveticaBold,color:PDFLib.rgb(0.07,0.16,0.23)});
-  page.drawText(`Patient ID: ${meta.patientId}   •   Booking: ${meta.booking}   •   Report: ${meta.reportCode}`,{x:left+120,y:H-61,size:6.2,font:PDFLib.StandardFonts.Helvetica,color:PDFLib.rgb(0.39,0.48,0.54)});
-  page.drawRectangle({x:0,y:0,width:W,height:18,color:PDFLib.rgb(0.024,0.141,0.224)});
-  page.drawText("LifeSure Diagnostics  •  Confidential Medical Report  •  Mumbai  •  7266925657",{x:left,y:6.2,size:5.8,font:PDFLib.StandardFonts.Helvetica,color:PDFLib.rgb(0.82,0.88,0.91)});
-  page.drawText(`Page ${pageNo} of ${totalPages}`,{x:W-68,y:6.2,size:5.8,font:PDFLib.StandardFonts.HelveticaBold,color:PDFLib.rgb(1,1,1)});
+  const dark=PDFLib.rgb(0.024,0.169,0.247);
+  const blue=PDFLib.rgb(0.027,0.349,0.522);
+  const green=PDFLib.rgb(0.086,0.655,0.396);
+  const muted=PDFLib.rgb(0.37,0.46,0.51);
+  const light=PDFLib.rgb(0.94,0.97,0.98);
+  const topPad=compact?78:90,bottomPad=compact?52:60;
+
+  // premium three-tone top rail
+  page.drawRectangle({x:0,y:H-5,width:W,height:5,color:dark});
+  page.drawRectangle({x:0,y:H-7,width:W,height:2,color:blue});
+  page.drawRectangle({x:0,y:H-9,width:W,height:2,color:green});
+
+  // brand block
+  page.drawImage(logoData,{x:left,y:H-47,width:45,height:30});
+  page.drawText("LifeSure Diagnostics",{x:left+52,y:H-30,size:15,font:PDFLib.StandardFonts.HelveticaBold,color:dark});
+  page.drawText(meta.tagline,{x:left+52,y:H-40,size:6.5,font:PDFLib.StandardFonts.HelveticaBold,color:green});
+  page.drawText(meta.descriptor,{x:left+52,y:H-49,size:6,font:PDFLib.StandardFonts.Helvetica,color:muted});
+
+  // contact block
+  const cx=310;
+  page.drawText(meta.address,{x:cx,y:H-30,size:6.3,font:PDFLib.StandardFonts.Helvetica,color:dark});
+  page.drawText(`${meta.phone}  •  ${meta.email}`,{x:cx,y:H-40,size:6.1,font:PDFLib.StandardFonts.Helvetica,color:muted});
+  page.drawText(meta.website,{x:cx,y:H-50,size:6.1,font:PDFLib.StandardFonts.Helvetica,color:blue});
+
+  // QR block on every page
+  if(qrData){
+    page.drawImage(qrData,{x:right-43,y:H-52,width:37,height:37});
+    page.drawText("VERIFY REPORT",{x:right-87,y:H-59,size:5.5,font:PDFLib.StandardFonts.HelveticaBold,color:green});
+    page.drawText("Scan for official verification",{x:right-87,y:H-67,size:5.2,font:PDFLib.StandardFonts.Helvetica,color:muted});
+  }
+
+  page.drawLine({start:{x:left,y:H-72},end:{x:right,y:H-72},thickness:.8,color:PDFLib.rgb(.84,.89,.92)});
+
+  // patient identity band — repeated on every page
+  page.drawRectangle({x:left,y:H-92,width:right-left,height:14,color:light,borderColor:PDFLib.rgb(.86,.91,.93),borderWidth:.4});
+  page.drawText(`Patient: ${meta.patient}`,{x:left+6,y:H-87,size:6.5,font:PDFLib.StandardFonts.HelveticaBold,color:dark});
+  page.drawText(`Patient ID: ${meta.patientId}`,{x:left+160,y:H-87,size:5.8,font:PDFLib.StandardFonts.Helvetica,color:muted});
+  page.drawText(`Booking: ${meta.booking}`,{x:left+280,y:H-87,size:5.8,font:PDFLib.StandardFonts.Helvetica,color:muted});
+  page.drawText(`Report: ${meta.reportCode}`,{x:right-145,y:H-87,size:5.8,font:PDFLib.StandardFonts.HelveticaBold,color:blue});
+
+  // footer band every page
+  page.drawRectangle({x:0,y:0,width:W,height:37,color:dark});
+  page.drawText("LifeSure Diagnostics",{x:left,y:25,size:7,font:PDFLib.StandardFonts.HelveticaBold,color:PDFLib.rgb(1,1,1)});
+  page.drawText("Geeta Nagar, Colaba, Mumbai  •  7266925657",{x:left,y:16,size:5.5,font:PDFLib.StandardFonts.Helvetica,color:PDFLib.rgb(.82,.89,.92)});
+  page.drawText("lifesurediagnostics@gmail.com  •  lifesurediagnostics.vercel.app",{x:left,y:8,size:5.5,font:PDFLib.StandardFonts.Helvetica,color:PDFLib.rgb(.82,.89,.92)});
+  page.drawText("CONFIDENTIAL MEDICAL DOCUMENT",{x:W/2-50,y:25,size:5.4,font:PDFLib.StandardFonts.HelveticaBold,color:PDFLib.rgb(.63,.91,.76)});
+  page.drawText("Please verify this report using the official LifeSure verification service.",{x:W/2-50,y:16,size:5.2,font:PDFLib.StandardFonts.Helvetica,color:PDFLib.rgb(.82,.89,.92)});
+  page.drawText(`Page ${pageNo} of ${totalPages}`,{x:W-63,y:8,size:6,font:PDFLib.StandardFonts.HelveticaBold,color:PDFLib.rgb(1,1,1)});
   return {topPad,bottomPad};
+}
+
+async function buildReportQrData(reportCode){
+  try{
+    if(!window.QRCode?.toDataURL || !reportCode)return null;
+    const verifyUrl=`https://lifesurediagnostics.vercel.app/verify.html?report=${encodeURIComponent(reportCode)}`;
+    const dataUrl=await QRCode.toDataURL(verifyUrl,{width:180,margin:1,errorCorrectionLevel:"M"});
+    return dataUrl;
+  }catch(err){
+    console.warn("QR generation unavailable:",err);
+    return null;
+  }
+}
+async function dataUrlToUint8Array(dataUrl){
+  const res=await fetch(dataUrl);
+  return new Uint8Array(await res.arrayBuffer());
 }
 
 async function buildTextReportPdf(booking,report,text,layoutMode){
@@ -2814,6 +2880,8 @@ async function buildTextReportPdf(booking,report,text,layoutMode){
   const out=await PDFLib.PDFDocument.create();
   const logoBytes=await fetch("logo.png").then(r=>r.arrayBuffer());
   const logoImg=await out.embedPng(logoBytes);
+  const qrDataUrl=await buildReportQrData(meta.reportCode);
+  const qrImg=qrDataUrl?await out.embedPng(await dataUrlToUint8Array(qrDataUrl)):null;
   const rawPages=raw.getPages();
   const total=rawPages.length;
   for(let i=0;i<rawPages.length;i++){
@@ -2822,7 +2890,7 @@ async function buildTextReportPdf(booking,report,text,layoutMode){
     page.drawRectangle({x:0,y:0,width:page.getWidth(),height:page.getHeight(),color:PDFLib.rgb(1,1,1)});
     const embedded=await out.embedPage(rp);
     page.drawPage(embedded,{x:0,y:0,width:page.getWidth(),height:page.getHeight()});
-    drawReportHeaderFooter(page,meta,i+1,total,logoImg,layoutMode==="compact");
+    drawReportHeaderFooter(page,meta,i+1,total,logoImg,qrImg,layoutMode==="compact");
   }
   return new Blob([await out.save({useObjectStreams:true})],{type:"application/pdf"});
 }
@@ -2834,6 +2902,8 @@ async function buildPdfStationeryReport(booking,report,originalFile,layoutMode){
   const logoBytes=await fetch("logo.png").then(r=>r.arrayBuffer());
   const logoImg=await out.embedPng(logoBytes);
   const meta=reportStationeryMeta(booking,report);
+  const qrDataUrl=await buildReportQrData(meta.reportCode);
+  const qrImg=qrDataUrl?await out.embedPng(await dataUrlToUint8Array(qrDataUrl)):null;
   const total=original.getPages().length;
   const pages=await out.copyPages(original,original.getPageIndices());
   // Preserve source page dimensions but reserve consistent top/footer space.
@@ -2850,7 +2920,7 @@ async function buildPdfStationeryReport(booking,report,originalFile,layoutMode){
     const x=(targetW-w)/2,y=usableBottom+(maxH-h)/2;
     const embedded=await out.embedPage(src);
     page.drawPage(embedded,{x,y,width:w,height:h});
-    drawReportHeaderFooter(page,meta,i+1,total,logoImg,layoutMode==="compact");
+    drawReportHeaderFooter(page,meta,i+1,total,logoImg,qrImg,layoutMode==="compact");
   }
   return new Blob([await out.save({useObjectStreams:true})],{type:"application/pdf"});
 }
@@ -2874,20 +2944,35 @@ async function submitReportUpload(){
   try{
     const report=await secureRpc("create_report_securely",{p_booking_id:bookingId,p_report_code:code||null});
     const reportId=report.report_id,patientId=report.patient_id,version="v1",stamp=Date.now();
+    const ext=isPdf?"pdf":"txt";
+    const originalPath=`${patientId}/${reportId}/${version}/original-${stamp}.${ext}`;
+    const finalPath=`${patientId}/${reportId}/${version}/letterhead-${stamp}.pdf`;
+
+    // Preserve the exact source artifact separately. It is never transformed or overwritten.
+    const {error:originalErr}=await supabaseClient.storage
+      .from("reports-private")
+      .upload(originalPath,sourceFile,{contentType:isPdf?"application/pdf":"text/plain",upsert:false});
+    if(originalErr) throw originalErr;
+
     let finalBlob;
     if(isPdf){
-      // PDF is restationed so header + patient identity strip + footer appear on every page.
       finalBlob=await buildPdfStationeryReport(booking,report,sourceFile,layoutMode);
     }else{
       const text=await sourceFile.text();
       finalBlob=await buildTextReportPdf(booking,report,text,layoutMode);
     }
     if(finalBlob.size>10*1024*1024) throw new Error("Generated report exceeds the 10 MB private-storage limit. Use a smaller source document.");
-    const finalPath=`${patientId}/${reportId}/${version}/letterhead-${stamp}.pdf`;
-    const {error:upErr}=await supabaseClient.storage.from("reports-private").upload(finalPath,finalBlob,{contentType:"application/pdf",upsert:false});
-    if(upErr) throw upErr;
-    // For V15 the transformed report itself is the publishable artifact; original PDF remains untouched locally.
-    await secureRpc("attach_report_files_securely",{p_report_id:reportId,p_original_path:finalPath,p_letterhead_path:finalPath});
+
+    const {error:finalErr}=await supabaseClient.storage
+      .from("reports-private")
+      .upload(finalPath,finalBlob,{contentType:"application/pdf",upsert:false});
+    if(finalErr) throw finalErr;
+
+    await secureRpc("attach_report_files_securely",{
+      p_report_id:reportId,
+      p_original_path:originalPath,
+      p_letterhead_path:finalPath
+    });
     closeReportUploadModal();
     showToast(`Report ${report.report_code} generated and stored securely.`);
     await refreshAll();
