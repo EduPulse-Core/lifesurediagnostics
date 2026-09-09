@@ -1,0 +1,203 @@
+-- LifeSure Diagnostics — Public Report Verification
+-- Purpose: let a QR code prove that a published report exists without exposing
+-- private report/storage data. The QR carries a report code + high-entropy token.
+
+-- 1) Ensure new reports receive a verification token at creation.
+CREATE OR REPLACE FUNCTION public.create_report_securely(
+    p_booking_id uuid,
+    p_report_code text DEFAULT NULL::text
+)
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path TO 'public', 'extensions', 'pg_catalog'
+AS $function$
+declare
+    v_user_id uuid := auth.uid();
+    v_role public.app_role;
+    v_patient_id uuid;
+    v_report_id uuid;
+    v_report_code text;
+    v_verification_token text;
+    v_exists boolean;
+begin
+    if v_user_id is null then
+        raise exception 'Authentication required';
+    end if;
+
+    select role
+      into v_role
+      from public.profiles
+     where id = v_user_id
+       and active = true;
+
+    if v_role not in ('super_admin','management','lab_staff') then
+        raise exception 'Report creation is not authorized for this role';
+    end if;
+
+    select patient_id
+      into v_patient_id
+      from public.bookings
+     where id = p_booking_id
+     for update;
+
+    if not found then
+        raise exception 'Booking not found';
+    end if;
+
+    if v_patient_id is null then
+        raise exception 'Booking has no patient';
+    end if;
+
+    if exists (
+        select 1
+        from public.reports
+        where booking_id = p_booking_id
+          and status <> 'replaced'::public.report_status
+    ) then
+        raise exception 'An active report already exists for this booking';
+    end if;
+
+    if nullif(trim(p_report_code), '') is not null then
+        v_report_code := trim(p_report_code);
+        if exists (
+            select 1 from public.reports where report_code = v_report_code
+        ) then
+            raise exception 'Report code already exists';
+        end if;
+    else
+        loop
+            v_report_code :=
+                'LS-RPT-' ||
+                to_char(current_date, 'YYYYMMDD') ||
+                '-' ||
+                upper(encode(extensions.gen_random_bytes(4), 'hex'));
+            select exists (
+                select 1 from public.reports where report_code = v_report_code
+            ) into v_exists;
+            exit when not v_exists;
+        end loop;
+    end if;
+
+    loop
+        v_verification_token := encode(extensions.gen_random_bytes(24), 'hex');
+        exit when not exists (
+            select 1 from public.reports
+            where verification_token = v_verification_token
+        );
+    end loop;
+
+    insert into public.reports (
+        report_code,
+        booking_id,
+        patient_id,
+        status,
+        version,
+        verification_token,
+        uploaded_by
+    )
+    values (
+        v_report_code,
+        p_booking_id,
+        v_patient_id,
+        'not_ready'::public.report_status,
+        1,
+        v_verification_token,
+        v_user_id
+    )
+    returning id into v_report_id;
+
+    return jsonb_build_object(
+        'success', true,
+        'report_id', v_report_id,
+        'report_code', v_report_code,
+        'verification_token', v_verification_token,
+        'booking_id', p_booking_id,
+        'patient_id', v_patient_id,
+        'status', 'not_ready',
+        'created_by', v_user_id,
+        'role', v_role
+    );
+end;
+$function$;
+
+
+-- 1b) Backfill tokens for any pre-existing report rows that do not have one.
+DO $backfill$
+DECLARE
+  r record;
+  v_token text;
+BEGIN
+  FOR r IN SELECT id FROM public.reports WHERE verification_token IS NULL LOOP
+    LOOP
+      v_token := encode(extensions.gen_random_bytes(24), 'hex');
+      EXIT WHEN NOT EXISTS (SELECT 1 FROM public.reports WHERE verification_token = v_token);
+    END LOOP;
+    UPDATE public.reports
+       SET verification_token = v_token
+     WHERE id = r.id;
+  END LOOP;
+END;
+$backfill$;
+
+-- 2) Public verification RPC.
+-- It returns intentionally limited non-sensitive metadata only.
+CREATE OR REPLACE FUNCTION public.verify_report_public(
+    p_report_code text,
+    p_verification_token text
+)
+RETURNS jsonb
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = ''
+STABLE
+AS $function$
+declare
+    v_report public.reports%rowtype;
+    v_test text;
+begin
+    if nullif(btrim(p_report_code), '') is null
+       or nullif(btrim(p_verification_token), '') is null then
+        return jsonb_build_object(
+            'verified', false,
+            'reason', 'invalid_request'
+        );
+    end if;
+
+    select r.*
+      into v_report
+      from public.reports r
+     where r.report_code = btrim(p_report_code)
+       and r.verification_token = btrim(p_verification_token)
+       and r.status = 'published'::public.report_status;
+
+    if not found then
+        return jsonb_build_object(
+            'verified', false,
+            'reason', 'report_not_found_or_not_published'
+        );
+    end if;
+
+    select coalesce(b.test_name, b.package_name, 'Diagnostic Report')
+      into v_test
+      from public.bookings b
+     where b.id = v_report.booking_id;
+
+    return jsonb_build_object(
+        'verified', true,
+        'report_code', v_report.report_code,
+        'status', 'published',
+        'report_date', v_report.published_at,
+        'report_type', coalesce(v_test, 'Diagnostic Report'),
+        'version', v_report.version,
+        'message', 'This report matches a published LifeSure Diagnostics record.'
+    );
+end;
+$function$;
+
+-- 3) Data API permissions: verification is opt-in, everything else stays protected.
+REVOKE EXECUTE ON FUNCTION public.verify_report_public(text, text) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.verify_report_public(text, text) TO anon, authenticated;
+
+-- Optional hardening: keep token out of casual table reads. The existing RLS should
+-- already protect reports; do not grant anon SELECT on public.reports.
