@@ -3461,38 +3461,141 @@ async function extractPdfText(file){
     return out.join("\n\n").trim();
   }catch(err){ console.warn("PDF text extraction unavailable",err); return ""; }
 }
+function sanitizePdfText(value){
+  return String(value ?? "")
+    .replace(/\u0000/g, "")
+    .replace(/[\u2013\u2014\u2212]/g, "-")
+    .replace(/[\u2022]/g, "•")
+    .replace(/[\u00a0]/g, " ")
+    .replace(/[\u200b-\u200f\u202a-\u202e]/g, "");
+}
+function wrapPdfText(font,text,size,maxWidth){
+  const src=sanitizePdfText(text).replace(/\s+/g," ").trim();
+  if(!src) return [""];
+  const words=src.split(" "); const lines=[]; let line="";
+  for(const word of words){
+    const candidate=line?`${line} ${word}`:word;
+    if(font.widthOfTextAtSize(candidate,size)<=maxWidth || !line){ line=candidate; }
+    else { lines.push(line); line=word; }
+  }
+  if(line) lines.push(line); return lines;
+}
 async function buildTextReportPdf(booking,report,text,layoutMode,overrides={},withStationery=true){
-  if(!window.jspdf?.jsPDF) throw new Error("PDF generation engine is unavailable.");
-  if(!window.PDFLib?.PDFDocument) throw new Error("PDF stationery engine is unavailable.");
-  const {jsPDF}=window.jspdf; const doc=new jsPDF({unit:"mm",format:"a4",compress:true});
-  const pageW=210,pageH=297,margin=18; const parsed=parseDiagnosticText(text); const meta=reportStationeryMeta(booking,report,overrides);
-  doc.setTextColor(6,43,63);doc.setFont("helvetica","bold");doc.setFontSize(20);doc.text("DIAGNOSTIC REPORT",margin,31);
-  doc.setTextColor(7,89,133);doc.setFontSize(10);doc.text(String(parsed.title||meta.test||"Diagnostic Report").slice(0,85),margin,39);
-  doc.setDrawColor(211,225,232);doc.setLineWidth(.5);doc.line(margin,45,pageW-margin,45);
-  let y=57;
-  const patientRows=[
+  if(!window.PDFLib?.PDFDocument) throw new Error("PDF generation engine is unavailable.");
+  const pdf=await PDFLib.PDFDocument.create();
+  const regular=await pdf.embedFont(PDFLib.StandardFonts.Helvetica);
+  const bold=await pdf.embedFont(PDFLib.StandardFonts.HelveticaBold);
+  const pageW=595.28,pageH=841.89,left=28,right=pageW-28;
+  const parsed=parseDiagnosticText(text); const meta=reportStationeryMeta(booking,report,overrides);
+  let logoImg=null,qrImg=null;
+  if(withStationery){
+    try{ const logoBytes=await fetch("logo.png").then(r=>{if(!r.ok)throw new Error("logo");return r.arrayBuffer()}); logoImg=await pdf.embedPng(logoBytes); }catch(_){ logoImg=null; }
+    try{ const qrDataUrl=await buildReportQrData(meta.reportCode,meta.verificationToken); if(qrDataUrl) qrImg=await pdf.embedPng(await dataUrlToUint8Array(qrDataUrl)); }catch(_){ qrImg=null; }
+  }
+  const addPage=()=>{
+    const page=pdf.addPage([pageW,pageH]);
+    if(withStationery) drawReportHeaderFooter(page,meta,0,1,logoImg||null,qrImg||null,layoutMode==="compact");
+    return page;
+  };
+  let page=addPage(), pageNo=1, y=withStationery?(layoutMode==="compact"?760:745):805;
+  const footerTop=withStationery?(layoutMode==="compact"?54:62):28;
+  const contentBottom=withStationery?footerTop:24;
+  const safeText=(v)=>sanitizePdfText(v||"—");
+  const maybePage=(need=24)=>{
+    if(y-need<contentBottom){ pageNo++; page=addPage(); y=withStationery?(layoutMode==="compact"?760:745):805; }
+  };
+  const drawWrapped=(txt,x,maxW,size,font,color,leading=1.35)=>{
+    const lines=wrapPdfText(font,txt,size,maxW);
+    for(const line of lines){ maybePage(size*leading+3); page.drawText(line,{x,y,size,font,color}); y-=size*leading; }
+    return lines.length;
+  };
+
+  // Keep the report layout deterministic and independent of jsPDF.
+  page.drawText("DIAGNOSTIC REPORT",{x:left,y,size:19,font:bold,color:PDFLib.rgb(.024,.169,.247)}); y-=26;
+  page.drawText(safeText(parsed.title||meta.test||"Diagnostic Report"),{x:left,y,size:10.5,font:bold,color:PDFLib.rgb(.027,.349,.522)}); y-=14;
+  page.drawLine({start:{x:left,y},end:{x:right,y},thickness:0.7,color:PDFLib.rgb(.82,.88,.91)}); y-=20;
+
+  const cards=[
     ["Patient",meta.patient],["Patient ID",meta.patientId],["Report No.",meta.reportCode],["Booking",meta.booking],
     ["Test / Package",meta.test],["Collection",meta.collection],["Report Date",meta.issued],["Ref. Doctor",overrides.doctor||"—"]
   ];
-  for(let i=0;i<patientRows.length;i+=2){
-    const pair=patientRows.slice(i,i+2); const colW=(pageW-2*margin-8)/2;
-    pair.forEach((r,k)=>{const x=margin+k*(colW+8);doc.setFillColor(248,251,252);doc.roundedRect(x,y-5,colW,15,1.8,1.8,"F");doc.setTextColor(126,145,156);doc.setFont("helvetica","bold");doc.setFontSize(6.4);doc.text(r[0].toUpperCase(),x+5,y);doc.setTextColor(25,50,71);doc.setFont("helvetica","normal");doc.setFontSize(7.6);doc.text(doc.splitTextToSize(String(r[1]||"—"),colW-10),x+5,y+5);});
-    y+=19;
+  const cardW=(right-left-14)/2;
+  for(let i=0;i<cards.length;i+=2){
+    maybePage(48);
+    const pair=cards.slice(i,i+2);
+    pair.forEach((r,k)=>{
+      const x=left+k*(cardW+14), cy=y;
+      page.drawRectangle({x,y:cy-30,width:cardW,height:32,color:PDFLib.rgb(.973,.984,.988),borderColor:PDFLib.rgb(.86,.91,.93),borderWidth:.5});
+      page.drawText(safeText(r[0]).toUpperCase(),{x:x+9,y:cy-11,size:6.2,font:bold,color:PDFLib.rgb(.49,.57,.61)});
+      const lines=wrapPdfText(regular,r[1],7.5,cardW-18).slice(0,2);
+      lines.forEach((ln,idx)=>page.drawText(ln,{x:x+9,y:cy-22-idx*9,size:7.5,font:regular,color:PDFLib.rgb(.10,.20,.28)}));
+    });
+    y-=42;
   }
-  y+=2;
-  const ctx={pageW,pageH,margin,y};
-  if(parsed.sections.length){ for(const section of parsed.sections) drawStructuredSection(doc,section,ctx); }
+
+  for(const section of parsed.sections){
+    maybePage(70);
+    page.drawRectangle({x:left,y:y-5,width:right-left,height:24,color:PDFLib.rgb(.956,.976,.984)});
+    page.drawText(safeText(section.title||"Report Content").slice(0,85),{x:left+8,y:y+3,size:8,font:bold,color:PDFLib.rgb(.031,.349,.522)}); y-=34;
+
+    if(section.meta.length){
+      for(let j=0;j<section.meta.length;j+=2){
+        maybePage(38);
+        const pair=section.meta.slice(j,j+2);
+        pair.forEach((m,k)=>{
+          const x=left+k*(cardW+14);
+          page.drawText(safeText(m.key).toUpperCase().slice(0,36),{x,y,size:6.1,font:bold,color:PDFLib.rgb(.49,.57,.61)});
+          const lines=wrapPdfText(regular,m.value,7.2,cardW).slice(0,2);
+          lines.forEach((ln,idx)=>page.drawText(ln,{x,y:y-10-idx*8,size:7.2,font:regular,color:PDFLib.rgb(.10,.20,.28)}));
+        });
+        y-=29;
+      }
+    }
+
+    if(section.rows.length){
+      maybePage(76);
+      const colX=[left,left+208,left+300,left+388,left+500];
+      const widths=[202,86,82,106,39];
+      page.drawRectangle({x:left,y:y-4,width:right-left,height:22,color:PDFLib.rgb(.031,.239,.329)});
+      ["Parameter","Result","Unit","Reference Range","Flag"].forEach((h,idx)=>page.drawText(h,{x:colX[idx]+(idx?4:7),y:y+3,size:6.5,font:bold,color:PDFLib.rgb(1,1,1)}));
+      y-=25;
+      for(let idx=0;idx<section.rows.length;idx++){
+        const r=section.rows[idx]; const rowLines=wrapPdfText(regular,r.parameter||"",6.5,widths[0]-10); const h=Math.max(24,rowLines.length*8+10);
+        maybePage(h+10);
+        if(idx%2===0) page.drawRectangle({x:left,y:y-h+4,width:right-left,height:h,color:PDFLib.rgb(.973,.984,.988)});
+        page.drawLine({start:{x:left,y:y-h+4},end:{x:right,y:y-h+4},thickness:.35,color:PDFLib.rgb(.88,.92,.94)});
+        rowLines.slice(0,3).forEach((ln,j)=>page.drawText(ln,{x:left+7,y:y-j*8,size:6.5,font:regular,color:PDFLib.rgb(.13,.22,.28)}));
+        page.drawText(safeText(r.result).slice(0,22),{x:colX[1]+4,y,size:7,font:bold,color:PDFLib.rgb(.10,.20,.28)});
+        page.drawText(safeText(r.unit).slice(0,18),{x:colX[2]+4,y,size:6.5,font:regular,color:PDFLib.rgb(.20,.30,.36)});
+        page.drawText(safeText(r.reference).slice(0,22),{x:colX[3]+4,y,size:6.5,font:regular,color:PDFLib.rgb(.20,.30,.36)});
+        page.drawText(safeText(r.flag||"—").slice(0,12),{x:colX[4]+2,y,size:6.2,font:bold,color:/high|low|abnormal/i.test(String(r.flag||""))?PDFLib.rgb(.72,.11,.11):PDFLib.rgb(.03,.46,.27)});
+        y-=h;
+      }
+    }
+
+    for(const para of section.paragraphs){
+      y-=4; maybePage(28);
+      drawWrapped(para,left,right-left,7.2,regular,PDFLib.rgb(.24,.32,.36),1.35); y-=6;
+    }
+    y-=8;
+  }
+
   if(!parsed.hasRows){
-    ctx.y+=3; doc.setFillColor(255,249,239);doc.roundedRect(margin,ctx.y,pageW-2*margin,18,2,2,"F");doc.setTextColor(154,90,16);doc.setFont("helvetica","bold");doc.setFontSize(7);doc.text("SOURCE CONTENT",margin+6,ctx.y+7);doc.setFont("helvetica","normal");doc.setFontSize(6.7);doc.text(doc.splitTextToSize("The supplied source did not expose machine-readable result columns. The source text has been preserved and laid out without clinical inference.",pageW-2*margin-12),margin+6,ctx.y+12);ctx.y+=24;
+    maybePage(60);
+    page.drawRectangle({x:left,y:y-48,width:right-left,height:56,color:PDFLib.rgb(1,.978,.937),borderColor:PDFLib.rgb(.93,.83,.65),borderWidth:.6});
+    page.drawText("SOURCE CONTENT",{x:left+9,y:y-8,size:7,font:bold,color:PDFLib.rgb(.60,.35,.06)});
+    drawWrapped("The supplied source did not expose machine-readable result columns. The source text has been preserved and laid out without clinical inference.",left+9,right-left-18,6.7,regular,PDFLib.rgb(.42,.34,.22),1.35);
   }
-  const rawPdf=doc.output("arraybuffer");
-  if(!withStationery) return new Blob([rawPdf],{type:"application/pdf"});
-  const raw=await PDFLib.PDFDocument.load(rawPdf); const out=await PDFLib.PDFDocument.create();
-  const logoBytes=await fetch("logo.png").then(r=>r.arrayBuffer()); const logoImg=await out.embedPng(logoBytes);
-  const qrDataUrl=await buildReportQrData(meta.reportCode,meta.verificationToken); const qrImg=qrDataUrl?await out.embedPng(await dataUrlToUint8Array(qrDataUrl)):null;
-  const rawPages=raw.getPages(); const total=rawPages.length;
-  for(let i=0;i<rawPages.length;i++){const rp=rawPages[i];const page=out.addPage([595.28,841.89]);page.drawRectangle({x:0,y:0,width:page.getWidth(),height:page.getHeight(),color:PDFLib.rgb(1,1,1)});const embedded=await out.embedPage(rp);page.drawPage(embedded,{x:0,y:0,width:page.getWidth(),height:page.getHeight()});await drawReportHeaderFooter(page,meta,i+1,total,logoImg,qrImg,layoutMode==="compact");}
-  return new Blob([await out.save({useObjectStreams:true})],{type:"application/pdf"});
+
+  // Stamp actual page count now that all pages exist. Re-render page labels in footer.
+  const total=pdf.getPageCount();
+  if(withStationery){
+    for(let i=0;i<total;i++){
+      // Header/footer was already drawn; add the definitive page count over the existing footer label area.
+      pdf.getPages()[i].drawText(`Page ${i+1} of ${total}`,{x:pageW-91,y:8,size:6,font:bold,color:PDFLib.rgb(1,1,1)});
+    }
+  }
+  return new Blob([await pdf.save({useObjectStreams:true})],{type:"application/pdf"});
 }
 
 async function buildPdfStationeryReport(booking,report,originalFile,layoutMode,overrides={}){
