@@ -968,6 +968,16 @@ body{overflow-x:hidden}
 @media(max-width:760px){.delivery-v19-grid{grid-template-columns:1fr}.delivery-v19-checks{grid-template-columns:1fr}.delivery-v19-linkbox{align-items:flex-start}.delivery-v19-linkbox .btn{flex:none}}
 </style>
 
+
+<style id="lifesure-report-v23-css">
+.v23-ops-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+.v23-checks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0}
+.v23-check{border:1px solid #dbe8ed;background:#fff;border-radius:12px;padding:12px}.v23-check b{display:block;font-size:12px;color:#143f54}.v23-check span{display:block;margin-top:4px;font-size:10px;color:#6f8791}.v23-check.ok{border-color:#c8eadb;background:#f7fffb}.v23-check.bad{border-color:#f0d1d1;background:#fffafa}.v23-check.optional{border-color:#dbe8ed;background:#fbfdfe}
+.v23-action-bar{display:flex;gap:8px;flex-wrap:wrap;padding:12px 0 15px;border-bottom:1px solid #e8eff2}
+.v23-section{margin-top:15px;border:1px solid #e1ebef;border-radius:14px;background:#fff;padding:14px}.v23-section-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:10px}.v23-section-head b{display:block;color:#153f53;font-size:13px}.v23-section-head span{display:block;color:#78909a;font-size:10px;margin-top:3px}.v23-file-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.v23-file-card{border:1px solid #e5eef1;background:#fbfdfe;border-radius:12px;padding:12px}.v23-file-card b{display:block;color:#163f52;font-size:11px}.v23-file-card span{display:block;color:#728892;font-size:9px;line-height:1.45;margin:5px 0}.v23-file-card strong{font-size:9px;color:#168a5f}
+.v23-result-list{display:grid;gap:7px}.v23-result-row{display:grid;grid-template-columns:minmax(180px,1fr) 180px 120px;gap:8px;align-items:center;border:1px solid #e4edf0;border-radius:10px;padding:8px;background:#fcfefe}.v23-result-row b{display:block;color:#173f52;font-size:10px}.v23-result-row span{display:block;color:#869ba4;font-size:8px;margin-top:2px}.v23-result-row .result-input{height:34px}.v23-note,.v23-empty{margin-top:10px;padding:10px;border-radius:10px;background:#f6fafb;color:#6d838d;font-size:9px;line-height:1.5}.v23-next{background:linear-gradient(90deg,#f8fcfd,#f6fffb)}.v23-next b{display:block;color:#143f54;font-size:11px}.v23-next span{display:block;margin-top:4px;color:#6f838b;font-size:9px}
+@media(max-width:900px){.v23-checks,.v23-file-cards{grid-template-columns:1fr}.v23-result-row{grid-template-columns:1fr}.v23-action-bar{flex-direction:column}.v23-action-bar .btn{width:100%}}
+</style>
 </head>
 
 <body class="booting">
@@ -4294,6 +4304,371 @@ document.getElementById('reportDirectText')?.addEventListener('input',()=>{const
 window.submitReportUpload=submitReportUploadV22;
 const prevClose=window.closeReportUploadModal;window.closeReportUploadModal=function(){try{prevClose?.();}catch(_){}document.getElementById('reportDirectText')?.setAttribute('value','');const t=document.getElementById('reportDirectText');if(t)t.value='';};
 window.openSecureReportPdf=async function(reportId,preferLetterhead=true){try{const report=await getSecureReportRecord(reportId);if(!report)return;const path=(preferLetterhead&&report.letterhead_path)?report.letterhead_path:(report.original_path||report.letterhead_path);if(!path)throw new Error('No report artifact is available yet.');const url=await getSignedReportUrl(path);window.open(url,'_blank','noopener,noreferrer');}catch(e){console.error('V22 PREVIEW',e);showToast(e.message||'Report preview failed.');}};
+
+
+/* ===== LIFE SURE REPORT STUDIO V23 PATCH ===== */
+/* ============================================================
+   LIFESURE REPORT STUDIO V23 — PRODUCTION WORKFLOW FIX
+   - deterministic report generation
+   - PDF source passthrough + stationery overlay
+   - typed/text/table source -> professional PDF
+   - storage.download() first for reliable downloads
+   - simplified result review workflow
+   - AI/copilot hidden from the primary workflow
+   ============================================================ */
+(function installLifeSureReportV23(){
+  const qs = (s)=>document.querySelector(s);
+  const qsa = (s)=>[...document.querySelectorAll(s)];
+
+  function setProgressV23(text, kind=''){
+    const btn=qs('#createReportUploadButton');
+    if(btn){ btn.textContent=text; btn.disabled=!!kind; btn.classList.toggle('action-busy',!!kind); }
+    const status=qs('#reportAnalysisStatusV22');
+    if(status && kind) status.textContent=text.replace(/\.\.\.$/,'…');
+  }
+
+  async function ensureReportEnginesV23(){
+    const jobs=[];
+    jobs.push(loadScriptOnce('https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js',()=>!!window.jspdf?.jsPDF,10000));
+    jobs.push(loadScriptOnce('https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js',()=>!!window.PDFLib?.PDFDocument,10000));
+    jobs.push(loadScriptOnce('https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js',()=>!!window.pdfjsLib?.getDocument,10000));
+    jobs.push(loadScriptOnce('https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js',()=>!!window.QRCode?.toDataURL,8000));
+    await Promise.all(jobs);
+    if(!window.jspdf?.jsPDF) throw new Error('PDF generator could not be loaded. Please refresh once and retry.');
+    if(!window.PDFLib?.PDFDocument) throw new Error('Professional stationery engine could not be loaded. Please refresh once and retry.');
+  }
+
+  function updateReportStudioCopyV23(){
+    const modal=qs('#reportUploadModal'); if(!modal)return;
+    const eyebrow=modal.querySelector('.report-modal-head div > div:first-child');
+    if(eyebrow) eyebrow.textContent='REPORT STUDIO • PRODUCTION';
+    const head=modal.querySelector('.report-modal-head h3');
+    if(head) head.textContent='Create Professional Report';
+    const desc=modal.querySelector('.report-modal-head p');
+    if(desc) desc.textContent='Select the booking, upload or paste the laboratory source, then create the final LifeSure PDF. Review and verification happen after generation.';
+    const analyze=qs('#reportDirectText')?.closest('.report-field')?.querySelector('.report-direct-actions button');
+    if(analyze) analyze.textContent='Analyze & Preview';
+    const finalBtn=qs('#createReportUploadButton');
+    if(finalBtn) finalBtn.textContent='Create Professional Report';
+    const ai=qs('#reportAiCommandV22')?.closest('.report-field');
+    if(ai) ai.style.display='none';
+    const strip=modal.querySelector('.v22-auto-strip');
+    if(strip){
+      strip.innerHTML='<strong>Simple workflow</strong><span class="v22-badge">1. Select booking</span><span class="v22-badge">2. Upload / Type</span><span class="v22-badge">3. Generate PDF</span><span class="v22-badge">4. Review</span><span class="v22-badge">5. Verify / Publish</span>';
+    }
+    const note=modal.querySelector('.report-v15-source-note');
+    if(note) note.innerHTML='<b>Source integrity:</b> the original source stays preserved privately. The final LifeSure PDF is generated separately. Clinical values are never silently changed.';
+  }
+
+  updateReportStudioCopyV23();
+
+  window.analyzeReportSourceV23 = async function(){
+    const file=qs('#reportPdfInput')?.files?.[0] || v22SourceFile;
+    const direct=(qs('#reportDirectText')?.value||'').trim();
+    try{
+      await ensureReportEnginesV23();
+      let kind='typed-text', text=direct;
+      if(!text && file){
+        kind=v22Kind(file);
+        text=await extractStructuredSourceV22(file);
+      }
+      if(!text.trim()){
+        if(file && kind==='pdf'){
+          // Scanned/image PDFs are valid sources even when text extraction returns nothing.
+          text='';
+        }else throw new Error('Paste report data or upload a readable source file first.');
+      }
+      v22SourceFile=file||null;
+      v22SourceText=text||'';
+      v22SourceKind=kind;
+      v22Analysis=parseDiagnosticTextV22(text||'');
+      if(text) v22RenderAnalysis(v22Analysis);
+      const status=qs('#reportAnalysisStatusV22');
+      if(status) status.textContent = file && kind==='pdf' && !text
+        ? 'PDF source ready. Text extraction was unavailable, so the original PDF will be preserved and branded directly.'
+        : `Analysis ready • ${v22Analysis.rowCount||0} structured result rows detected.`;
+      showToast(file && kind==='pdf' && !text ? 'PDF source ready for professional generation.' : `Source analyzed: ${v22Analysis.rowCount||0} result rows found.`);
+      return v22Analysis;
+    }catch(e){
+      console.error('V23 ANALYSIS',e);
+      const status=qs('#reportAnalysisStatusV22');
+      if(status) status.textContent=e.message||'Source analysis failed.';
+      showToast(e.message||'Source analysis failed.');
+      return null;
+    }
+  };
+
+  window.submitReportUploadV23 = async function(){
+    const btn=qs('#createReportUploadButton');
+    if(v22Busy)return;
+    const bookingId=qs('#reportBookingSelect')?.value;
+    const code=(qs('#reportCodeInput')?.value||'').trim();
+    const layout=qs('#reportLayoutMode')?.value||'clinical';
+    const direct=(qs('#reportDirectText')?.value||'').trim();
+    const file=qs('#reportPdfInput')?.files?.[0] || v22SourceFile || null;
+    if(!bookingId){showToast('Select a booking first.');return;}
+    if(!file && !direct){showToast('Upload a source file or paste report data first.');return;}
+    if(file && file.size>10*1024*1024){showToast('Source file exceeds 10 MB.');return;}
+
+    const booking=state.bookings.find(b=>String(b.booking_id)===String(bookingId));
+    if(!booking){showToast('The selected booking could not be resolved.');return;}
+
+    v22Busy=true;
+    if(btn){btn.disabled=true;btn.classList.add('action-busy');}
+    let reportId=null, originalPath=null, finalPath=null;
+    try{
+      setProgressV23('Preparing report engine…','busy');
+      await ensureReportEnginesV23();
+
+      let kind='typed-text', sourceText=direct;
+      if(direct){
+        v22SourceFile=null;
+        v22SourceKind='typed-text';
+        v22SourceText=direct;
+      }else{
+        kind=v22Kind(file);
+        v22SourceFile=file;
+        v22SourceKind=kind;
+        // PDF text extraction is best-effort only. A PDF never fails generation because it is scanned.
+        try{ sourceText=await extractStructuredSourceV22(file); }catch(_){ sourceText=''; }
+        v22SourceText=sourceText||'';
+      }
+      v22Analysis=parseDiagnosticTextV22(sourceText||'');
+      if(direct && !v22Analysis?.sectionCount) throw new Error('The pasted report data could not be understood. Add result rows such as: Hemoglobin | 13.8 | g/dL | 13.0 - 17.0 | Normal');
+
+      setProgressV23('Creating secure report record…','busy');
+      const created=await secureRpc('create_report_securely',{p_booking_id:bookingId,p_report_code:code||null});
+      reportId=created.report_id;
+      const {data:record,error:recErr}=await supabaseClient.from('reports').select('*').eq('id',reportId).single();
+      if(recErr||!record) throw recErr||new Error('The secure report record could not be loaded after creation.');
+      const report=Object.assign({},created,record);
+      const patientId=report.patient_id;
+      const stamp=Date.now();
+      const version=`v${Number(report.version||1)}`;
+
+      setProgressV23('Building original source copy…','busy');
+      originalPath=`${patientId}/${reportId}/${version}/source-original-${stamp}.pdf`;
+      let originalBlob;
+      if(kind==='pdf' && file){
+        originalBlob=file;
+      }else{
+        if(!sourceText.trim()) throw new Error('This source format contains no readable text. Use PDF/TXT/CSV or paste the laboratory data.');
+        originalBlob=await buildTextReportPdf(booking,report,sourceText,layout,{},false);
+      }
+      if(originalBlob.size>10*1024*1024) throw new Error('Source PDF exceeds the 10 MB private-storage limit.');
+      const upOriginal=await supabaseClient.storage.from('reports-private').upload(originalPath,originalBlob,{contentType:'application/pdf',upsert:false});
+      if(upOriginal.error) throw upOriginal.error;
+
+      setProgressV23('Generating final LifeSure PDF…','busy');
+      const directEl=qs('#reportDirectText');
+      const overrides={};
+      if(directEl?.dataset?.aiPatient) overrides.patient=directEl.dataset.aiPatient;
+      if(directEl?.dataset?.aiDoctor) overrides.doctor=directEl.dataset.aiDoctor;
+
+      let finalBlob;
+      if(kind==='pdf' && file){
+        // Preserve the source PDF exactly and add LifeSure header/footer/QR to every page.
+        finalBlob=await buildPdfStationeryReport(booking,report,file,layout,overrides);
+      }else{
+        finalBlob=await buildTextReportPdf(booking,report,sourceText,layout,overrides,true);
+      }
+      if(finalBlob.size>10*1024*1024) throw new Error('Generated final report exceeds the 10 MB private-storage limit.');
+
+      finalPath=`${patientId}/${reportId}/${version}/letterhead-${stamp}.pdf`;
+      const upFinal=await supabaseClient.storage.from('reports-private').upload(finalPath,finalBlob,{contentType:'application/pdf',upsert:false});
+      if(upFinal.error) throw upFinal.error;
+
+      setProgressV23('Finalizing secure report…','busy');
+      await secureRpc('attach_report_files_securely',{p_report_id:reportId,p_original_path:originalPath,p_letterhead_path:finalPath});
+
+      // Result review is now optional and never blocks report generation.
+      try{
+        await secureRpc('create_report_instance_securely',{p_report_id:reportId,p_template_id:null});
+      }catch(instanceError){
+        console.warn('V23 OPTIONAL REVIEW INSTANCE',instanceError);
+      }
+
+      closeReportUploadModal();
+      showToast(`Professional report ${report.report_code} is ready.`);
+      await refreshAll();
+      setTimeout(()=>openReportOps(reportId),250);
+    }catch(e){
+      console.error('V23 REPORT PIPELINE',e);
+      // Best-effort cleanup of uploaded storage objects. The secure report row is retained for auditability.
+      try{
+        const paths=[originalPath,finalPath].filter(Boolean);
+        if(paths.length) await supabaseClient.storage.from('reports-private').remove(paths);
+      }catch(cleanErr){console.warn('V23 CLEANUP',cleanErr);}
+      showToast(e.message||'Report generation failed.');
+      const status=qs('#reportAnalysisStatusV22');
+      if(status) status.textContent=`Generation stopped: ${e.message||'Unknown error'}`;
+    }finally{
+      v22Busy=false;
+      if(btn){btn.disabled=false;btn.classList.remove('action-busy');btn.textContent='Create Professional Report';}
+    }
+  };
+
+  window.downloadSecureReportFileV23 = async function(reportId,preferLetterhead=true){
+    try{
+      const report=await getSecureReportRecord(reportId); if(!report)return;
+      const path=(preferLetterhead&&report.letterhead_path)?report.letterhead_path:report.original_path;
+      if(!path) throw new Error(preferLetterhead?'Final professional PDF is not ready yet.':'Original source is unavailable.');
+      const kind=preferLetterhead?'Final-Letterhead':'Source';
+      const ext='pdf';
+
+      // First use the authenticated Storage download API. This avoids browser cross-origin download quirks.
+      let blob=null;
+      try{
+        const result=await supabaseClient.storage.from('reports-private').download(path);
+        if(!result.error && result.data) blob=result.data;
+      }catch(storageErr){ console.warn('Storage download fallback',storageErr); }
+
+      if(blob){
+        const url=URL.createObjectURL(blob);
+        const a=document.createElement('a');
+        a.href=url;
+        a.download=downloadFileName(report,kind,ext);
+        document.body.appendChild(a);a.click();a.remove();
+        setTimeout(()=>URL.revokeObjectURL(url),3000);
+        showToast(preferLetterhead?'Final report downloaded.':'Source report downloaded.');
+        return;
+      }
+
+      const signed=await getSignedReportUrl(path);
+      window.open(signed,'_blank','noopener,noreferrer');
+      showToast('Secure report opened in a new tab. Use the browser download button if the automatic download is blocked.');
+    }catch(error){
+      console.error('V23 DOWNLOAD',error);
+      showToast(error.message||'Could not download the report.');
+    }
+  };
+
+  window.openSecureReportPdfV23 = async function(reportId,preferLetterhead=true){
+    try{
+      const report=await getSecureReportRecord(reportId); if(!report)return;
+      const path=(preferLetterhead&&report.letterhead_path)?report.letterhead_path:report.original_path;
+      if(!path) throw new Error('The requested report PDF is not ready yet.');
+      const url=await getSignedReportUrl(path);
+      window.open(url,'_blank','noopener,noreferrer');
+    }catch(e){console.error('V23 PREVIEW',e);showToast(e.message||'Report preview failed.');}
+  };
+
+  // Replace the old download/open handlers so every button uses the reliable V23 implementation.
+  window.downloadSecureReportFile=window.downloadSecureReportFileV23;
+  window.openSecureReportPdf=window.openSecureReportPdfV23;
+
+  window.renderReportOpsWorkspaceV23=function(){
+    const body=qs('#reportOpsBody');
+    const w=activeReportWorkspace;
+    if(!body||!w)return;
+    const r=w.report||{}, inst=w.instance||{}, params=w.parameters||[], vals=w.values||[];
+    const role=state.profile?.role||'';
+    const canEnter=['super_admin','management','lab_staff'].includes(role);
+    const canVerify=['super_admin','management'].includes(role);
+    const canPublish=['super_admin','management','lab_staff'].includes(role);
+    const valueMap=new Map(vals.map(v=>[String(v.parameter_id||v.parameterId),v]));
+    const finalReady=!!r.letterhead_path;
+    const sourceReady=!!r.original_path;
+    const status=String(inst.result_status||'not_started').toLowerCase();
+    const reportStatus=String(r.status||'created').toLowerCase();
+
+    const rows=params.map(p=>{
+      const id=reportParamId(p), v=valueMap.get(String(id))||{};
+      const result=v.result_text??v.result_numeric??'';
+      return `<div class="v23-result-row result-row" data-parameter-id="${esc(id)}">
+        <div><b>${esc(reportParamLabel(p))}</b><span>${esc(reportParamUnit(p)||'')}</span></div>
+        <input class="result-input report-result-text" value="${esc(result)}" placeholder="Result">
+        <input class="result-input report-result-flag" value="${esc(v.flag||'')}" placeholder="Flag">
+      </div>`;
+    }).join('');
+
+    const primaryActions=[];
+    if(finalReady) primaryActions.push(`<button class="btn btn-primary" type="button" onclick="openSecureReportPdf('${esc(r.id)}',true)">Preview Final PDF</button>`);
+    if(finalReady) primaryActions.push(`<button class="btn btn-light" type="button" onclick="downloadSecureReportFile('${esc(r.id)}',true)">Download Final PDF</button>`);
+    if(sourceReady) primaryActions.push(`<button class="btn btn-light" type="button" onclick="downloadSecureReportFile('${esc(r.id)}',false)">Download Source</button>`);
+    if(!inst.id && canEnter) primaryActions.push(`<button class="btn btn-dark" type="button" onclick="createReportInstanceFromOps()">Start Result Review</button>`);
+    if(inst.id && ['draft','entered'].includes(status) && canEnter) primaryActions.push(`<button class="btn btn-primary" type="button" onclick="saveAllReportResults()">Save Reviewed Results</button>`);
+    if(inst.id && status==='under_review' && canVerify) primaryActions.push(`<button class="btn btn-light" type="button" onclick="verifyReportFromOps()">Verify Report</button>`);
+    if(canPublish && ['uploaded','under_review'].includes(reportStatus)) primaryActions.push(`<button class="btn btn-primary" type="button" onclick="publishReportFromOps()">Publish Report</button>`);
+    if(reportStatus==='published') primaryActions.push(`<button class="btn btn-light" type="button" onclick="openReportSendModal('${esc(r.id)}')">Send to Customer</button>`);
+
+    body.innerHTML=`
+      <div class="v23-ops-head">
+        <div><div class="report-ops-title">${esc(r.report_code||'Report')}</div><div class="report-ops-sub">Simple production workflow — generate first, review only when required, then verify and publish.</div></div>
+        <span class="report-status-pill">${esc(reportStatus.replaceAll('_',' '))}</span>
+      </div>
+
+      <div class="v23-checks">
+        <div class="v23-check ${sourceReady?'ok':'bad'}"><b>${sourceReady?'✓':'!'} Source saved</b><span>${sourceReady?'Private original artifact is ready.':'No source attached yet.'}</span></div>
+        <div class="v23-check ${finalReady?'ok':'bad'}"><b>${finalReady?'✓':'!'} Final PDF</b><span>${finalReady?'Professional LifeSure PDF is ready.':'Generate the report before review/publish.'}</span></div>
+        <div class="v23-check ${inst.id?'ok':'optional'}"><b>${inst.id?'✓':'○'} Result review</b><span>${inst.id?'Workspace ready.':'Optional until results need verification.'}</span></div>
+      </div>
+
+      <div class="v23-action-bar">${primaryActions.join('')}</div>
+
+      <div class="v23-section">
+        <div class="v23-section-head"><div><b>1. Files</b><span>Open or download the generated documents immediately.</span></div></div>
+        <div class="v23-file-cards">
+          <div class="v23-file-card"><b>Final LifeSure PDF</b><span>${finalReady?'Header, patient strip, footer and verification QR applied.':'Not generated yet.'}</span><strong>${finalReady?'READY':'PENDING'}</strong></div>
+          <div class="v23-file-card"><b>Original Source</b><span>${sourceReady?'Privately preserved and never overwritten.':'Not attached yet.'}</span><strong>${sourceReady?'READY':'PENDING'}</strong></div>
+        </div>
+      </div>
+
+      <div class="v23-section">
+        <div class="v23-section-head"><div><b>2. Result Review</b><span>Only use this section when clinical results need secure entry/review.</span></div>${inst.id?`<small>${params.length} parameter${params.length===1?'':'s'}</small>`:''}</div>
+        ${inst.id ? (params.length ? `<div class="v23-result-list">${rows}</div><div class="v23-note">Results are saved through the secure RPC. AI is not required and clinical values are not silently changed.</div>` : '<div class="v23-empty">No configured parameters were returned for this review workspace. The generated PDF remains available.</div>') : '<div class="v23-empty">Result review is optional. Click <b>Start Result Review</b> only when you need to enter/verify structured parameters.</div>'}
+      </div>
+
+      <div class="v23-section v23-next">
+        <div><b>3. Final status</b><span>${reportStatus==='published'?'Published and ready for customer delivery.':reportStatus==='uploaded'?'Generated. Complete result verification and payment checks before publishing.':'Complete generation first.'}</span></div>
+      </div>`;
+  };
+
+  // Keep the original helpers but replace the visual workspace with V23.
+  window.renderReportOpsWorkspace=window.renderReportOpsWorkspaceV23;
+
+  // The original file declared the global function before this patch. Rebind the global name as well.
+  try{ renderReportOpsWorkspace=window.renderReportOpsWorkspaceV23; }catch(_){ }
+
+  // Use V23 generate handler from the existing button.
+  window.submitReportUploadV22=window.submitReportUploadV23;
+  try{ submitReportUploadV22=window.submitReportUploadV23; }catch(_){ }
+  window.submitReportUpload=window.submitReportUploadV23;
+  try{ submitReportUpload=window.submitReportUploadV23; }catch(_){ }
+
+  // Make upload analysis reliable after the DOM event has already been bound by older versions.
+  const input=qs('#reportPdfInput');
+  if(input && !input.dataset.v23Bound){
+    input.dataset.v23Bound='1';
+    input.addEventListener('change',async()=>{
+      const file=input.files?.[0];
+      if(!file)return;
+      const kind=v22Kind(file);
+      if(!kind){input.value='';showToast('Unsupported file format.');return;}
+      if(file.size>10*1024*1024){input.value='';showToast('Source file exceeds 10 MB.');return;}
+      const chip=qs('#reportFileChip');
+      if(chip){qs('#reportFileType').textContent=kind.toUpperCase();qs('#reportFileName').textContent=file.name;qs('#reportFileSize').textContent=(file.size/1024/1024).toFixed(2)+' MB';chip.removeAttribute('hidden');}
+      v22SourceFile=file;
+      await window.analyzeReportSourceV23();
+    });
+  }
+
+  // Direct typing auto-analysis is kept, but no AI is involved.
+  const direct=qs('#reportDirectText');
+  if(direct && !direct.dataset.v23Bound){
+    direct.dataset.v23Bound='1';
+    direct.addEventListener('input',()=>{
+      const v=direct.value.trim();
+      clearTimeout(window.v23InputTimer);
+      if(v.length>8)window.v23InputTimer=setTimeout(()=>window.analyzeReportSourceV23(),450);
+    });
+  }
+
+  // Final UI cleanup: remove old AI wording and rename button one more time after all older handlers finish.
+  setTimeout(updateReportStudioCopyV23,0);
+})();
+
+/* ===== END V23 PATCH ===== */
 </script>
 </body>
 </html>
