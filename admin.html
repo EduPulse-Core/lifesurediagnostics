@@ -4457,9 +4457,29 @@ window.openSecureReportPdf=async function(reportId,preferLetterhead=true){try{co
       v22Analysis=parseDiagnosticTextV22(sourceText||'');
       if(direct && !v22Analysis?.sectionCount) throw new Error('The pasted report data could not be understood. Add result rows such as: Hemoglobin | 13.8 | g/dL | 13.0 - 17.0 | Normal');
 
-      setProgressV23('Creating secure report record…','busy');
-      const created=await secureRpc('create_report_securely',{p_booking_id:bookingId,p_report_code:code||null});
-      reportId=created.report_id;
+      setProgressV23('Creating or resuming secure report record…','busy');
+      let created;
+      try{
+        created=await secureRpc('create_report_securely',{p_booking_id:bookingId,p_report_code:code||null});
+      }catch(createErr){
+        const msg=String(createErr?.message||createErr||'');
+        if(!/active report already exists/i.test(msg)) throw createErr;
+        const {data:existing,error:existingErr}=await supabaseClient
+          .from('reports')
+          .select('*')
+          .eq('booking_id',bookingId)
+          .order('created_at',{ascending:false})
+          .limit(1)
+          .maybeSingle();
+        if(existingErr) throw existingErr;
+        if(!existing) throw createErr;
+        if(String(existing.status||'').toLowerCase()==='published'){
+          throw new Error('A published report already exists for this booking. Open Report Operations to view or download it.');
+        }
+        created={report_id:existing.id,patient_id:existing.patient_id,...existing};
+        showToast(`Existing report ${existing.report_code||''} found. Completing that report instead of creating a duplicate.`.trim());
+      }
+      reportId=created.report_id||created.id;
       const {data:record,error:recErr}=await supabaseClient.from('reports').select('*').eq('id',reportId).single();
       if(recErr||!record) throw recErr||new Error('The secure report record could not be loaded after creation.');
       const report=Object.assign({},created,record);
@@ -4502,6 +4522,11 @@ window.openSecureReportPdf=async function(reportId,preferLetterhead=true){try{co
       setProgressV23('Finalizing secure report…','busy');
       await secureRpc('attach_report_files_securely',{p_report_id:reportId,p_original_path:originalPath,p_letterhead_path:finalPath});
 
+      // Download the freshly generated PDF immediately from the browser-side blob.
+      // This avoids relying on a second round-trip through private storage for the first download.
+      const immediateName=downloadFileName(report,'Final-Letterhead','pdf');
+      const downloadedNow=triggerLocalReportDownloadV23(finalBlob,immediateName);
+
       // Result review is now optional and never blocks report generation.
       try{
         await secureRpc('create_report_instance_securely',{p_report_id:reportId,p_template_id:null});
@@ -4510,7 +4535,9 @@ window.openSecureReportPdf=async function(reportId,preferLetterhead=true){try{co
       }
 
       closeReportUploadModal();
-      showToast(`Professional report ${report.report_code} is ready.`);
+      showToast(downloadedNow
+        ? `Professional report ${report.report_code} is ready and the PDF download has started.`
+        : `Professional report ${report.report_code} is ready. Use Download Final PDF in Report Operations.`);
       await refreshAll();
       setTimeout(()=>openReportOps(reportId),250);
     }catch(e){
@@ -4528,6 +4555,26 @@ window.openSecureReportPdf=async function(reportId,preferLetterhead=true){try{co
       if(btn){btn.disabled=false;btn.classList.remove('action-busy');btn.textContent='Create Professional Report';}
     }
   };
+
+  function triggerLocalReportDownloadV23(blob, filename){
+    if(!blob) return false;
+    try{
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      a.href=url;
+      a.download=filename || 'LifeSure-Report.pdf';
+      a.style.display='none';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url),8000);
+      return true;
+    }catch(e){
+      console.warn('LOCAL REPORT DOWNLOAD',e);
+      return false;
+    }
+  }
+  window.triggerLocalReportDownloadV23=triggerLocalReportDownloadV23;
 
   window.downloadSecureReportFileV23 = async function(reportId,preferLetterhead=true){
     try{
@@ -4556,8 +4603,15 @@ window.openSecureReportPdf=async function(reportId,preferLetterhead=true){try{co
       }
 
       const signed=await getSignedReportUrl(path);
-      window.open(signed,'_blank','noopener,noreferrer');
-      showToast('Secure report opened in a new tab. Use the browser download button if the automatic download is blocked.');
+      const opened=window.open(signed,'_blank','noopener,noreferrer');
+      if(!opened){
+        const a=document.createElement('a');
+        a.href=signed;
+        a.target='_blank';
+        a.rel='noopener noreferrer';
+        a.click();
+      }
+      showToast('Secure report opened. Use the PDF viewer download button if the browser blocks automatic downloads.');
     }catch(error){
       console.error('V23 DOWNLOAD',error);
       showToast(error.message||'Could not download the report.');
